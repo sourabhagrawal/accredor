@@ -1,0 +1,16 @@
+.over{
+	border : #00f 1px solid !important; 
+}
+
+#selected{
+	background: none repeat scroll 0 0 #3875D7 !important;
+    border: medium none !important;
+    display: none;
+    margin: 0 !important;
+    min-height: 0 !important;
+    min-width: 0 !important;
+    opacity: 0.2 !important;
+    padding: 0 !important;
+    position: relative;
+    z-index: 2147483647 !important;
+}
