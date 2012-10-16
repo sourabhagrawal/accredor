@@ -32,6 +32,8 @@ exports.fetch = function(req, res){
 		
 		includeJs('/lib/jquery-ui/js/jquery-1.8.2.js', window);
 		includeJs('/lib/jquery-ui/js/jquery-ui-1.9.0.custom.js', window);
+		includeJs('/javascripts/stack.js', window);
+		includeJs('/javascripts/movement.js', window);
 		includeJs('/javascripts/frame.js', window);
 		
 		console.log(window.document.head.innerHTML);
