@@ -5,17 +5,21 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(href='lib/bootstrap/docs/assets/css/bootstrap.css', rel='stylesheet')
     link(href='lib/bootstrap/docs/assets/css/bootstrap-responsive.css', rel='stylesheet')
+    link(href='lib/codemirror/codemirror.css', rel='stylesheet')
     link(href='css/abt.css', rel='stylesheet')
-
+    
+    script(src="lib/codemirror/codemirror.js")
+    script(src="lib/codemirror/mode/javascript/javascript.js")
+    
   body
     div.container
       div.btn-group
         button.btn(id="undo") Undo
         button.btn(id="redo") Redo
+        button.btn(id="script-btn") To Code
+      div(id="code-container")
+        div(id="code-box")
     iframe(id="content-frame", style="width:100%; height:100%", src="/fetch?src=shreddedlamb.com")
-    span(id="aspan")
-      dnkjqwd
-      a(href="nndkqw", id="alink") skqwslq
   include bootstrap_js
   
   script(src="/javascripts/index.js")
