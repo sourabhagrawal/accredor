@@ -38,27 +38,23 @@ var Movement = new function(){
 	
 	this.onStop = function(event, ui){
 		var selector = toSelector(target);
-		ref.add(selector, 
-			{
-				foo : function(t, left, top){
-					$(t).css('position', 'relative');
-					$(t).css('left', left);
-					$(t).css('top', top);
-				},
-				params : [
-					initPos.left + ui.position.left - start.left,
-					initPos.top + ui.position.top - start.top
-				]
-			}, {
-				foo : function(t, left, top){
-					$(t).css('left', initPos.left);
-					$(t).css('top', initPos.top);
-				},
-				params : [
-					initPos.left,
-					initPos.top
-				]
-			});
+		var redoParams = {
+			position : 'relative', 
+			left : initPos.left + ui.position.left - start.left, 
+			top : initPos.top + ui.position.top - start.top
+		};
+		
+		var undoParams = {
+			left : initPos.left, 
+			top : initPos.top
+		};
+		ref.add(
+			"$('" + selector + "').css(" + JSON.stringify(redoParams) + ")",
+			"$('" + selector + "').css(" + JSON.stringify(undoParams) + ")"
+		);
+		$("#selected").css({
+			display : 'none'
+		});
 	};
 	
 	this.onDrag = function(event, ui){
@@ -89,15 +85,7 @@ var Movement = new function(){
 		});
 	};
 	
-	this.add = function(target, fn, nfn){
-		stack.add(target, fn, nfn);
-	};
-	
-	this.redo = function(){
-		stack.push();
-	};
-	
-	this.undo = function(){
-		stack.pop();
+	this.add = function(fn, nfn){
+		Stack.add(fn, nfn);
 	};
 };

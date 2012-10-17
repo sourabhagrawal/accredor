@@ -1,30 +1,30 @@
-var stack = new function(){
+var Stack = new function(){
 	var array = [];
 	
 	var iter = -1;
 	
-	this.add = function(target, fn, nfn){
+	this.add = function(fn, nfn){
 		if(iter != array.length - 1){
 			if(iter > -1)
 				array = array.slice(0, iter);
 			else if(iter == -1)
 				array = [];
 		}
-		iter = array.push({target : target, fn : fn, nfn : nfn}) - 1;
+		iter = array.push({fn : fn, nfn : nfn}) - 1;
 	};
 	
-	this.push = function(){
+	this.redo = function(){
 		if(this.isFull())
 			throw "Nothing to Redo";
 		var obj = array[++iter];
-		return obj['fn']['foo'].apply(this,[obj['target']].concat(obj['fn']['params'] || []));
+		eval(obj['fn']);
 	};
 	
-	this.pop = function(){
+	this.undo = function(){
 		if(this.isEmpty())
 			throw "Nothing to Undo";
 		var obj = array[iter--];
-		return obj['nfn']['foo'].apply(this,[obj['target']].concat(obj['nfn']['params'] || []));
+		eval(obj['nfn']);
 	};
 	
 	this.isEmpty = function(){
@@ -39,9 +39,7 @@ var stack = new function(){
 		var instructions = [];
 		for(var i = 0; i <= iter; i++){
 			var obj = array[i];
-			var instruction = "(" + obj['fn']['foo'].toString() + 
-						".apply(this, ['" + obj.target + "'].concat(" + obj['fn']['params'] + ")));";
-			//console.log(instruction);
+			var instruction = obj['fn'] + ";\n";
 			instructions.push(instruction);
 		}
 		
