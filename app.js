@@ -6,11 +6,16 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var request = require('request');
+var CONFIG = require('config');
+var log4js = require('log4js');
+
+var logger = require('./lib/LogFactory').create("app");
 
 /**
  * Routes
  */
-var routes = require('./routes/index');
+var baseRoute = require('./routes/index');
+var benchRoute = require('./routes/bench');
 
 /**
  * Initialize App
@@ -18,7 +23,7 @@ var routes = require('./routes/index');
 var app = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 5000);
+  app.set('port', process.env.PORT || 10000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('view options', {layout : false});
@@ -32,24 +37,24 @@ app.configure(function(){
   app.use(express.static(path.join(__dirname, 'public')));
 });
 
+app.configure(function() {
+	app.use(log4js.connectLogger(logger));
+});
+
 //app.configure('development', function(){
 //  app.use(express.errorHandler());
 //});
 
-app.get('/', routes.index);
-
-app.get('/fetch', routes.fetch);
+app.get('/', baseRoute.index);
+app.get('/bench', benchRoute.index);
+app.get('/fetch', benchRoute.fetch);
 
 app.use(function(req, res, next){
-	request('http://shreddedlamb.com' + req.url, function (error, response, body) {
+	request(req.session.url + req.url, function (error, response, body) {
 		  if (!error && response.statusCode == 200) {
 			  var type = require('mime').lookup('http://shreddedlamb.com' + req.url);
-			  console.log(req.url + " : " + type);
+			  //console.log(req.url + " : " + type);
 			  res.header("Content-Type", type);
-//			  if(req.accepts("css"))
-//				  res.header("Content-Type", "text/css");
-//			  if(req.accepts("html"))
-//				  res.header("Content-Type", "text/html");
 			  res.send(body);
 		  }else{
 			  console.log(error);

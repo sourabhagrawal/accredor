@@ -1,25 +1,14 @@
-
 html(lang='en')
-  head
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    link(href='lib/bootstrap/docs/assets/css/bootstrap.css', rel='stylesheet')
-    link(href='lib/bootstrap/docs/assets/css/bootstrap-responsive.css', rel='stylesheet')
-    link(href='lib/codemirror/codemirror.css', rel='stylesheet')
-    link(href='css/abt.css', rel='stylesheet')
-    
-    script(src="lib/codemirror/codemirror.js")
-    script(src="lib/codemirror/mode/javascript/javascript.js")
-    
-  body
-    div.container
-      div.btn-group
-        button.btn(id="undo") Undo
-        button.btn(id="redo") Redo
-        button.btn(id="script-btn") To Code
-      div(id="code-container")
-        div(id="code-box")
-    iframe(id="content-frame", style="width:100%; height:100%", src="/fetch?src=shreddedlamb.com")
-  include bootstrap_js
-  
-  script(src="/javascripts/index.js")
+	head
+		meta(charset='utf-8')
+		title Yet another AB Testing Framework
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		include bootstrap_js
+	body
+		div.well.container
+			form.form-inline(action="/bench")
+				input.input-large(type='text', id="url-box", name="url", placeholder="Your URL") 
+				&nbsp;
+				button.btn.btn-primary Submit
+	script(src="/javascripts/index.js")
+	
