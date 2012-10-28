@@ -12,6 +12,9 @@
     "jsdom" : "*",
     "request" : "*",
     "config" : "*",
-    "log4js" : "*"
+    "log4js" : "*",
+    "patio" : "*",
+    "comb" : "*",
+    "underscore" : "*"
   }
 }

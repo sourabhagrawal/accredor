@@ -9,7 +9,7 @@ var request = require('request');
 var CONFIG = require('config');
 var log4js = require('log4js');
 
-var logger = require('./lib/LogFactory').create("app");
+var logger = require('./lib/log_factory').create("app");
 
 /**
  * Routes
@@ -35,11 +35,9 @@ app.configure(function(){
   app.use(express.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(log4js.connectLogger(logger));
 });
 
-app.configure(function() {
-	app.use(log4js.connectLogger(logger));
-});
 
 //app.configure('development', function(){
 //  app.use(express.errorHandler());
