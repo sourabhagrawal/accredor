@@ -10,12 +10,7 @@ var CONFIG = require('config');
 var log4js = require('log4js');
 
 var logger = require('./lib/log_factory').create("app");
-
-/**
- * Routes
- */
-var baseRoute = require('./routes/index');
-var benchRoute = require('./routes/bench');
+var routes = require('./routes');
 
 /**
  * Initialize App
@@ -31,36 +26,38 @@ app.configure(function(){
 //  app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('your secret here'));
+  app.use(express.cookieParser('sutta'));
   app.use(express.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(log4js.connectLogger(logger));
-});
-
-
-//app.configure('development', function(){
 //  app.use(express.errorHandler());
-//});
-
-app.get('/', baseRoute.index);
-app.get('/bench', benchRoute.index);
-app.get('/fetch', benchRoute.fetch);
+});
 
 app.use(function(req, res, next){
 	request(req.session.url + req.url, function (error, response, body) {
 		  if (!error && response.statusCode == 200) {
-			  var type = require('mime').lookup('http://shreddedlamb.com' + req.url);
+			  var type = require('mime').lookup(req.session.url + req.url);
 			  //console.log(req.url + " : " + type);
 			  res.header("Content-Type", type);
 			  res.send(body);
 		  }else{
-			  console.log(error);
-			  console.log(response.statusCode);
+			  logger.error(error);
+			  logger.debug(response.statusCode);
 			  next();
 		  }
 		});
 });
+
+/**
+ * Routes
+ */
+var baseRoute = require('./routes/index');
+var benchRoute = require('./routes/bench');
+
+app.get('/', baseRoute.index);
+app.get('/bench', benchRoute.index);
+app.get('/fetch', benchRoute.fetch);
 
 /**
  * Initialize the Server

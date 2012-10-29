@@ -1,9 +1,8 @@
 var comb = require('comb');
 var patio = require('patio');
 var _ = require('underscore');
-var logger = require('./../log_factory').create("dao");
-var models = require('./../models');
-var emitter = require('./../emitter');
+var logger = require('./../lib/log_factory').create("dao");
+var models = require('./../lib/models_factory');
 
 var DAO = comb.define(null,{
 	instance : {
