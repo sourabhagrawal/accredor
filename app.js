@@ -30,26 +30,25 @@ app.configure(function(){
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(log4js.connectLogger(logger));
-//  app.use(function(err, req, res, next) {
-//	  // only handle `next(err)` calls
+  app.use(function(err, req, res, next) {
+	  // only handle `next(err)` calls
 //	  logger.error(err);
-//	  next();
-//  });
+	  next();
+  });
+  app.use(function(req, res, next){
+		request(req.session.url + req.url, function (error, response, body) {
+			  if (!error && response.statusCode == 200) {
+				  var type = require('mime').lookup(req.session.url + req.url);
+				  //console.log(req.url + " : " + type);
+				  res.header("Content-Type", type);
+				  res.send(body);
+			  }else{
+//				  logger.error(error);
+				  next();
+			  }
+			});
+	});
 });
-
-//app.use(function(req, res, next){
-//	request(req.session.url + req.url, function (error, response, body) {
-//		  if (!error && response.statusCode == 200) {
-//			  var type = require('mime').lookup(req.session.url + req.url);
-//			  //console.log(req.url + " : " + type);
-//			  res.header("Content-Type", type);
-//			  res.send(body);
-//		  }else{
-//			  logger.error(error);
-//			  next();
-//		  }
-//		});
-//});
 
 /**
  * Routes
@@ -63,8 +62,8 @@ app.get('/fetch', benchRoute.fetch);
 
 
 var experimentsRoutes = require('./routes/experiments_route');
-app.get('/experiments/:id', experimentsRoutes.getById);
-app.post('/experiments/', experimentsRoutes.create);
+app.get('/api/experiments/:id', experimentsRoutes.getById);
+app.post('/api/experiments/', experimentsRoutes.create);
 
 
 /**

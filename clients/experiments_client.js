@@ -6,7 +6,7 @@ var ExperimentsClient = comb.define(client,{
 	instance : {
 		constructor : function(options){
 			options = options || {};
-			options.url = "http://localhost:10000/experiments/";
+			options.url = "http://localhost:10000/api/experiments/";
             this._super([options]);
 		}
 	}
