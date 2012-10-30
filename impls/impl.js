@@ -1,9 +1,12 @@
 var comb = require('comb');
 var _ = require('underscore');
 var logger = require('./../lib/log_factory').create("impl");
+var response = require('../lib/response');
+var codes = require('../lib/codes');
 
 var Impl = comb.define(null,{
 	instance : {
+		displayName : "Record",
 		constructor : function(options){
 			options = options || {};
 			this._super(arguments);
@@ -11,16 +14,41 @@ var Impl = comb.define(null,{
             this._dao = options.dao;
 		},
 
-		getById : function(id){
-			return this._dao.getById(id);
+		getById : function(id, callback){
+			var ref = this;
+			if(id == null){
+				callback(response.error(codes.error.ID_NULL));
+			}else{
+				this._dao.getById(id).then(function(model){
+					if(model == undefined){
+						callback(response.error(codes.error.RECORD_WITH_ID_NOT_EXISTS([ref.displayName, id])));
+					}else
+						callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_FETCHED([ref.displayName, id])));
+				}, function(error){
+					logger.error(error);
+					callback(response.error(codes.error.RECORD_WITH_ID_NOT_FETCHED([ref.displayName, id])));
+				});
+			}
 		},
 		
-		create : function(params){
-			return this._dao.save(params);
+		create : function(params, callback){
+			var ref = this;
+			this._dao.create(params).then(function(model){
+				callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_CREATED([ref.displayName])));
+			}, function(error){
+				logger.error(error);
+				callback(response.error(codes.error.CREATION_FAILED([ref.displayName])));
+			});
 		},
 		
-		update : function(id, params){
-			return this._dao.update(id, params);
+		update : function(id, params, callback){
+			var ref = this;
+			return this._dao.update(id, params).then(function(model){
+				callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
+			}, function(error){
+				logger.error(error);
+				callback(response.error(codes.error.UPDATION_FAILED([ref.displayName, id])));
+			});
 		},
 		
 		/**
@@ -31,7 +59,8 @@ var Impl = comb.define(null,{
 		 * @param sortBy Defaults to id
 		 * @param sortDir Defaults to DESC
 		 */
-		search : function(query, start, fetchSize, sortBy, sortDir){
+		search : function(callback, query, start, fetchSize, sortBy, sortDir){
+			var ref = this;
 			var filters = [];
 			if(query != null){
 				var tokens = query.split('___');
@@ -52,7 +81,16 @@ var Impl = comb.define(null,{
 					filters.push(filter);
 				});
 			}
-			return this._dao.search(filters, start, fetchSize, sortBy, sortDir);
+			this._dao.search(filters, start, fetchSize, sortBy, sortDir).then(function(models){
+				var modelsJSON = []; 
+				_.each(ex, function(model){
+					modelsJSON.push(model.toJSON());
+				});
+				callback(null,response.success(modelsJSON, modelsJSON.length, codes.success.RECORDS_SEARCHED([ref.displayName])));
+			}, function(error){
+				logger.error(error);
+				callback(response.error(codes.error.SEARCH_FAILED([ref.displayName])));
+			});
 		}
 	}
 });

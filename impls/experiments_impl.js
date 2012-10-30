@@ -7,6 +7,7 @@ var experimentsDao = require('../daos/experiments_dao');
 
 var ExperimentsImpl = comb.define(impl,{
 	instance : {
+		displayName : "Experiment",
 		constructor : function(options){
 			options = options || {};
 			options.dao = experimentsDao;
@@ -20,7 +21,8 @@ module.exports = new ExperimentsImpl();
 //emitter.on('modelsSynced', function(event){
 //	logger.debug("on Synced");
 //	var instance = new ExperimentsImpl();
-//	instance.getById(1).then(function(ex){
+//	instance.getById(10, function(error, ex){
+//		console.log(error);
 //		console.log(ex);
 //	});
 //});

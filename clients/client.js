@@ -1,0 +1,51 @@
+var comb = require('comb');
+var logger = require('./../lib/log_factory').create("route");
+var request = require('request');
+
+var Client = comb.define(null,{
+	instance : {
+		constructor : function(options){
+			options = options || {};
+			this._super(arguments);
+			
+            this.url = options.url;
+		},
+
+		getById : function(id, callback){
+			request({
+				uri : this.url + id
+			}, callback);
+		},
+		
+		create : function(params, callback){
+			request({
+				uri : this.url,
+				method : 'post',
+				json : params
+			}, callback);
+		},
+		
+		update : function(id, params, callback){
+			request({
+				uri : this.url + id,
+				method : 'put',
+				json : params
+			}, callback);
+		},
+		
+		search : function(query, start, fetchSize, sortBy, sortDir){
+			request({
+				uri : this.url,
+				qs : {
+					q : query,
+					start : start,
+					fetchSize : fetchSize,
+					sortBy : sortBy,
+					sortDir : sortDir
+				}
+			}, callback);
+		}
+	}
+});
+
+module.exports = Client;

@@ -14,26 +14,36 @@
 //logger.error('Cheese is too ripe!');
 //logger.fatal('Cheese was breeding ground for listeria.');
 
-var comb = require('comb');
+//var comb = require('comb');
+//
+//var Animal = comb.define(null, {
+//	instance : {
+//		constructor : function(options){
+//			console.log(options);
+//			console.log("Animal Created");
+//		}
+//	}
+//});
+//
+//var Dog = comb.define(Animal, {
+//	instance : {
+//		constructor : function(options){
+//			console.log("Dog Created");
+//			options.color = "Black";
+//			console.log(arguments);
+//			this._super(arguments);
+//		}
+//	}
+//});
+//
+//new Dog({name : "Tom"});
 
-var Animal = comb.define(null, {
-	instance : {
-		constructor : function(options){
-			console.log(options);
-			console.log("Animal Created");
-		}
-	}
-});
+var foo = function(){
+    console.log("hello");
+};
 
-var Dog = comb.define(Animal, {
-	instance : {
-		constructor : function(options){
-			console.log("Dog Created");
-			options.color = "Black";
-			console.log(arguments);
-			this._super(arguments);
-		}
-	}
-});
+foo.toString = function(){
+    return "Modified toString";
+};
 
-new Dog({name : "Tom"});
+console.log(foo.toString());

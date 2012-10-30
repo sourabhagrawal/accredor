@@ -10,7 +10,6 @@ var CONFIG = require('config');
 var log4js = require('log4js');
 
 var logger = require('./lib/log_factory').create("app");
-var routes = require('./routes');
 
 /**
  * Initialize App
@@ -31,33 +30,42 @@ app.configure(function(){
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(log4js.connectLogger(logger));
-//  app.use(express.errorHandler());
+//  app.use(function(err, req, res, next) {
+//	  // only handle `next(err)` calls
+//	  logger.error(err);
+//	  next();
+//  });
 });
 
-app.use(function(req, res, next){
-	request(req.session.url + req.url, function (error, response, body) {
-		  if (!error && response.statusCode == 200) {
-			  var type = require('mime').lookup(req.session.url + req.url);
-			  //console.log(req.url + " : " + type);
-			  res.header("Content-Type", type);
-			  res.send(body);
-		  }else{
-			  logger.error(error);
-			  logger.debug(response.statusCode);
-			  next();
-		  }
-		});
-});
+//app.use(function(req, res, next){
+//	request(req.session.url + req.url, function (error, response, body) {
+//		  if (!error && response.statusCode == 200) {
+//			  var type = require('mime').lookup(req.session.url + req.url);
+//			  //console.log(req.url + " : " + type);
+//			  res.header("Content-Type", type);
+//			  res.send(body);
+//		  }else{
+//			  logger.error(error);
+//			  next();
+//		  }
+//		});
+//});
 
 /**
  * Routes
  */
-var baseRoute = require('./routes/index');
-var benchRoute = require('./routes/bench');
+var baseRoute = require('./routes/w3/index');
+var benchRoute = require('./routes/w3/bench');
 
 app.get('/', baseRoute.index);
 app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);
+
+
+var experimentsRoutes = require('./routes/experiments_route');
+app.get('/experiments/:id', experimentsRoutes.getById);
+app.post('/experiments/', experimentsRoutes.create);
+
 
 /**
  * Initialize the Server
