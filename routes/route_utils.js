@@ -1,12 +1,20 @@
+var _ = require('underscore');
 var logger = require('./../lib/log_factory').create("route");
 
 var RouteUtils = new function(){
+	var sendRes = function(req, res, body){
+		logger.debug(JSON.stringify(body));
+		res.send(body);
+	};
+	
+	this.respond = sendRes;
+	
 	this.getById = function(req, res, impl){
 		impl.getById(req.params.id, function(err, data){
 			if(err == undefined){
-				res.send(data);
+				sendRes(req, res, data);
 			}else{
-				res.send(err);
+				sendRes(req, res, err);
 			}
 		});
 	},
@@ -14,9 +22,9 @@ var RouteUtils = new function(){
 	this.create = function(req, res, impl){
 		impl.create(req.body, function(err, data){
 			if(err == undefined){
-				res.send(data);
+				sendRes(req, res, data);
 			}else{
-				res.send(err);
+				sendRes(req, res, err);
 			}
 		});
 	},
@@ -24,9 +32,9 @@ var RouteUtils = new function(){
 	this.update = function(req, res, impl){
 		impl.update(req.params.id, req.body, function(err, data){
 			if(err == undefined){
-				res.send(data);
+				sendRes(req, res, data);
 			}else{
-				res.send(err);
+				sendRes(req, res, err);
 			}
 		});
 	},
@@ -42,9 +50,9 @@ var RouteUtils = new function(){
 	this.search = function(req, res, impl){
 		impl.search(function(err, data){
 			if(err == undefined){
-				res.send(data);
+				sendRes(req, res, data);
 			}else{
-				res.send(err);
+				sendRes(req, res, err);
 			}
 		}, req.query.q, req.query.start, req.query.fetchSize, req.query.sortBy, req.query.sortDir);
 	};

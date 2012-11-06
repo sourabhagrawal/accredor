@@ -1,16 +1,22 @@
 var vows = require('vows'),
     assert = require('assert'),
-    request = require('request');
+    request = require('request'),
+    _ = require('underscore');
 var client = require('../clients/experiments_client');
 
 var assertSuccess = function(err, res){
 	assert.isNull(err);
-	assert.isObject(res.body);
-	assert.isObject(res.body.status);
-	assert.equal(res.body.status.code, 1000);
+	
+	var body = res.body;
+	if(!_.isObject(body))
+		body = JSON.parse(body);
+	assert.isObject(body);
+	assert.isObject(body.status);
+	assert.equal(body.status.code, 1000);
 };
 
-vows.describe("The experiments API").addBatch({
+vows.describe("The experiments API")
+.addBatch({
 	'An Experiment' : {
 		topic : function(){
 			client.create({
@@ -20,4 +26,12 @@ vows.describe("The experiments API").addBatch({
 		},
 		'should be created' : assertSuccess
 	}
-}).export(module);
+}).addBatch({
+	'An Experiment' : {
+		topic : function(){
+			client.getById(1,this.callback);
+		},
+		'should be fetched' : assertSuccess
+	}
+})
+.export(module);

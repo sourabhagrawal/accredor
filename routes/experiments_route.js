@@ -1,31 +1,25 @@
-var comb = require('comb');
 var routeUtils = require('./route_utils.js');
 var logger = require('./../lib/log_factory').create("experiments_route");
 var experimentsImpl = require('../impls/experiments_impl');
 
-var ExperimentsRoute = comb.define(null,{
-	instance : {
-		constructor : function(options){
-			options = options || {};
-            this._super([options]);
-		},
+var ExperimentsRoute = function(app){
+	app.get('/api/experiments/:id', function(req, res){
+		routeUtils.getById(req, res, experimentsImpl);
+	});
+	
+	app.post('/api/experiments/', function(req, res){
+		routeUtils.create(req, res, experimentsImpl);
+	});
+	
+	app.put('/api/experiments/:id', function(req, res){
+		routeUtils.update(req, res, experimentsImpl);
+	});
 		
-		getById : function(req, res){
-			routeUtils.getById(req, res, experimentsImpl);
-		},
-		
-		create : function(req, res){
-			routeUtils.create(req, res, experimentsImpl);
-		},
-		
-		update : function(req, res){
-			routeUtils.update(req, res, experimentsImpl);
-		},
-			
-		search : function(req, res){
-			routeUtils.search(req, res, experimentsImpl);
-		}
-	}
-});
+	app.get('/api/experiments/', function(req, res){
+		routeUtils.search(req, res, experimentsImpl);
+	});
+};
 
-module.exports = new ExperimentsRoute();
+module.exports = function(app){
+	return new ExperimentsRoute(app);
+};

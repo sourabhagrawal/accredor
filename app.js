@@ -22,19 +22,18 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.set('view options', {layout : false});
   app.use(express.favicon());
-//  app.use(express.logger('dev'));
+  app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser('sutta'));
   app.use(express.session());
-  app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use(log4js.connectLogger(logger));
-  app.use(function(err, req, res, next) {
-	  // only handle `next(err)` calls
-//	  logger.error(err);
+  app.use(function(req, res, next){
+	  logger.debug(req.method + " request on " + req.url);
 	  next();
   });
+  app.use(app.router);
+//  app.use(log4js.connectLogger(logger));
   app.use(function(req, res, next){
 		request(req.session.url + req.url, function (error, response, body) {
 			  if (!error && response.statusCode == 200) {
@@ -48,6 +47,12 @@ app.configure(function(){
 			  }
 			});
 	});
+  app.use(function(err, req, res, next) {
+	  // only handle `next(err)` calls
+	  console.log("Error occurred");
+	  logger.error(err);
+	  next();
+  });
 });
 
 /**
@@ -61,9 +66,7 @@ app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);
 
 
-var experimentsRoutes = require('./routes/experiments_route');
-app.get('/api/experiments/:id', experimentsRoutes.getById);
-app.post('/api/experiments/', experimentsRoutes.create);
+require('./routes')(app);
 
 
 /**
