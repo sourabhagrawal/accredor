@@ -18,7 +18,6 @@ var ExperimentsImpl = comb.define(impl,{
 		create : function(params, callback){
 			var ref = this;
 			var m = this._getSuper();
-			var origArgs = arguments;
 			
 			this.search(function(err,data){
 				// If error occurred
@@ -33,11 +32,6 @@ var ExperimentsImpl = comb.define(impl,{
 					m.call(ref, params, callback);
 				}
 			}, 'userId:eq:' + params.userId + '___name:eq:' + params.name);
-		},
-		
-		foo : function(callback){
-			console.log("In foo child");
-			callback(null, null);
 		}
 	}
 });

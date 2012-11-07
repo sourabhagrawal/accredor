@@ -13,11 +13,6 @@ var Impl = comb.define(null,{
 			
             this._dao = options.dao;
 		},
-		
-		foo : function(callback){
-			console.log("In foo");
-			callback(null, null);
-		},
 
 		getById : function(id, callback){
 			var ref = this;
