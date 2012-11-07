@@ -32,6 +32,7 @@ var Impl = comb.define(null,{
 		},
 		
 		create : function(params, callback){
+			logger.debug("In create");
 			var ref = this;
 			this._dao.create(params).then(function(model){
 				callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_CREATED([ref.displayName])));
@@ -83,7 +84,7 @@ var Impl = comb.define(null,{
 			}
 			this._dao.search(filters, start, fetchSize, sortBy, sortDir).then(function(models){
 				var modelsJSON = []; 
-				_.each(ex, function(model){
+				_.each(models, function(model){
 					modelsJSON.push(model.toJSON());
 				});
 				callback(null,response.success(modelsJSON, modelsJSON.length, codes.success.RECORDS_SEARCHED([ref.displayName])));
