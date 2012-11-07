@@ -1,49 +1,43 @@
-//var log4js = require('log4js');
-//log4js.loadAppender('file');
-//log4js.addAppender(log4js.appenders.file('logs/cheese.log'), 'cheese');
-//
-//var logger = log4js.getLogger('cheese');
-//logger.setLevel('INFO');
+var comb = require('comb');
 
-//var logger = require('./lib/LogFactory').create("test");
-//
-//logger.trace('Entering cheese testing');
-//logger.debug('Got cheese.');
-//logger.info('Cheese is Gouda.');
-//logger.warn('Cheese is quite smelly.');
-//logger.error('Cheese is too ripe!');
-//logger.fatal('Cheese was breeding ground for listeria.');
-
-//var comb = require('comb');
-//
-//var Animal = comb.define(null, {
-//	instance : {
-//		constructor : function(options){
-//			console.log(options);
-//			console.log("Animal Created");
-//		}
-//	}
-//});
-//
-//var Dog = comb.define(Animal, {
-//	instance : {
-//		constructor : function(options){
-//			console.log("Dog Created");
-//			options.color = "Black";
-//			console.log(arguments);
-//			this._super(arguments);
-//		}
-//	}
-//});
-//
-//new Dog({name : "Tom"});
-
-var foo = function(){
-    console.log("hello");
+var foo = function(callback){
+	callback("Hello World!");
 };
 
-foo.toString = function(){
-    return "Modified toString";
-};
+var Animal = comb.define(null, {
+	instance : {
+		constructor : function(options){
+			options = options || {};
+			this._super(arguments);
+			
+			this._type = options.type;
+		},
+		
+		desc : function(){
+			return "It is a " + (this._type || "Animal");
+		}
+	}
+});
 
-console.log(foo.toString());
+var Monkey = comb.define(Animal, {
+	instance : {
+		contructor : function(options){
+			options = options || {};
+			options.type = 'Mammal';
+			this._super(arguments);
+		},
+		
+		desc : function(){
+			var ref = this;
+			foo(function(str){
+				console.log(ref._super() + ". It can jump on trees");
+			});
+		}
+	}
+});
+
+var aAnimal = new Animal();
+var aMonkey = new Monkey();
+
+console.log(aAnimal.desc());
+console.log(aMonkey.desc());

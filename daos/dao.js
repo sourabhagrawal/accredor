@@ -21,8 +21,8 @@ var DAO = comb.define(null,{
 			return this._model.save(params);
 		},
 		
-		update : function(id, params){
-			return this._model.update(params, {id : id});
+		update : function(model, params){
+			return model.update(params);
 		},
 		
 		/**

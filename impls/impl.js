@@ -13,6 +13,11 @@ var Impl = comb.define(null,{
 			
             this._dao = options.dao;
 		},
+		
+		foo : function(callback){
+			console.log("In foo");
+			callback(null, null);
+		},
 
 		getById : function(id, callback){
 			var ref = this;
@@ -32,7 +37,7 @@ var Impl = comb.define(null,{
 		},
 		
 		create : function(params, callback){
-			logger.debug("In create");
+			logger.debug("Entering create");
 			var ref = this;
 			this._dao.create(params).then(function(model){
 				callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_CREATED([ref.displayName])));
@@ -40,16 +45,31 @@ var Impl = comb.define(null,{
 				logger.error(error);
 				callback(response.error(codes.error.CREATION_FAILED([ref.displayName])));
 			});
+			logger.debug("Exiting create");
 		},
 		
 		update : function(id, params, callback){
 			var ref = this;
-			return this._dao.update(id, params).then(function(model){
-				callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
-			}, function(error){
-				logger.error(error);
-				callback(response.error(codes.error.UPDATION_FAILED([ref.displayName, id])));
-			});
+			if(id == null){
+				callback(response.error(codes.error.ID_NULL));
+			}else{
+				this._dao.getById(id).then(function(model){
+					if(model == undefined){
+						callback(response.error(codes.error.RECORD_WITH_ID_NOT_EXISTS([ref.displayName, id])));
+					}else{
+						ref._dao.update(model, params).then(function(m){
+							callback(null,response.success(m.toJSON(), 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
+						}, function(error){
+							logger.error(error);
+							callback(response.error(codes.error.UPDATION_FAILED([ref.displayName, id])));
+						});
+					}
+				}, function(error){
+					logger.error(error);
+					callback(response.error(codes.error.RECORD_WITH_ID_NOT_FETCHED([ref.displayName, id])));
+				});
+			}
+			
 		},
 		
 		/**

@@ -17,11 +17,10 @@ var ExperimentsImpl = comb.define(impl,{
 		},
 		create : function(params, callback){
 			var ref = this;
+			var m = this._getSuper();
 			var origArgs = arguments;
 			
 			this.search(function(err,data){
-				console.log(err);
-				
 				// If error occurred
 				if(err){
 					callback(err);
@@ -31,14 +30,14 @@ var ExperimentsImpl = comb.define(impl,{
 				if(data && data.totalCount > 0){ // Records with same User Id and Name can not exist 
 					callback(response.error(codes.error.EXPERIMENT_USER_ID_NAME_EXISTS()));
 				}else{
-					ref._dao.create(params).then(function(model){
-						callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_CREATED([ref.displayName])));
-					}, function(error){
-						logger.error(error);
-						callback(response.error(codes.error.CREATION_FAILED([ref.displayName])));
-					});
+					m.call(ref, params, callback);
 				}
 			}, 'userId:eq:' + params.userId + '___name:eq:' + params.name);
+		},
+		
+		foo : function(callback){
+			console.log("In foo child");
+			callback(null, null);
 		}
 	}
 });
