@@ -1,5 +1,5 @@
 var routeUtils = require('./route_utils.js');
-var logger = require('./../lib/log_factory').create("variations_route");
+var logger = require(LIB_DIR + 'log_factory').create("variations_route");
 var variationsImpl = require('../impls/variations_impl');
 
 var VariationsRoute = function(app){

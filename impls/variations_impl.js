@@ -18,7 +18,6 @@ var VariationsImpl = comb.define(impl,{
 		create : function(params, callback){
 			var ref = this;
 			var m = this._getSuper();
-			console.log("In variations create");
 			this.search(function(err,data){
 				// If error occurred
 				if(err){
