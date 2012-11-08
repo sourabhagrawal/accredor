@@ -1,24 +1,24 @@
 var comb = require('comb');
 var _ = require('underscore');
-var logger = require(LIB_DIR + 'log_factory').create("experiments_impl");
+var logger = require(LIB_DIR + 'log_factory').create("variations_impl");
 var impl = require('./impl.js');
 var emitter = require(LIB_DIR + 'emitter');
-var experimentsDao = require(DAOS_DIR + 'experiments_dao');
+var variationsDao = require(DAOS_DIR + 'variations_dao');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
 
-var ExperimentsImpl = comb.define(impl,{
+var VariationsImpl = comb.define(impl,{
 	instance : {
-		displayName : "Experiment",
+		displayName : "Variation",
 		constructor : function(options){
 			options = options || {};
-			options.dao = experimentsDao;
+			options.dao = variationsDao;
             this._super([options]);
 		},
 		create : function(params, callback){
 			var ref = this;
 			var m = this._getSuper();
-			
+			console.log("In variations create");
 			this.search(function(err,data){
 				// If error occurred
 				if(err){
@@ -26,12 +26,12 @@ var ExperimentsImpl = comb.define(impl,{
 					return;
 				}
 				
-				if(data && data.totalCount > 0){ // Records with same User Id and Name can not exist 
-					callback(response.error(codes.error.EXPERIMENT_USER_ID_NAME_EXISTS()));
+				if(data && data.totalCount > 0){ // Records with same Experiment Id and Name can not exist 
+					callback(response.error(codes.error.VARIATION_EXPERIMENT_ID_NAME_EXISTS()));
 				}else{
 					m.call(ref, params, callback);
 				}
-			}, 'userId:eq:' + params.userId + '___name:eq:' + params.name);
+			}, 'experimentId:eq:' + params.experimentId + '___name:eq:' + params.name);
 		},
 		
 		update : function(id, params, callback){
@@ -53,11 +53,11 @@ var ExperimentsImpl = comb.define(impl,{
 							}
 							
 							if(data && data.totalCount > 0){ // Records with same User Id and Name can not exist 
-								callback(response.error(codes.error.EXPERIMENT_USER_ID_NAME_EXISTS()));
+								callback(response.error(codes.error.VARIATION_EXPERIMENT_ID_NAME_EXISTS()));
 							}else{
 								m.call(ref, id, params, callback);
 							}
-						}, 'userId:eq:' + (params.userId || model.userId) + '___name:eq:' + (params.name || model.name));
+						}, 'experimentId:eq:' + (params.experimentId || model.experimentId) + '___name:eq:' + (params.name || model.name));
 					}
 				}, function(error){
 					callback(response.error(codes.error.RECORD_WITH_ID_NOT_FETCHED([ref.displayName, id])));
@@ -68,23 +68,4 @@ var ExperimentsImpl = comb.define(impl,{
 	}
 });
 
-module.exports = new ExperimentsImpl();
-
-//emitter.on('modelsSynced', function(event){
-//	logger.debug("on Synced");
-//	var instance = new ExperimentsImpl();
-//	instance.getById(10, function(error, ex){
-//		console.log(error);
-//		console.log(ex);
-//	});
-//});
-
-//emitter.on('modelsSynced', function(event){
-//	logger.debug("on Synced");
-//	var instance = new ExperimentsImpl();
-//	instance.search("id:in:3,4___id:gt:2").then(function(ex){
-//		_.each(ex, function(model){
-//			console.log(model.toJSON());
-//		});
-//	});
-//});
+module.exports = new VariationsImpl();

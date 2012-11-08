@@ -8,8 +8,9 @@ var path = require('path');
 var request = require('request');
 var CONFIG = require('config');
 var log4js = require('log4js');
+var constants = require('./lib/constants');
 
-var logger = require('./lib/log_factory').create("app");
+var logger = require(LIB_DIR + 'log_factory').create("app");
 
 /**
  * Initialize App

@@ -1,6 +1,6 @@
 var routeUtils = require('./route_utils.js');
-var logger = require('./../lib/log_factory').create("experiments_route");
-var experimentsImpl = require('../impls/experiments_impl');
+var logger = require(LIB_DIR + 'log_factory').create("experiments_route");
+var experimentsImpl = require(IMPLS_DIR + 'experiments_impl');
 
 var ExperimentsRoute = function(app){
 	app.get('/api/experiments/:id', function(req, res){

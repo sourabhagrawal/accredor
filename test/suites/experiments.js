@@ -1,8 +1,8 @@
 var vows = require('vows'),
 	assert = require('assert');
-var testUtils = require('./utils');
-var codes = require('../lib/codes');
-var client = require('../clients/experiments_client');
+var testUtils = require('../utils');
+var codes = require('../../lib/codes');
+var client = require('../../clients/experiments_client');
 
 var id;
 vows.describe("The experiments API")
@@ -80,6 +80,12 @@ vows.describe("The experiments API")
 			client.update(1000, {name : 'abc'}, this.callback);
 		},
 		'should fail with an error' : testUtils.assertFailure(codes.error.RECORD_WITH_ID_NOT_EXISTS)
-	}
+	},
+	'A PUT on Experiment with Id and reduntant name' : {
+		topic : function(){
+			client.update(id, {name : 'abcd'}, this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.EXPERIMENT_USER_ID_NAME_EXISTS)
+	},
 })
 .export(module);

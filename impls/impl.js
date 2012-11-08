@@ -1,8 +1,8 @@
 var comb = require('comb');
 var _ = require('underscore');
-var logger = require('./../lib/log_factory').create("impl");
-var response = require('../lib/response');
-var codes = require('../lib/codes');
+var logger = require(LIB_DIR + 'log_factory').create("impl");
+var response = require(LIB_DIR + 'response');
+var codes = require(LIB_DIR + 'codes');
 
 var Impl = comb.define(null,{
 	instance : {

@@ -1,9 +1,9 @@
 var _ = require('underscore');
-var logger = require('./../lib/log_factory').create("route");
+var logger = require(LIB_DIR + 'log_factory').create("route");
 
 var RouteUtils = new function(){
 	var sendRes = function(req, res, body){
-		logger.debug(JSON.stringify(body));
+		logger.debug(req.method + " request to URL : " + req.url + " responded with " + JSON.stringify(body));
 		res.send(body);
 	};
 	

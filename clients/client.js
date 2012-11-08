@@ -1,6 +1,7 @@
 var comb = require('comb');
-var logger = require('./../lib/log_factory').create("route");
 var request = require('request');
+var constants = require('../lib/constants');
+var logger = require(LIB_DIR + 'log_factory').create("route");
 
 var Client = comb.define(null,{
 	instance : {

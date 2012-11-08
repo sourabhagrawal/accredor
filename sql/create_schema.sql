@@ -16,6 +16,7 @@ CREATE TABLE `experiments` (
 CREATE TABLE `variations` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `experiment_id` BIGINT NOT NULL,
+  `name` varchar(255) NOT NULL,
   `percent` FLOAT NOT NULL,
   `script` TEXT NOT NULL DEFAULT '',
   `is_disabled` TINYINT NOT NULL DEFAULT 0,
