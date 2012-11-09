@@ -15,6 +15,8 @@
     "log4js" : "*",
     "patio" : "*",
     "comb" : "*",
-    "underscore" : "*"
+    "underscore" : "*",
+    "passport" : "*",
+    "passport-local" : "*"
   }
 }

@@ -5,10 +5,20 @@ html(lang='en')
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 		include bootstrap_js
 	body
+		a.btn(href="#loginBox", role="button", data-toggle="modal", data-remote="/login") LOGIN
+		div.modal.hide.fade(id="loginBox", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+			div.modal-header
+				button.close(type="button", data-dismiss="modal", aria-hidden="true") ×
+				h3(id="myModalLabel") &nbsp;
+			div.modal-body
+			div.modal-footer
+				button.btn(data-dismiss="modal", aria-hidden="true") Close
+				button.btn.btn-primary LOGIN
 		div.well.container
 			form.form-inline(action="/bench")
 				input.input-large(type='text', id="url-box", name="url", placeholder="Your URL") 
 				&nbsp;
 				button.btn.btn-primary Submit
+		a(href='/logout') Logout
 	script(src="/javascripts/index.js")
 	
