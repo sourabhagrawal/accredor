@@ -17,6 +17,7 @@
     "comb" : "*",
     "underscore" : "*",
     "passport" : "*",
-    "passport-local" : "*"
+    "passport-local" : "*",
+    "http-proxy" : "*"
   }
 }
