@@ -9,46 +9,34 @@ var path = require('path');
 var request = require('request');
 var CONFIG = require('config');
 var log4js = require('log4js');
-var _ = require('underscore');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 
 var constants = require('./lib/constants');
 var logger = require(LIB_DIR + 'log_factory').create("app");
+var auth = require(LIB_DIR + 'auth');
 
 /**
  * Initialize App
  */
 var app = express();
 
+auth.init();
+
 var port = process.env.PORT || 10000;
 
-passport.use(new LocalStrategy(
-	function(username, password, done) {
-		console.log("Will authenticate here");
-		/**
-		 * TODO Write a real authenticate function
-		 */
-		done(null, {id : Math.floor((Math.random()*1000)+1)});
-//		User.findOne({ username: username }, function (err, user) {
-//			if (err) { return done(err); }
-//			if (!user) { return done(null, false); }
-//			if (!user.verifyPassword(password)) { return done(null, false); }
-//			return done(null, user);
-//		});
+var apiProxy = httpProxy.createServer(function (req, res, proxy) {
+	if(req.user != null){
+		var userId = req.user.id || '';
+		req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
+		proxy.proxyRequest(req, res, {
+			host: 'localhost',
+			port: 10001
+		});
+	}else{
+		res.status(LOGIN_REQUIRED);
+		res.send();
 	}
-));
-
-//define REST proxy options based on logged in user
-passport.serializeUser(function(user, done) {
-	done(null, user);
 });
-
-passport.deserializeUser(function(obj, done) {
-	done(null, obj);
-});
-
-var apiProxy = httpProxy.createServer(10001, 'localhost');
 
 app.configure(function(){
   app.set('port', port);
@@ -63,26 +51,8 @@ app.configure(function(){
   app.use(express.session({secret : 'sutta'}));
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(auth.filter());
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use(function(req, res, next){
-	  logger.debug(req.method + " request on " + req.url);
-	  next();
-  });
-  app.use(function(req, res, next) {
-	  var blackList = [];
-	  var skipAuth = true;
-	  _.each(blackList, function(url){
-		  if(req.url.match(url)){
-			  skipAuth = false;
-		  }
-	  });
-	  if (skipAuth == true || req.isAuthenticated())
-		  return next();
-	  else{
-		  res.status(401);
-		  res.send();
-	  }
-  });
   app.use('/api/', apiProxy);
   app.use(app.router);
 //  app.use(log4js.connectLogger(logger));
@@ -114,6 +84,22 @@ var loginRoute = require('./routes/w3/login');
 
 app.get('/login', loginRoute.index);
 app.post('/login', passport.authenticate('local'), loginRoute.authenticate);
+//app.post('/login', function(req, res, next) {
+//	passport.authenticate('local', function(err, user, info) {
+//		console.log(err);
+//		console.log(user);
+//		console.log(info);
+////		if (err) { return next(err); }
+////		if (!user) {
+////			req.flash('error', info.message);
+////			return res.redirect('/login')
+////		}
+////		req.logIn(user, function(err) {
+////			if (err) { return next(err); }
+////			return res.redirect('/users/' + user.username);
+////		});
+//	})(req, res, next);
+//});
 app.get('/logout', loginRoute.logout);
 
 app.get('/', baseRoute.index);

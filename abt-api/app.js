@@ -32,15 +32,22 @@ app.configure(function(){
   app.use(express.cookieParser('sutta'));
   app.use(express.session({secret : 'sutta'}));
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use(function(req, res, next){
-	  logger.debug(req.method + " request on " + req.url);
-	  next();
-  });
   app.use(function(req, res, next) {
-	  /**
-	   * TODO: Check for Auth header
-	   */
-	  next();
+	  logger.debug(req.method + " request on " + req.url);
+	  if(req.headers.authorization && req.headers.authorization.search('Basic ') === 0) {
+		// fetch login and password
+		var authString = new Buffer(req.headers.authorization.split(' ')[1], 'base64').toString();
+		var tokens = authString.split(':');
+		if(tokens.length == 2){
+			req.user = {
+				id : tokens[0]
+			};
+			next();
+			return;
+		}
+	  }
+	  res.status(LOGIN_REQUIRED);
+	  res.send();
   });
   
   app.use(app.router);

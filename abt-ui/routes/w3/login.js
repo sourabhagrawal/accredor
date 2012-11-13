@@ -1,7 +1,7 @@
 var logger = require(LIB_DIR + 'log_factory').create("login");
 
 exports.authenticate = function(req, res) {
-	res.redirect('/');
+	res.send(req.user);
 };
 
 exports.logout = function(req, res){
