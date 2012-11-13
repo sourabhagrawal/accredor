@@ -4,6 +4,7 @@
  */
 var express = require('express');
 var http = require('http');
+var httpProxy = require('http-proxy');
 var path = require('path');
 var request = require('request');
 var CONFIG = require('config');
@@ -47,6 +48,8 @@ passport.deserializeUser(function(obj, done) {
 	done(null, obj);
 });
 
+var apiProxy = httpProxy.createServer(10001, 'localhost');
+
 app.configure(function(){
   app.set('port', port);
   app.set('views', __dirname + '/views');
@@ -80,7 +83,7 @@ app.configure(function(){
 		  res.send();
 	  }
   });
-  
+  app.use('/api/', apiProxy);
   app.use(app.router);
 //  app.use(log4js.connectLogger(logger));
   app.use(function(req, res, next){

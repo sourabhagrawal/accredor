@@ -3,19 +3,19 @@ var logger = require(LIB_DIR + 'log_factory').create("variations_route");
 var linksImpl = require('../impls/links_impl');
 
 var LinksRoute = function(app){
-	app.get('/api/links/:id', function(req, res){
+	app.get('/links/:id', function(req, res){
 		routeUtils.getById(req, res, linksImpl);
 	});
 	
-	app.post('/api/links/', function(req, res){
+	app.post('/links', function(req, res){
 		routeUtils.create(req, res, linksImpl);
 	});
 	
-	app.put('/api/links/:id', function(req, res){
+	app.put('/links/:id', function(req, res){
 		routeUtils.update(req, res, linksImpl);
 	});
 		
-	app.get('/api/links/', function(req, res){
+	app.get('/links', function(req, res){
 		routeUtils.search(req, res, linksImpl);
 	});
 };

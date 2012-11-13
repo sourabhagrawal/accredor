@@ -33,8 +33,8 @@ $(function($){
 	
 	$("#save").click(function(event){
 		$.ajax({
-			url : '/api/experiments',
-			method : 'post',
+			url : '/api/experiments/',
+			type : 'post',
 			success : function(data){
 				console.log(data);
 			}

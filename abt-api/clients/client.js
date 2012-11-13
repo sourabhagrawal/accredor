@@ -5,6 +5,7 @@ var logger = require(LIB_DIR + 'log_factory').create("route");
 
 var Client = comb.define(null,{
 	instance : {
+		host : 'http://localhost:10001/',
 		constructor : function(options){
 			options = options || {};
 			this._super(arguments);
@@ -14,13 +15,13 @@ var Client = comb.define(null,{
 
 		getById : function(id, callback){
 			request({
-				uri : this.url + id
+				uri : this.host + this.url + '/' + id
 			}, callback);
 		},
 		
 		create : function(params, callback){
 			request({
-				uri : this.url,
+				uri : this.host + this.url,
 				method : 'post',
 				json : params
 			}, callback);
@@ -28,7 +29,7 @@ var Client = comb.define(null,{
 		
 		update : function(id, params, callback){
 			request({
-				uri : this.url + id,
+				uri : this.host + this.url + '/' + id,
 				method : 'put',
 				json : params
 			}, callback);
@@ -36,7 +37,7 @@ var Client = comb.define(null,{
 		
 		search : function(query, start, fetchSize, sortBy, sortDir){
 			request({
-				uri : this.url,
+				uri : this.host + this.url,
 				qs : {
 					q : query,
 					start : start,

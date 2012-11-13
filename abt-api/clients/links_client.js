@@ -6,7 +6,7 @@ var LinksClient = comb.define(client,{
 	instance : {
 		constructor : function(options){
 			options = options || {};
-			options.url = "http://localhost:10001/api/links/";
+			options.url = "links";
             this._super([options]);
 		}
 	}
