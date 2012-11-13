@@ -1,0 +1,125 @@
+[2012-11-13T11:23:01:385 (IST)] INFO  patio.Database       - Executing; DESCRIBE `experiments`
+[2012-11-13T11:23:01:424 (IST)] INFO  patio.Database       - Executing; DESCRIBE `variations`
+[2012-11-13T11:23:01:454 (IST)] INFO  patio.Database       - Executing; DESCRIBE `links`
+[2012-11-13T11:26:24:459 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:471 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:26:24:479 (IST)] INFO  patio.Database       - Executing; INSERT INTO `experiments` (`user_id`, `name`, `created_at`) VALUES (1, 'abcde', '2012-11-13 11:26:24')
+[2012-11-13T11:26:24:489 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:26:24:506 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:26:24:535 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abcd')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:540 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '2') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:544 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:566 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:26:24:581 (IST)] INFO  patio.Database       - Executing; INSERT INTO `experiments` (`user_id`, `name`, `created_at`) VALUES (1, 'abcd', '2012-11-13 11:26:24')
+[2012-11-13T11:26:24:593 (IST)] INFO  patio.Database       - Executing; INSERT INTO `experiments` (`user_id`, `name`, `created_at`) VALUES (2, 'abcde', '2012-11-13 11:26:24')
+[2012-11-13T11:26:24:602 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = 2) LIMIT 1
+[2012-11-13T11:26:24:609 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = 3) LIMIT 1
+[2012-11-13T11:26:24:619 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:26:24:639 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:26:24:642 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:26:24:663 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:26:24:674 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:26:24:678 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:26:24:697 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abc')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:700 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abcd')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:713 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:26:24:725 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:26:24:731 (IST)] INFO  patio.Database       - Executing; UPDATE `experiments` SET `name` = 'abc', `updated_at` = '2012-11-13 11:26:24' WHERE (`id` = 1)
+[2012-11-13T11:26:24:738 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:26:24:742 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:26:24:755 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:762 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:26:24:767 (IST)] INFO  patio.Database       - Executing; INSERT INTO `variations` (`experiment_id`, `name`, `created_at`) VALUES (1, 'abcde', '2012-11-13 11:26:24')
+[2012-11-13T11:26:24:775 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:26:24:782 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:26:24:807 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abcd')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:810 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '2') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:813 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:825 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:26:24:834 (IST)] INFO  patio.Database       - Executing; INSERT INTO `variations` (`experiment_id`, `name`, `created_at`) VALUES (2, 'abcde', '2012-11-13 11:26:24')
+[2012-11-13T11:26:24:844 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = 2) LIMIT 1
+[2012-11-13T11:26:24:852 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:26:24:860 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:26:24:868 (IST)] INFO  patio.Database       - Executing; INSERT INTO `variations` (`experiment_id`, `name`, `created_at`) VALUES (1, 'abcd', '2012-11-13 11:26:24')
+[2012-11-13T11:26:24:877 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = 3) LIMIT 1
+[2012-11-13T11:26:24:886 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:26:24:909 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:26:24:913 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:26:24:940 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:26:24:944 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:26:24:954 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:26:24:987 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abc')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:24:994 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abcd')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:26:25:008 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:26:25:020 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:26:25:026 (IST)] INFO  patio.Database       - Executing; UPDATE `variations` SET `name` = 'abc', `updated_at` = '2012-11-13 11:26:25' WHERE (`id` = 1)
+[2012-11-13T11:26:25:036 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:26:25:042 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:00:582 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:589 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:00:596 (IST)] INFO  patio.Database       - Executing; INSERT INTO `experiments` (`user_id`, `name`, `created_at`) VALUES (1, 'abcde', '2012-11-13 11:27:00')
+[2012-11-13T11:27:00:608 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:27:00:617 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:00:633 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '2') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:646 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abcd')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:650 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:666 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:00:682 (IST)] INFO  patio.Database       - Executing; INSERT INTO `experiments` (`user_id`, `name`, `created_at`) VALUES (2, 'abcde', '2012-11-13 11:27:00')
+[2012-11-13T11:27:00:689 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = 2) LIMIT 1
+[2012-11-13T11:27:00:694 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:00:698 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:00:704 (IST)] INFO  patio.Database       - Executing; INSERT INTO `experiments` (`user_id`, `name`, `created_at`) VALUES (1, 'abcd', '2012-11-13 11:27:00')
+[2012-11-13T11:27:00:710 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = 3) LIMIT 1
+[2012-11-13T11:27:00:716 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:00:731 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:27:00:735 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:00:761 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:27:00:765 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:00:773 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:00:788 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abc')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:793 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE ((`user_id` = '1') AND (`name` = 'abcd')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:802 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:00:812 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:00:816 (IST)] INFO  patio.Database       - Executing; UPDATE `experiments` SET `name` = 'abc', `updated_at` = '2012-11-13 11:27:00' WHERE (`id` = 1)
+[2012-11-13T11:27:00:822 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `experiments` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:27:00:828 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:00:838 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:847 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:00:851 (IST)] INFO  patio.Database       - Executing; INSERT INTO `variations` (`experiment_id`, `name`, `created_at`) VALUES (1, 'abcde', '2012-11-13 11:27:00')
+[2012-11-13T11:27:00:856 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:27:00:870 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:00:887 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '2') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:891 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abcde')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:900 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abcd')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:00:917 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:00:926 (IST)] INFO  patio.Database       - Executing; INSERT INTO `variations` (`experiment_id`, `name`, `created_at`) VALUES (2, 'abcde', '2012-11-13 11:27:00')
+[2012-11-13T11:27:00:933 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = 2) LIMIT 1
+[2012-11-13T11:27:00:938 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:00:943 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:00:950 (IST)] INFO  patio.Database       - Executing; INSERT INTO `variations` (`experiment_id`, `name`, `created_at`) VALUES (1, 'abcd', '2012-11-13 11:27:00')
+[2012-11-13T11:27:00:959 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = 3) LIMIT 1
+[2012-11-13T11:27:00:967 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:00:982 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:27:00:985 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:01:019 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:01:022 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:27:01:025 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:01:051 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abc')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:01:054 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE ((`experiment_id` = '1') AND (`name` = 'abcd')) ORDER BY `id` DESC LIMIT 10
+[2012-11-13T11:27:01:067 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:01:080 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:01:086 (IST)] INFO  patio.Database       - Executing; UPDATE `variations` SET `name` = 'abc', `updated_at` = '2012-11-13 11:27:01' WHERE (`id` = 1)
+[2012-11-13T11:27:01:093 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `variations` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:27:01:100 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:01:112 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:01:120 (IST)] INFO  patio.Database       - Executing; INSERT INTO `links` (`experiment_id`, `url`, `created_at`) VALUES (1, 'http://google.com', '2012-11-13 11:27:01')
+[2012-11-13T11:27:01:127 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `links` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:27:01:134 (IST)] INFO  patio.Database       - Executing; COMMIT
+[2012-11-13T11:27:01:154 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `links` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:27:01:159 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `links` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:01:184 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `links` WHERE (`id` = '1000') LIMIT 1
+[2012-11-13T11:27:01:195 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `links` WHERE (`id` = '1') LIMIT 1
+[2012-11-13T11:27:01:207 (IST)] INFO  patio.Database       - Executing; BEGIN
+[2012-11-13T11:27:01:212 (IST)] INFO  patio.Database       - Executing; UPDATE `links` SET `url` = 'http://yahoo.com', `updated_at` = '2012-11-13 11:27:01' WHERE (`id` = 1)
+[2012-11-13T11:27:01:217 (IST)] INFO  patio.Database       - Executing; SELECT * FROM `links` WHERE (`id` = 1) LIMIT 1
+[2012-11-13T11:27:01:221 (IST)] INFO  patio.Database       - Executing; COMMIT

@@ -1,0 +1,18 @@
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title Yet another AB Testing Framework
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		include bootstrap_js
+	body
+		include login-box
+		a.btn(href="#loginBox", role="button", data-toggle="modal") LOGIN
+		div.well.container
+			form.form-inline(action="/bench")
+				input.input-large(type='text', id="url-box", name="url", placeholder="Your URL") 
+				&nbsp;
+				button.btn.btn-primary Submit
+		a(href='/logout') Logout
+	script(src="/javascripts/init.js")
+	script(src="/javascripts/index.js")
+	
