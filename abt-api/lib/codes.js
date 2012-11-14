@@ -57,9 +57,12 @@ var ErrorCodes = new function(){
 	this.UPDATION_FAILED = status({code : 1105, message : "{1} with id : {2} could not be updated"});
 	this.DELETION_FAILED = status({code : 1106, message : "{1} with id : {2} could not be deleted"});
 	this.SEARCH_FAILED = status({code : 1107, message : "Search on {1}s could not be completed"});
+	this.FIELD_REQUIRED = status({code : 1108, message : "{1} can not be empty"});
 	
 	this.EXPERIMENT_USER_ID_NAME_EXISTS = status({code : 1201, message : "Experiment with this Name already exists"});
 	this.VARIATION_EXPERIMENT_ID_NAME_EXISTS = status({code : 1301, message : "Variation with this Name already exists for this experiment"});
+	this.USER_EMAIL_EXISTS = status({code : 1501, message : "This email is already registered"});
+	this.USER_EMAIL_CANT_BE_CHANGED = status({code : 1502, message : "The email can not be changed"});
 };
 
 exports.success = SuccessCodes;

@@ -54,7 +54,11 @@ var ModelsFactory = comb.define(null,{
 			
 			this.Users = patio.addModel("Users",{
 				plugins:[patio.plugins.ValidatorPlugin],
-            	pre:{
+				static : {
+			        typecastOnLoad : false,
+			        typecastOnAssignment : false
+			    },
+				pre:{
                     "save":function(next){
                         this.createdAt = new Date();
                         next();
@@ -63,6 +67,12 @@ var ModelsFactory = comb.define(null,{
                         this.updatedAt = new Date();
                         next();
                     }
+                },
+                post : {
+                	load : function(next){
+                		this.password = null;
+                		next();
+                	}
                 }
             }).oneToMany("Experiments",{key : "experiment_id"});
 			this.Users.validate("email").isEmail();
