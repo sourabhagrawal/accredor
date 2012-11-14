@@ -14,8 +14,32 @@ task('createDB', function (dbUser, dbName) {
   	});
 });
 
+desc('This will create the seed data');
+task('createData', function (dbUser, dbName) {
+	var t = jake.Task['createDB'];
+	t.addListener('complete', function () {
+		console.log('Finished executing createDB');
+		
+		jake.exec(['mysql -u' + dbUser + ' ' + dbName + ' < sql/seed.sql'], function () {
+	    	console.log('Data recreated');
+	    	complete();
+	  	}, {
+	  		printStdout: true,
+	  		printStderr : true
+	  	});
+		
+		complete();
+  	});
+	
+	// Kick off foo:baz
+  	t.invoke.apply(t, [dbUser,dbName]);
+});
+
 desc('This will execute all the tests.');
-task('test',['createDB[root,abt]'], {async: true}, function () {
+task('test', ['createDB[root,abt]'], {async: true}, function () {
+	var t = jake.Task['createData'].invoke();
+	t.invoke.apply(t, [root,abt]);
+	
 	jake.exec(['vows test/suites/* --spec'], function () {
     	console.log('All tests passed.');
     	complete();

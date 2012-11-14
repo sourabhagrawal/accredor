@@ -15,7 +15,10 @@ var Client = comb.define(null,{
 
 		getById : function(id, callback){
 			request({
-				uri : this.host + this.url + '/' + id
+				uri : this.host + this.url + '/' + id,
+				headers : {
+					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+				}
 			}, callback);
 		},
 		
@@ -23,6 +26,9 @@ var Client = comb.define(null,{
 			request({
 				uri : this.host + this.url,
 				method : 'post',
+				headers : {
+					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+				},
 				json : params
 			}, callback);
 		},
@@ -31,6 +37,9 @@ var Client = comb.define(null,{
 			request({
 				uri : this.host + this.url + '/' + id,
 				method : 'put',
+				headers : {
+					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+				},
 				json : params
 			}, callback);
 		},
@@ -38,6 +47,9 @@ var Client = comb.define(null,{
 		search : function(query, start, fetchSize, sortBy, sortDir){
 			request({
 				uri : this.host + this.url,
+				headers : {
+					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+				},
 				qs : {
 					q : query,
 					start : start,

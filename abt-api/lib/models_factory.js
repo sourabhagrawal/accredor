@@ -21,7 +21,8 @@ var ModelsFactory = comb.define(null,{
                     }
                 }
             }).oneToMany("Variations",{key : "experiment_id"})
-				.oneToMany("Links",{key : "experiment_id"});
+				.oneToMany("Links",{key : "experiment_id"})
+				.manyToOne("Users",{key : "user_id"});;
 			
             this.Variations = patio.addModel("Variations",{
             	pre:{
@@ -50,6 +51,21 @@ var ModelsFactory = comb.define(null,{
                 }
             }).manyToOne("Experiments",{key : "experiment_id"});
 			this.Links.validate("url").isUrl();
+			
+			this.Users = patio.addModel("Users",{
+				plugins:[patio.plugins.ValidatorPlugin],
+            	pre:{
+                    "save":function(next){
+                        this.createdAt = new Date();
+                        next();
+                    },
+                    "update" : function(next){
+                        this.updatedAt = new Date();
+                        next();
+                    }
+                }
+            }).oneToMany("Experiments",{key : "experiment_id"});
+			this.Users.validate("email").isEmail();
 			
             patio.syncModels().then(function(){
             	logger.debug("synced");
