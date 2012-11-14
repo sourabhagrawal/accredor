@@ -67,16 +67,7 @@ var Impl = comb.define(null,{
 			
 		},
 		
-		/**
-		 * 
-		 * @param query 'field1:op1:value1___field2:op2:value2'
-		 * @param start Defaults to 0
-		 * @param fetchSize Defaults to 10. if == -1 return all 
-		 * @param sortBy Defaults to id
-		 * @param sortDir Defaults to DESC
-		 */
-		search : function(callback, query, start, fetchSize, sortBy, sortDir){
-			var ref = this;
+		parseSearchQuery : function(query){
 			var filters = [];
 			if(query != null){
 				var tokens = query.split('___');
@@ -97,6 +88,21 @@ var Impl = comb.define(null,{
 					filters.push(filter);
 				});
 			}
+			
+			return filters;
+		},
+		
+		/**
+		 * 
+		 * @param query 'field1:op1:value1___field2:op2:value2'
+		 * @param start Defaults to 0
+		 * @param fetchSize Defaults to 10. if == -1 return all 
+		 * @param sortBy Defaults to id
+		 * @param sortDir Defaults to DESC
+		 */
+		search : function(callback, query, start, fetchSize, sortBy, sortDir){
+			var ref = this;
+			var filters = this.parseSearchQuery(query);
 			this._dao.search(filters, start, fetchSize, sortBy, sortDir).then(function(models){
 				var modelsJSON = []; 
 				_.each(models, function(model){

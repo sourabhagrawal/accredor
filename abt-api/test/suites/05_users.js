@@ -93,5 +93,30 @@ vows.describe("The users API")
 		},
 		'should fail with an error' : testUtils.assertFailure(codes.error.USER_EMAIL_CANT_BE_CHANGED)
 	},
+}).addBatch({
+	'A POST on User authenticate' : {
+		topic : function(){
+			client.authenticate('xyz@abc.com', 'abcpqr', this.callback);
+		},
+		'should authenticate the user' : testUtils.assertSuccess,
+	},
+	'A PUT on User authenticate with empty email' : {
+		topic : function(){
+			client.authenticate(null, 'abcpqr', this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.EMAIL_OR_PASSWORD_NULL)
+	},
+	'A PUT on User authenticate with empty password' : {
+		topic : function(){
+			client.authenticate('xyz@abc.com', null, this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.EMAIL_OR_PASSWORD_NULL)
+	},
+	'A PUT on User authenticate with wrong email and password combination' : {
+		topic : function(){
+			client.authenticate('tata@xyz.com', 'abcpqr', this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.EMAIL_OR_PASSWORD_INCORRECT)
+	},
 })
 .export(module);

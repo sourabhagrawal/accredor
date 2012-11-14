@@ -25,17 +25,14 @@ auth.init();
 var port = process.env.PORT || 10000;
 
 var apiProxy = httpProxy.createServer(function (req, res, proxy) {
-	if(req.user != null){
-		var userId = req.user.id || '';
-		req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
-		proxy.proxyRequest(req, res, {
-			host: 'localhost',
-			port: 10001
-		});
-	}else{
-		res.status(LOGIN_REQUIRED);
-		res.send();
-	}
+	var user = req.user || {};
+	var userId = user.id || 'dummy_login';
+	req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
+	
+	proxy.proxyRequest(req, res, {
+		host: 'localhost',
+		port: 10001
+	});
 });
 
 app.configure(function(){

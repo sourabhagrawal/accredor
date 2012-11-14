@@ -6,6 +6,7 @@ var logger = require(LIB_DIR + 'log_factory').create("route");
 var Client = comb.define(null,{
 	instance : {
 		host : 'http://localhost:10001/',
+		auth : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo=',
 		constructor : function(options){
 			options = options || {};
 			this._super(arguments);
@@ -17,7 +18,7 @@ var Client = comb.define(null,{
 			request({
 				uri : this.host + this.url + '/' + id,
 				headers : {
-					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+					authorization : this.auth
 				}
 			}, callback);
 		},
@@ -27,7 +28,7 @@ var Client = comb.define(null,{
 				uri : this.host + this.url,
 				method : 'post',
 				headers : {
-					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+					authorization : this.auth
 				},
 				json : params
 			}, callback);
@@ -38,7 +39,7 @@ var Client = comb.define(null,{
 				uri : this.host + this.url + '/' + id,
 				method : 'put',
 				headers : {
-					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+					authorization : this.auth
 				},
 				json : params
 			}, callback);
@@ -48,7 +49,7 @@ var Client = comb.define(null,{
 			request({
 				uri : this.host + this.url,
 				headers : {
-					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+					authorization : this.auth
 				},
 				qs : {
 					q : query,

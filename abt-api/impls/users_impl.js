@@ -43,7 +43,13 @@ var UsersImpl = comb.define(impl,{
 						params.isVerified = false;
 						params.isDisabled = false;
 						
-						m.call(ref, params, callback);
+						m.call(ref, params, function(err, data){
+							/**
+							 * TODO : Send a verification mail to the email address
+							 */
+							
+							callback(err, data);
+						});
 					}
 				}
 			}, 'email:eq:' + params.email);
@@ -76,6 +82,29 @@ var UsersImpl = comb.define(impl,{
 				}, function(error){
 					callback(response.error(codes.error.RECORD_WITH_ID_NOT_FETCHED([ref.displayName, id])));
 				});
+			}
+		},
+		
+		authenticate : function(email, password, callback){
+			if(email == null || password == null){
+				callback(response.error(codes.error.EMAIL_OR_PASSWORD_NULL()));
+			}else{
+				var md5sum = crypto.createHash('md5');
+				var hash = md5sum.update(password).digest("hex");
+				
+				this.search(function(err, data){
+					// If error occurred
+					if(err){
+						callback(err);
+						return;
+					}
+					
+					if(data && data.totalCount == 1){ // User found
+						callback(null,response.success(data.data[0], 1, codes.success.USER_EMAIL_EXISTS()));
+					}else{
+						callback(response.error(codes.error.EMAIL_OR_PASSWORD_INCORRECT()));
+					}
+				}, 'email:eq:' + email + '___password:eq:' + hash, 0, 1);
 			}
 		}
 	}

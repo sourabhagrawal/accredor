@@ -18,6 +18,16 @@ var UsersRoute = function(app){
 	app.get('/users', function(req, res){
 		routeUtils.search(req, res, usersImpl);
 	});
+	
+	app.post('/users/authenticate', function(req, res){
+		usersImpl.authenticate(req.body.username, req.body.password, function(err, data){
+			if(err == undefined){
+				routeUtils.respond(req, res, data);
+			}else{
+				routeUtils.respond(req, res, err);
+			}
+		});
+	});
 };
 
 module.exports = function(app){

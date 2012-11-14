@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var passport = require('passport');
+var request = require('request');
 var LocalStrategy = require('passport-local').Strategy;
 var logger = require(LIB_DIR + 'log_factory').create("app");
 
@@ -10,14 +11,26 @@ exports.init = function(){
 			/**
 			 * TODO Write a real authenticate function
 			 */
-			done(null, {id : Math.floor((Math.random()*1000)+1)});
-//			done(null, false);
-//				User.findOne({ username: username }, function (err, user) {
-//					if (err) { return done(err); }
-//					if (!user) { return done(null, false); }
-//					if (!user.verifyPassword(password)) { return done(null, false); }
-//					return done(null, user);
-//				});
+			request({
+				uri : 'http://localhost:10001/users/authenticate',
+				method : 'post',
+				headers : {
+					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
+				},
+				json : {
+					username : username,
+					password : password
+				}
+			}, function (err, response, data) {
+				if (err) { return done(err); }
+				if (data && data.status && data.status.code == 1000){
+					logger.debug("Login successfull : " + JSON.stringify(data));
+					done(null, data.data);
+				}else{
+					logger.debug("Login failed : " + data.message);
+					return done(null, false); 
+				}
+			});
 		}
 	));
 
@@ -35,15 +48,25 @@ exports.filter = function(req, res, next){
 	return function(req, res, next) {
 		logger.debug(req.method + " request on " + req.url);
 		var blackList = ['^/api/'];
+//		var whiteList = ['/api/users/authenticate'];
 		var skipAuth = true;
 		_.each(blackList, function(url){
 			if(req.url.match(url)){
 				skipAuth = false;
 			}
 		});
-		if (skipAuth == true || req.isAuthenticated())
+//		_.each(whiteList, function(url){
+//			if(req.url.match(url)){
+//				skipAuth = true;
+//			}
+//		});
+		if(skipAuth == true){
+			logger.debug(req.url + " : skipped authentication");
+		}
+		
+		if (skipAuth == true || req.isAuthenticated()){
 			return next();
-		else{ //Say Unauthorized
+		}else{ //Say Unauthorized
 			res.status(LOGIN_REQUIRED);
 			res.send();
 		}

@@ -46,6 +46,7 @@ var SuccessCodes = new function(){
 	this.RECORD_UPDATED = message("{1} : {2} updated successfully");
 	this.RECORD_DELETED = message("{1} : {2} deleted successfully");
 	this.RECORDS_SEARCHED = message("{1}s searched successfully");
+	this.USER_EMAIL_EXISTS = message("User found");
 };
 
 var ErrorCodes = new function(){
@@ -63,6 +64,8 @@ var ErrorCodes = new function(){
 	this.VARIATION_EXPERIMENT_ID_NAME_EXISTS = status({code : 1301, message : "Variation with this Name already exists for this experiment"});
 	this.USER_EMAIL_EXISTS = status({code : 1501, message : "This email is already registered"});
 	this.USER_EMAIL_CANT_BE_CHANGED = status({code : 1502, message : "The email can not be changed"});
+	this.EMAIL_OR_PASSWORD_NULL = status({code : 1503, message : "Email or Password is empty"});
+	this.EMAIL_OR_PASSWORD_INCORRECT = status({code : 1504, message : "Email or Password is incorrect"});
 };
 
 exports.success = SuccessCodes;
