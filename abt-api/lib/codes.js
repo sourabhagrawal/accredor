@@ -1,16 +1,34 @@
+/**
+ * Module that should serve for all the Success and Error coded to returned from APIs
+ */
 
+/**
+ * @private
+ * Substitute values in a message.
+ * Will throw an error if insufficient number of parameters is provided.
+ * If excess of parameters are provided then it will ignore them
+ * @param message
+ * @param params
+ */
 var substitute = function(message, params){
 	if(params != undefined){
         params.forEach(function(param, index, arr){
+        	// Search for index in message and replace with param. e.g. {1} for index 1
             message = message.replace("{" + (index + 1) + "}", param);
         });
-        if(message.match("{[0-9]*}")){
+        if(message.match("{[0-9]*}")){ // If placeholders left for substitution
             throw "Insufficient substitution values (Provided : " + params.length + ")";
         };
     }
     return message;
 };
 
+/**
+ * Returns a function that would 
+ * 	-> generate the substitued message if called with parameters.
+ * 	-> Return the message itself if converted to string
+ * @param message
+ */
 var message = function(message){
 	var foo = function(options){
 		return substitute(message, options);
@@ -23,6 +41,9 @@ var message = function(message){
 	return foo;
 };
 
+/**
+ * Returns a function that would generate a status code if called with options.
+ */
 var status = function(opts){
 	var foo = function(options){
 		return {code : opts.code, message : substitute(opts.message, options)};
@@ -39,6 +60,9 @@ var status = function(opts){
 	return foo;
 };
 
+/**
+ * Success Codes
+ */
 var SuccessCodes = new function(){
 	this.OPERATION_SUCCESSFULL = "Operation was successfull";
 	this.RECORD_FETCHED = message("{1} : {2} fetched successfully");
@@ -49,6 +73,9 @@ var SuccessCodes = new function(){
 	this.USER_EMAIL_EXISTS = message("User found");
 };
 
+/**
+ * Error codes.
+ */
 var ErrorCodes = new function(){
 	this.UNKNOWN_ERROR = status({code : 1001, message : "An unknown error occurred"});
 	this.ID_NULL = status({code : 1101, message : "Id can not be null"});

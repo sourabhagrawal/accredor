@@ -1,6 +1,7 @@
 var logger = require(LIB_DIR + 'log_factory').create("bucket");
 var redis = require("redis");
 var comb = require("comb");
+var _ = require("underscore");
 
 var Bucket = comb.define(null, {
 	instance : {
@@ -34,7 +35,7 @@ var Bucket = comb.define(null, {
 		},
 		
 		/**
-		 * Add Sub - Buckets
+		 * Add Sub-Buckets
 		 */
 		addBuckets : function(){},
 		

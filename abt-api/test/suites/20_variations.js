@@ -1,8 +1,9 @@
 var vows = require('vows'),
 	assert = require('assert');
 var testUtils = require('../utils');
-var codes = require('../../lib/codes');
-var client = require('../../clients/variations_client');
+var constants = require('../../lib/constants');
+var codes = require(LIB_DIR + 'codes');
+var client = require(CLIENTS_DIR + 'variations_client');
 
 var id;
 vows.describe("The variations API")

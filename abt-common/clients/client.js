@@ -1,11 +1,13 @@
 var comb = require('comb');
 var request = require('request');
-var constants = require('../lib/constants');
-var logger = require(LIB_DIR + 'log_factory').create("route");
+var CONFIG = require('config');
 
+/**
+ * Web clients to be exposed to all modules so that Restfull calls can be made to APIs
+ */
 var Client = comb.define(null,{
 	instance : {
-		host : 'http://localhost:10001/',
+		host : CONFIG.url.api,
 		auth : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo=',
 		constructor : function(options){
 			options = options || {};

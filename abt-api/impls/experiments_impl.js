@@ -69,22 +69,3 @@ var ExperimentsImpl = comb.define(impl,{
 });
 
 module.exports = new ExperimentsImpl();
-
-//emitter.on('modelsSynced', function(event){
-//	logger.debug("on Synced");
-//	var instance = new ExperimentsImpl();
-//	instance.getById(10, function(error, ex){
-//		console.log(error);
-//		console.log(ex);
-//	});
-//});
-
-//emitter.on('modelsSynced', function(event){
-//	logger.debug("on Synced");
-//	var instance = new ExperimentsImpl();
-//	instance.search("id:in:3,4___id:gt:2").then(function(ex){
-//		_.each(ex, function(model){
-//			console.log(model.toJSON());
-//		});
-//	});
-//});

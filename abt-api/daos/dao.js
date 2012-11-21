@@ -4,23 +4,47 @@ var _ = require('underscore');
 var logger = require(LIB_DIR + 'log_factory').create("dao");
 var models = require(LIB_DIR + 'models_factory');
 
+/**
+ * Data Access Object to be extended by entities
+ * It is used to read and store data transparently from and to the database.
+ * This layer has to be dumb to business logic
+ */
 var DAO = comb.define(null,{
 	instance : {
 		constructor : function(options){
 			options = options || {};
 			this._super(arguments);
 			
+			/**
+			 * Bind it with a model
+			 */
             this._model = models[options.model];
 		},
-
+		
+		/**
+		 * To fetch a model through its Id
+		 * @param id
+		 * @returns The model
+		 */
 		getById : function(id){
 			return this._model.findById(id);
 		},
 		
+		/**
+		 * To create a model
+		 * @param params. The JSON of keys and values to be persisted
+		 * @returns The created model
+		 */
 		create : function(params){
 			return this._model.save(params);
 		},
 		
+		/**
+		 * To update a model with new values
+		 * @param model
+		 * @param params
+		 * @returns The updated model
+		 */
 		update : function(model, params){
 			return model.update(params);
 		},

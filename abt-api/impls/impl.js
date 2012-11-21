@@ -4,6 +4,10 @@ var logger = require(LIB_DIR + 'log_factory').create("impl");
 var response = require(LIB_DIR + 'response');
 var codes = require(LIB_DIR + 'codes');
 
+/**
+ * An Implementation to be extended by all entities to provide their implementations
+ * This layer should contain all the business logic.
+ */
 var Impl = comb.define(null,{
 	instance : {
 		displayName : "Record",
@@ -11,9 +15,17 @@ var Impl = comb.define(null,{
 			options = options || {};
 			this._super(arguments);
 			
+			/**
+			 * Bind it with a DAO
+			 */
             this._dao = options.dao;
 		},
 
+		/**
+		 * Fetches a Model by its Id
+		 * @param id
+		 * @param callback
+		 */
 		getById : function(id, callback){
 			var ref = this;
 			if(id == null){
@@ -31,8 +43,12 @@ var Impl = comb.define(null,{
 			}
 		},
 		
+		/**
+		 * Creates a model
+		 * @param params
+		 * @param callback
+		 */
 		create : function(params, callback){
-			logger.debug("Entering create");
 			var ref = this;
 			this._dao.create(params).then(function(model){
 				callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_CREATED([ref.displayName])));
@@ -40,9 +56,14 @@ var Impl = comb.define(null,{
 				logger.error(error);
 				callback(response.error(codes.error.CREATION_FAILED([ref.displayName])));
 			});
-			logger.debug("Exiting create");
 		},
 		
+		/**
+		 * Updates a model given its Id and map of values to be updated
+		 * @param id
+		 * @param params
+		 * @param callback
+		 */
 		update : function(id, params, callback){
 			var ref = this;
 			if(id == null){
@@ -67,6 +88,11 @@ var Impl = comb.define(null,{
 			
 		},
 		
+		/**
+		 * Parses a string query to generate filters
+		 * @param query
+		 * @returns {Array} of filters
+		 */
 		parseSearchQuery : function(query){
 			var filters = [];
 			if(query != null){

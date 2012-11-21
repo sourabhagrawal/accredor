@@ -1,8 +1,15 @@
+/**
+ * Configure patio to connect to Mysql
+ */
+
 var CONFIG = require('config');
 var patio = require("patio");
 var logger = require('./log_factory').create("db_connection");
 var emitter = require('./emitter');
 
+/*
+ * Camelize the Schema names
+ */
 patio.camelize = true;
 
 //if you want logging

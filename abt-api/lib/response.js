@@ -7,10 +7,10 @@ var codes = require('./codes');
  * 1. Success :- data will be constructed as 
  * 		{
  * 			status : {
- * 				code : num, 
+ * 				code : 1000, 
  * 				message : string
  * 			},
- * 			totalCount : num,
+ * 			totalCount : <number of records in data>,
  * 			data : object/array
  * 		}
  * 2. Error :- error will be constructed as
