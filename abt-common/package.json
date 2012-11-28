@@ -6,6 +6,8 @@
     "start": "node app"
   },
   "dependencies": {
-    "comb" : "*"
+    "comb" : "*",
+    "request" : "*",
+    "config" : "*"
   }
 }
