@@ -10,6 +10,7 @@ var RouteUtils = new function(){
 	this.respond = sendRes;
 	
 	this.getById = function(req, res, impl){
+		logger.debug("Entering getById");
 		impl.getById(req.params.id, function(err, data){
 			if(err == undefined){
 				sendRes(req, res, data);
@@ -20,6 +21,7 @@ var RouteUtils = new function(){
 	},
 	
 	this.create = function(req, res, impl){
+		logger.debug("Entering create");
 		impl.create(req.body, function(err, data){
 			if(err == undefined){
 				sendRes(req, res, data);
@@ -30,6 +32,7 @@ var RouteUtils = new function(){
 	},
 	
 	this.update = function(req, res, impl){
+		logger.debug("Entering update");
 		impl.update(req.params.id, req.body, function(err, data){
 			if(err == undefined){
 				sendRes(req, res, data);
@@ -48,6 +51,7 @@ var RouteUtils = new function(){
 	 * @param sortDir Defaults to DESC
 	 */
 	this.search = function(req, res, impl){
+		logger.debug("Entering search");
 		impl.search(function(err, data){
 			if(err == undefined){
 				sendRes(req, res, data);

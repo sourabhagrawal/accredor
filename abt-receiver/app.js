@@ -57,8 +57,9 @@ app.configure(function(){
  * Routes
  */
 app.get('/variations/', require('./routes/variations_receiver').index);
+app.get('/goals/', require('./routes/goals_receiver').index);
 
-require('./subscribers/variations_subscriber').init();
+require('./subscribers/subscriber').init();
 
 
 /**

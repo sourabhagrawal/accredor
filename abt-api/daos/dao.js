@@ -91,17 +91,22 @@ var DAO = comb.define(null,{
 			});
 			var result = this._model.filter(params);
 			
-			if(fetchSize == undefined)
+			if(fetchSize == undefined || fetchSize.trim() == '')
 				fetchSize = 10;
-			start = start != undefined && start >= 0 ? start : 0;
+			start = start != undefined && start.trim() != '' && start >= 0 ? start : 0;
 			
 			if(fetchSize != -1)
 				result = result.limit(fetchSize, start);
 			
-			if(sortBy == undefined){
+			if(sortBy == undefined || sortBy.trim() == ''){
 				sortBy = 'id';
 				sortDir = 'DESC';
 			}
+			
+			if(sortDir == undefined || sortDir.trim() == ''){
+				sortDir = 'DESC';
+			}
+			
 			var sql = patio.sql;
 			result = result.order(sql[sortBy][sortDir.toLowerCase()]());
 			

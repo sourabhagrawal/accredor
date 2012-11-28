@@ -47,7 +47,7 @@ var Client = comb.define(null,{
 			}, callback);
 		},
 		
-		search : function(query, start, fetchSize, sortBy, sortDir){
+		search : function(callback, query, start, fetchSize, sortBy, sortDir){
 			request({
 				uri : this.host + this.url,
 				headers : {
