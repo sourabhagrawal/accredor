@@ -9,46 +9,30 @@ var ModelsFactory = comb.define(null,{
 		constructor : function(){
             this._super(arguments);
             
-            this.Experiments = patio.addModel("Experiments",{
-            	pre:{
-                    "save":function(next){
-                        this.createdAt = new Date();
-                        next();
-                    },
-                    "update" : function(next){
-                        this.updatedAt = new Date();
-                        next();
-                    }
+            var pre = {
+                "save":function(next){
+                    this.createdAt = new Date();
+                    next();
+                },
+                "update" : function(next){
+                    this.updatedAt = new Date();
+                    next();
                 }
+            };
+            
+            this.Experiments = patio.addModel("Experiments",{
+            	pre:pre
             }).oneToMany("Variations",{key : "experiment_id"})
 				.oneToMany("Links",{key : "experiment_id"})
 				.manyToOne("Users",{key : "user_id"});;
 			
             this.Variations = patio.addModel("Variations",{
-            	pre:{
-                    "save":function(next){
-                        this.createdAt = new Date();
-                        next();
-                    },
-                    "update" : function(next){
-                        this.updatedAt = new Date();
-                        next();
-                    }
-                }
+            	pre:pre
             }).manyToOne("Experiments",{key : "experiment_id"});
 			
             this.Links = patio.addModel("Links",{
 				plugins:[patio.plugins.ValidatorPlugin],
-            	pre:{
-                    "save":function(next){
-                        this.createdAt = new Date();
-                        next();
-                    },
-                    "update" : function(next){
-                        this.updatedAt = new Date();
-                        next();
-                    }
-                }
+            	pre:pre
             }).manyToOne("Experiments",{key : "experiment_id"});
 			this.Links.validate("url").isUrl();
 			
@@ -58,16 +42,7 @@ var ModelsFactory = comb.define(null,{
 			        typecastOnLoad : false,
 			        typecastOnAssignment : false
 			    },
-				pre:{
-                    "save":function(next){
-                        this.createdAt = new Date();
-                        next();
-                    },
-                    "update" : function(next){
-                        this.updatedAt = new Date();
-                        next();
-                    }
-                },
+				pre:pre,
                 post : {
                 	load : function(next){
                 		this.password = null;
@@ -76,6 +51,14 @@ var ModelsFactory = comb.define(null,{
                 }
             }).oneToMany("Experiments",{key : "experiment_id"});
 			this.Users.validate("email").isEmail();
+			
+			this.States = patio.addModel("States",{
+            	pre:pre
+            });
+			
+			this.Transitions = patio.addModel("Transitions",{
+            	pre:pre
+            });
 			
             patio.syncModels().then(function(){
             	logger.debug("synced");

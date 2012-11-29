@@ -57,3 +57,32 @@ CREATE TABLE `links` (
   CONSTRAINT fk_links_experiments_experiment_id FOREIGN KEY (experiment_id) REFERENCES experiments(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS transitions;
+DROP TABLE IF EXISTS states;
+
+CREATE TABLE `states` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `entity_name` varchar(256) NOT NULL,
+  `name` varchar(1024) NOT NULL,
+  `is_start_state` TINYINT NOT NULL DEFAULT 0,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `transitions` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `entity_name` varchar(256) NOT NULL,
+  `from_state_id` BIGINT NOT NULL,
+  `to_state_id` BIGINT NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_transitions_states_from_state_id FOREIGN KEY (from_state_id) REFERENCES states(id),
+  CONSTRAINT fk_transitions_states_to_state_id FOREIGN KEY (to_state_id) REFERENCES states(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

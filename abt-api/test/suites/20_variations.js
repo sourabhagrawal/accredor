@@ -1,7 +1,7 @@
 var vows = require('vows'),
 	assert = require('assert');
 var testUtils = require('../utils');
-var constants = require(LIB_DIR + 'constants');
+var constants = require('../../lib/constants');
 var codes = require(LIB_DIR + 'codes');
 var client = require(CLIENTS_DIR + 'variations_client');
 

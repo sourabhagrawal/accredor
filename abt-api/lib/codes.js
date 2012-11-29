@@ -64,12 +64,19 @@ var status = function(opts){
  * Success Codes
  */
 var SuccessCodes = new function(){
+	/**
+	 * Common Success codes
+	 */
 	this.OPERATION_SUCCESSFULL = "Operation was successfull";
 	this.RECORD_FETCHED = message("{1} : {2} fetched successfully");
 	this.RECORD_CREATED = message("{1} created successfully");
 	this.RECORD_UPDATED = message("{1} : {2} updated successfully");
 	this.RECORD_DELETED = message("{1} : {2} deleted successfully");
 	this.RECORDS_SEARCHED = message("{1}s searched successfully");
+	
+	/**
+	 * Sign-up and Authentication related
+	 */
 	this.USER_EMAIL_EXISTS = message("User found");
 };
 
@@ -77,6 +84,9 @@ var SuccessCodes = new function(){
  * Error codes.
  */
 var ErrorCodes = new function(){
+	/**
+	 * Common Error codes
+	 */
 	this.UNKNOWN_ERROR = status({code : 1001, message : "An unknown error occurred"});
 	this.ID_NULL = status({code : 1101, message : "Id can not be null"});
 	this.RECORD_WITH_ID_NOT_EXISTS = status({code : 1102, message : "{1} with id : {2} does not exist"});
@@ -87,12 +97,31 @@ var ErrorCodes = new function(){
 	this.SEARCH_FAILED = status({code : 1107, message : "Search on {1}s could not be completed"});
 	this.FIELD_REQUIRED = status({code : 1108, message : "{1} can not be empty"});
 	
+	/**
+	 * Experiments related
+	 */
 	this.EXPERIMENT_USER_ID_NAME_EXISTS = status({code : 1201, message : "Experiment with this Name already exists"});
+	
+	/**
+	 * Variations related
+	 */
 	this.VARIATION_EXPERIMENT_ID_NAME_EXISTS = status({code : 1301, message : "Variation with this Name already exists for this experiment"});
+	
+	/**
+	 * Sign-up and Authentication related
+	 */
 	this.USER_EMAIL_EXISTS = status({code : 1501, message : "This email is already registered"});
 	this.USER_EMAIL_CANT_BE_CHANGED = status({code : 1502, message : "The email can not be changed"});
 	this.EMAIL_OR_PASSWORD_NULL = status({code : 1503, message : "Email or Password is empty"});
 	this.EMAIL_OR_PASSWORD_INCORRECT = status({code : 1504, message : "Email or Password is incorrect"});
+	
+	/**
+	 * Transitions relates
+	 */
+	this.TRANSITION_NOT_ALLOWED = status({code : 1601, message : "Transition not allowed"});
+	this.STATE_NOT_FOUND = status({code : 1602, message : "State with name : {1} for entity : {2} does not exists"});
+	this.STATE_NOT_START_STATE = status({code : 1603, message : "State with name : {1} for entity : {2} is not the start state"});
+	
 };
 
 exports.success = SuccessCodes;

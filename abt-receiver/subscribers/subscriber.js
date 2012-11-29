@@ -1,5 +1,4 @@
 var logger = require(LIB_DIR + 'log_factory').create("variations_receiver");
-var redis = require("redis");
 var _ = require("underscore");
 
 var ExperimentsBucket = require(BUCKETS_DIR + 'experiments_bucket');

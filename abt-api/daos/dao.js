@@ -91,9 +91,9 @@ var DAO = comb.define(null,{
 			});
 			var result = this._model.filter(params);
 			
-			if(fetchSize == undefined || fetchSize.trim() == '')
+			if(fetchSize == undefined || (_.isString(fetchSize) && fetchSize.trim() == ''))
 				fetchSize = 10;
-			start = start != undefined && start.trim() != '' && start >= 0 ? start : 0;
+			start = start != undefined && (_.isString(fetchSize) && start.trim() != '') && start >= 0 ? start : 0;
 			
 			if(fetchSize != -1)
 				result = result.limit(fetchSize, start);
