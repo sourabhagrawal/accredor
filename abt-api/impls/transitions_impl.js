@@ -32,13 +32,15 @@ var TransitionsImpl = comb.define(impl,{
 		isValidTransition : function(entityName, fromStateName, toStateName, callback){
 			var bus = new Bus();
 			
+			var ref = this;
+			
 			bus.on('start', function(){
 				statesImpl.getByName(entityName, fromStateName, function(err, data){
 					if(err != null){
 						callback(err, null);
 						return;
 					}else{
-						bus.fromState = data.data;
+						bus.fromState = data.data[0];
 						bus.fire('fromStateFound');
 					}
 				});
@@ -50,24 +52,24 @@ var TransitionsImpl = comb.define(impl,{
 						callback(err, null);
 						return;
 					}else{
-						bus.toState = data.data;
+						bus.toState = data.data[0];
 						bus.fire('toStateFound');
 					}
 				});
 			});
 			
 			bus.on('toStateFound', function(){
-				this.search(function(err, data){
+				ref.search(function(err, data){
 					if(err != null){
 						callback(err, null);
 					}else{
 						if(data && data.status && data.status.code == 1000 && data.totalCount == 1){
 							callback(null, data);
 						}else{
-							callback(response.error(codes.error.TRANSITION_NOT_ALLOWED));
+							callback(response.error(codes.error.TRANSITION_NOT_ALLOWED()));
 						}
 					}
-				}, "entityName:eq:" + entityName + "___fromStateId:eq:" + fromStateId + "___toStateId:eq:" + toStateId);
+				}, "entityName:eq:" + entityName + "___fromStateId:eq:" + bus.fromState.id + "___toStateId:eq:" + bus.toState.id);
 			});
 			
 			bus.fire('start');
@@ -75,6 +77,10 @@ var TransitionsImpl = comb.define(impl,{
 		
 		isStartState : function(entityName, stateName, callback){
 			statesImpl.isStartState(entityName, stateName, callback);
+		},
+		
+		getStartState : function(entityName, callback){
+			statesImpl.getStartState(entityName, callback);
 		}
 	}
 });

@@ -101,6 +101,7 @@ var ErrorCodes = new function(){
 	 * Experiments related
 	 */
 	this.EXPERIMENT_USER_ID_NAME_EXISTS = status({code : 1201, message : "Experiment with this Name already exists"});
+	this.EXPERIMENT_USER_ID_CANT_UPDATE = status({code : 1202, message : "Can't update the User of an Experiment"});
 	
 	/**
 	 * Variations related
@@ -121,6 +122,7 @@ var ErrorCodes = new function(){
 	this.TRANSITION_NOT_ALLOWED = status({code : 1601, message : "Transition not allowed"});
 	this.STATE_NOT_FOUND = status({code : 1602, message : "State with name : {1} for entity : {2} does not exists"});
 	this.STATE_NOT_START_STATE = status({code : 1603, message : "State with name : {1} for entity : {2} is not the start state"});
+	this.START_STATE_NOT_FOUND = status({code : 1604, message : "Start state for entity : {1} does not exists"});
 	
 };
 

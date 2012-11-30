@@ -20,6 +20,7 @@ CREATE TABLE `experiments` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `user_id` BIGINT NOT NULL,
   `name` varchar(255) NOT NULL,
+  `status` varchar(32) NOT NULL,
   `is_disabled` TINYINT NOT NULL DEFAULT 0,
   `created_by` varchar(255) NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,

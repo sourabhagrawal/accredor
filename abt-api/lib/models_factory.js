@@ -3,6 +3,7 @@ var patio = require("patio");
 var logger = require('./log_factory').create("models");
 var DB = require('./db_connection');
 var emitter = require('./emitter');
+var entities = require('./entities');
 
 var ModelsFactory = comb.define(null,{
 	instance : {
