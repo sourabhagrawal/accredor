@@ -61,6 +61,10 @@ var ModelsFactory = comb.define(null,{
             	pre:pre
             });
 			
+			this.Emails = patio.addModel("Emails",{
+            	pre:pre
+            });
+			
             patio.syncModels().then(function(){
             	logger.debug("synced");
             	emitter.emit("modelsSynced");

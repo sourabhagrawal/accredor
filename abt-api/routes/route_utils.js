@@ -22,6 +22,9 @@ var RouteUtils = new function(){
 	
 	this.create = function(req, res, impl){
 		logger.debug("Entering create");
+		if(req.body && req.user){
+			req.body.createdBy = req.user.id;
+		}
 		impl.create(req.body, function(err, data){
 			if(err == undefined){
 				sendRes(req, res, data);
@@ -33,6 +36,9 @@ var RouteUtils = new function(){
 	
 	this.update = function(req, res, impl){
 		logger.debug("Entering update");
+		if(req.body && req.user){
+			req.body.updatedBy = req.user.id;
+		}
 		impl.update(req.params.id, req.body, function(err, data){
 			if(err == undefined){
 				sendRes(req, res, data);

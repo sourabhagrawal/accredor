@@ -16,6 +16,7 @@
     "patio" : "*",
     "comb" : "*",
     "underscore" : "*",
-    "vows" : "*"
+    "vows" : "*",
+    "nodemailer" : "*"
   }
 }

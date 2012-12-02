@@ -87,3 +87,21 @@ CREATE TABLE `transitions` (
   CONSTRAINT fk_transitions_states_to_state_id FOREIGN KEY (to_state_id) REFERENCES states(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS emails;
+CREATE TABLE `emails` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `from` varchar(256) NOT NULL,
+  `to` varchar(2048) NOT NULL,
+  `cc` varchar(2048) DEFAULT NULL,
+  `bcc` varchar(2048) DEFAULT NULL,
+  `subject` varchar(2048) NOT NULL,
+  `body` TEXT DEFAULT NULL,
+  `status` varchar(32) NOT NULL,
+  `service` varchar(256) NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

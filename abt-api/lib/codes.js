@@ -78,6 +78,11 @@ var SuccessCodes = new function(){
 	 * Sign-up and Authentication related
 	 */
 	this.USER_EMAIL_EXISTS = message("User found");
+	
+	/**
+	 * Email related
+	 */
+	this.EMAIL_BATCH_UPDATED = message("Email batch update successful");
 };
 
 /**
@@ -117,12 +122,17 @@ var ErrorCodes = new function(){
 	this.EMAIL_OR_PASSWORD_INCORRECT = status({code : 1504, message : "Email or Password is incorrect"});
 	
 	/**
-	 * Transitions relates
+	 * Transitions related
 	 */
 	this.TRANSITION_NOT_ALLOWED = status({code : 1601, message : "Transition not allowed"});
 	this.STATE_NOT_FOUND = status({code : 1602, message : "State with name : {1} for entity : {2} does not exists"});
 	this.STATE_NOT_START_STATE = status({code : 1603, message : "State with name : {1} for entity : {2} is not the start state"});
 	this.START_STATE_NOT_FOUND = status({code : 1604, message : "Start state for entity : {1} does not exists"});
+	
+	/**
+	 * Email related
+	 */
+	this.EMAIL_BATCH_UPDATE_FAILED = status({code : 1701, message : "Batch update for email failed"});
 	
 };
 
