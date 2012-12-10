@@ -35,7 +35,11 @@ $(function($){
 		$.ajax({
 			url : '/api/experiments/',
 			type : 'post',
+			data : {
+				userId : $.cookie("uid")
+			},
 			success : function(data){
+				console.log('Experiment created');
 				console.log(data);
 			}
 		});

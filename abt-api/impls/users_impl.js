@@ -91,7 +91,6 @@ var UsersImpl = comb.define(impl,{
 			}else{
 				var md5sum = crypto.createHash('md5');
 				var hash = md5sum.update(password).digest("hex");
-				
 				this.search(function(err, data){
 					// If error occurred
 					if(err){

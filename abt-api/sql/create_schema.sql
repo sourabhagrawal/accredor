@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS `variations`;
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `experiments`;
+DROP TABLE IF EXISTS `goals`;
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
@@ -56,6 +57,20 @@ CREATE TABLE `links` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT fk_links_experiments_experiment_id FOREIGN KEY (experiment_id) REFERENCES experiments(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `goals` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `type` char(32) NOT NULL,
+  `is_disabled` TINYINT NOT NULL DEFAULT 0,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_goals_users_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS transitions;

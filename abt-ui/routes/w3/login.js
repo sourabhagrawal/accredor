@@ -1,7 +1,9 @@
 var logger = require(LIB_DIR + 'log_factory').create("login");
 
 exports.authenticate = function(req, res) {
-	res.send(req.user);
+	res.cookie('uid', req.user.id);
+	res.cookie('uemail', req.user.email);
+	res.send();
 };
 
 exports.logout = function(req, res){

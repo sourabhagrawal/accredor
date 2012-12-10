@@ -107,11 +107,18 @@ var ErrorCodes = new function(){
 	 */
 	this.EXPERIMENT_USER_ID_NAME_EXISTS = status({code : 1201, message : "Experiment with this Name already exists"});
 	this.EXPERIMENT_USER_ID_CANT_UPDATE = status({code : 1202, message : "Can't update the User of an Experiment"});
+	this.EXPERIMENT_NAME_REQUIRED = status({code : 1203, message : "Experiment Name can not be blank"});
 	
 	/**
 	 * Variations related
 	 */
 	this.VARIATION_EXPERIMENT_ID_NAME_EXISTS = status({code : 1301, message : "Variation with this Name already exists for this experiment"});
+	
+	/**
+	 * Goals Related
+	 */
+	this.GOAL_USER_ID_NAME_EXISTS = status({code : 1401, message : "Goal with this Name already exists"});
+	this.GOAL_USER_ID_CANT_UPDATE = status({code : 1402, message : "Can't update the User of a Goal"});
 	
 	/**
 	 * Sign-up and Authentication related

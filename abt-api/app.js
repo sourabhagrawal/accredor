@@ -9,6 +9,7 @@ var request = require('request');
 var CONFIG = require('config');
 var log4js = require('log4js');
 var _ = require('underscore');
+var expressValidator = require('express-validator');
 
 var constants = require('./lib/constants');
 var logger = require(LIB_DIR + 'log_factory').create("app");
@@ -28,9 +29,8 @@ app.configure(function(){
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
+  app.use(expressValidator);
   app.use(express.methodOverride());
-  app.use(express.cookieParser('sutta'));
-  app.use(express.session({secret : 'sutta'}));
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(function(req, res, next) {
 	  logger.debug(req.method + " request on " + req.url);
@@ -46,6 +46,7 @@ app.configure(function(){
 			return;
 		}
 	  }
+	  logger.info("Authorization Header required");
 	  res.status(LOGIN_REQUIRED);
 	  res.send();
   });

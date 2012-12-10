@@ -28,7 +28,6 @@ var apiProxy = httpProxy.createServer(function (req, res, proxy) {
 	var user = req.user || {};
 	var userId = user.id || 'dummy_login';
 	req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
-	
 	proxy.proxyRequest(req, res, {
 		host: 'localhost',
 		port: 10001
@@ -42,15 +41,15 @@ app.configure(function(){
   app.set('view options', {layout : false});
   app.use(express.favicon());
   app.use(express.logger('dev'));
-  app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('sutta'));
+  app.use(express.cookieParser());
   app.use(express.session({secret : 'sutta'}));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(auth.filter());
   app.use(express.static(path.join(__dirname, 'public')));
   app.use('/api/', apiProxy);
+  app.use(express.bodyParser());
   app.use(app.router);
 //  app.use(log4js.connectLogger(logger));
   app.use(function(req, res, next){

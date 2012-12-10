@@ -2,20 +2,24 @@ var _ = require('underscore');
 var logger = require(LIB_DIR + 'log_factory').create("route");
 
 var RouteUtils = new function(){
-	var sendRes = function(req, res, body){
+	this.respond = function(req, res, body){
 		logger.debug(req.method + " request to URL : " + req.url + " responded with " + JSON.stringify(body));
-		res.send(body);
+		if(body.status && body.status.code == 1000){
+			res.send(body);
+		}else{
+			res.send(500, body);
+		}
 	};
 	
-	this.respond = sendRes;
+	var ref = this;
 	
 	this.getById = function(req, res, impl){
 		logger.debug("Entering getById");
 		impl.getById(req.params.id, function(err, data){
 			if(err == undefined){
-				sendRes(req, res, data);
+				ref.respond(req, res, data);
 			}else{
-				sendRes(req, res, err);
+				ref.respond(req, res, err);
 			}
 		});
 	},
@@ -27,9 +31,9 @@ var RouteUtils = new function(){
 		}
 		impl.create(req.body, function(err, data){
 			if(err == undefined){
-				sendRes(req, res, data);
+				ref.respond(req, res, data);
 			}else{
-				sendRes(req, res, err);
+				ref.respond(req, res, err);
 			}
 		});
 	},
@@ -41,9 +45,9 @@ var RouteUtils = new function(){
 		}
 		impl.update(req.params.id, req.body, function(err, data){
 			if(err == undefined){
-				sendRes(req, res, data);
+				ref.respond(req, res, data);
 			}else{
-				sendRes(req, res, err);
+				ref.respond(req, res, err);
 			}
 		});
 	},
@@ -60,9 +64,9 @@ var RouteUtils = new function(){
 		logger.debug("Entering search");
 		impl.search(function(err, data){
 			if(err == undefined){
-				sendRes(req, res, data);
+				ref.respond(req, res, data);
 			}else{
-				sendRes(req, res, err);
+				ref.respond(req, res, err);
 			}
 		}, req.query.q, req.query.start, req.query.fetchSize, req.query.sortBy, req.query.sortDir);
 	};

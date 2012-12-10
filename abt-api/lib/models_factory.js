@@ -25,7 +25,7 @@ var ModelsFactory = comb.define(null,{
             	pre:pre
             }).oneToMany("Variations",{key : "experiment_id"})
 				.oneToMany("Links",{key : "experiment_id"})
-				.manyToOne("Users",{key : "user_id"});;
+				.manyToOne("Users",{key : "user_id"});
 			
             this.Variations = patio.addModel("Variations",{
             	pre:pre
@@ -36,6 +36,10 @@ var ModelsFactory = comb.define(null,{
             	pre:pre
             }).manyToOne("Experiments",{key : "experiment_id"});
 			this.Links.validate("url").isUrl();
+			
+			this.Goals = patio.addModel("Goals",{
+            	pre:pre
+            }).manyToOne("Users",{key : "user_id"});
 			
 			this.Users = patio.addModel("Users",{
 				plugins:[patio.plugins.ValidatorPlugin],

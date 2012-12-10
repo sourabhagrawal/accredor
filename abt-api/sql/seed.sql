@@ -1,4 +1,5 @@
-INSERT INTO users VALUES(1, 'tata@bata.com', '89a5628c629f8e4e6a0b5b687a5d7817', 1, 0, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+-- Password : admin
+INSERT INTO users VALUES(1, 'tata@bata.com', '21232f297a57a5a743894a0e4a801fc3', 1, 0, 'SYSTEM', 'SYSTEM', NOW(), NOW());
 
 -- Insert States for Experiments
 INSERT INTO `states` values(1, 'experiment', 'created', 1, 'SYSTEM', 'SYSTEM', NOW(), NOW());
