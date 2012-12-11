@@ -4,12 +4,12 @@ html(lang='en')
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 		link(href='lib/codemirror/codemirror.css', rel='stylesheet')
     
-		include bootstrap_js
+		include boot
     
 		script(src="lib/codemirror/codemirror.js")
 		script(src="lib/codemirror/mode/javascript/javascript.js")
 	body
-		include login-box
+		include global-header
 		div.container
 			div.btn-group
 				button.btn(id="undo") Undo
@@ -20,6 +20,4 @@ html(lang='en')
 		div(id="code-container")
 			div(id="code-box")
 		iframe(id="content-frame", style="width:100%; height:100%", src='/fetch?url=#{url}')
-	script(src="/javascripts/utils.js")
-	script(src="/javascripts/init.js")
 	script(src="/javascripts/bench.js")

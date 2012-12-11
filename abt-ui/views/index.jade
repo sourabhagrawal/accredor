@@ -1,19 +1,44 @@
 html(lang='en')
 	head
 		meta(charset='utf-8')
-		title Yet another AB Testing Framework
+		title Yet another AB Testing Tool
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
-		include bootstrap_js
+		include boot
+		
+		script(type="text-template", id="login-box-template")
+			|	<div class="modal hide fade" id="login-box"  tabindex="-1"  role="dialog">
+			|		<div class="modal-header">
+			|			<button class="close" type="button" data-dismiss="modal" aria-hidden="true" />
+			|			<h3><% typeof(mode) == 'undefined' || mode == 'login' ? print('LOGIN') : print('SIGNUP') %></h3>
+			|		</div>
+			|		<div class="modal-body">
+			|			<div class="alert alert-error" id='login-alert' style='display:none;'></div>
+			|			<form class="form-horizontal" id='login-form' action='/login' method='post'>
+			|				<div class="control-group">
+			|					<label class="control-label" for="username">Email Id</label>
+			|					<div class="controls">
+			|						<input type="text" id="email-field" placeholder="Email Id" />
+			|					</div>
+			|				</div>
+			|				<div class="control-group">
+			|					<label class="control-label" for="username">Password</label>
+			|					<div class="controls">
+			|						<input type='password' id='password-field' placeholder="Password" />
+			|					</div>
+			|				</div>
+			|			</form>
+			|		</div>
+			|		<div class="modal-footer">
+			|			<button class="btn btn-link pull-left" id='login-form-forgot-btn'>Forgot Password?</button>
+			|			<button class="btn btn-primary" id='login-form-submit-btn'>LOGIN</button>
+			|		</div>
+			|	</div>
 	body
-		include login-box
-		a.btn(id='login-btn') LOGIN
+		include global-header
 		div.well.container
 			form.form-inline(action="/bench")
 				input.input-large(type='text', id="url-box", name="url", placeholder="Your URL") 
 				&nbsp;
 				button.btn.btn-primary Submit
-		a(href='/logout') Logout
-	script(src="/javascripts/utils.js")
-	script(src="/javascripts/init.js")
 	script(src="/javascripts/index.js")
 	

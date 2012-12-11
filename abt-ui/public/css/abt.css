@@ -6,10 +6,10 @@ input[type="text"], input[type="password"]{
 	width:80%;
 }
 
-#loginBox label{
+#login-box label{
 	width : 80px;
 }
 
-#loginBox .controls{
+#login-box .controls{
 	margin-left : 100px;
 }

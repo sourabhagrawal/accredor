@@ -1,0 +1,12 @@
+div(id='login-box-container')
+div.row
+	div.span2 
+		h1 accredor
+	div.span2.pull-right
+		div.btn-toolbar
+			- if(auth == false){
+				a.btn.btn-primary(id='login-btn') LOGIN
+				a.btn.btn-success(id='signup-btn') SIGNUP
+			- }else{
+				a.btn.btn-primary(href='/logout') Logout
+			- }
