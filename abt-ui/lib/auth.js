@@ -46,18 +46,18 @@ exports.filter = function(req, res, next){
 	return function(req, res, next) {
 		logger.debug(req.method + " request on " + req.url);
 		var blackList = ['^/api/'];
-//		var whiteList = ['/api/users/authenticate'];
+		var whiteList = ['/api/users/signup', '/api/users/forgot'];
 		var skipAuth = true;
 		_.each(blackList, function(url){
 			if(req.url.match(url)){
 				skipAuth = false;
 			}
 		});
-//		_.each(whiteList, function(url){
-//			if(req.url.match(url)){
-//				skipAuth = true;
-//			}
-//		});
+		_.each(whiteList, function(url){
+			if(req.url.match(url)){
+				skipAuth = true;
+			}
+		});
 		if(skipAuth == true){
 			logger.debug(req.url + " : skipped authentication");
 		}

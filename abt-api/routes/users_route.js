@@ -28,6 +28,26 @@ var UsersRoute = function(app){
 			}
 		});
 	});
+	
+	app.post('/users/signup', function(req, res){
+		usersImpl.signup(req.body.username, req.body.password, function(err, data){
+			if(err == undefined){
+				routeUtils.respond(req, res, data);
+			}else{
+				routeUtils.respond(req, res, err);
+			}
+		});
+	});
+	
+	app.post('/users/forgot', function(req, res){
+		usersImpl.forgot(req.body.username, function(err, data){
+			if(err == undefined){
+				routeUtils.respond(req, res, data);
+			}else{
+				routeUtils.respond(req, res, err);
+			}
+		});
+	});
 };
 
 module.exports = function(app){

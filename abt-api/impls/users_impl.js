@@ -7,6 +7,7 @@ var emitter = require(LIB_DIR + 'emitter');
 var usersDao = require(DAOS_DIR + 'users_dao');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
+var emails_impl = require('./emails_impl');
 
 var UsersImpl = comb.define(impl,{
 	instance : {
@@ -47,6 +48,7 @@ var UsersImpl = comb.define(impl,{
 							/**
 							 * TODO : Send a verification mail to the email address
 							 */
+							
 							
 							callback(err, data);
 						});
@@ -103,7 +105,41 @@ var UsersImpl = comb.define(impl,{
 					}else{
 						callback(response.error(codes.error.EMAIL_OR_PASSWORD_INCORRECT()));
 					}
-				}, 'email:eq:' + email + '___password:eq:' + hash, 0, 1);
+				}, 'email:eq:' + email + '___password:eq:' + hash + '___isVerified:eq:1', 0, 1);
+			}
+		},
+		
+		signup : function(email, password, callback){
+			this.create({email : email, password : password}, callback);
+		},
+		
+		forgot : function(email, callback){
+			if(email == null){
+				callback(response.error(codes.error.EMAIL_NULL()));
+			}else{
+				this.search(function(err, data){
+					// If error occurred
+					if(err){
+						callback(err);
+						return;
+					}
+					
+					if(data && data.totalCount == 1){ // User found
+						var algorithm = 'aes256';
+						var key = 'sutta';
+						var text = email + "|" + (new Date());
+						var cipher = crypto.createCipher(algorithm, key);  
+						var encrypted = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
+						logger.debug("encrypted token : " + encrypted);
+						
+						/**
+						 * TODO : Send a recovery email
+						 */
+						callback(null,response.success(data.data[0], 1, codes.success.USER_EMAIL_EXISTS()));
+					}else{
+						callback(response.error(codes.error.EMAIL_DOES_NOT_EXISTS()));
+					}
+				}, 'email:eq:' + email + '___isVerified:eq:1', 0, 1);
 			}
 		}
 	}

@@ -1,29 +1,61 @@
 $(function($){
-	var LoginModel = Backbone.Model.extend({
-	    defaults: {},
-	    login : function(email, password){
-	    	var ref = this;
-	    	$.ajax({
-				url : '/' + this.get('mode'),
+	var ForgotView = Backbone.View.extend({
+		el : $("#login-box-container"),
+		
+		template : _.template($('#forgot-box-template').html()),
+		
+		events : {
+			"click #forgot-submit-btn" : "submit"
+		},
+		
+		render : function(args){
+			this.$el.html(this.template(args));
+			return this;
+		},
+		
+		initialize : function(){
+			this.render();
+			
+			_.bindAll(this, 'submit', 'loginSuccess', 'loginError');
+	        
+	        this.loginBox = $('#login-box');
+	        this.alert = $('#login-alert');
+			this.email = $('#email-field');
+			
+			this.loginBox.modal().css({'width': '360px'});
+		},
+		
+		submit : function(){
+			var email = this.email.val();
+			
+			var ref = this;
+			$.ajax({
+				url : '/api/users/forgot',
 				type : 'post',
 				data : {
 					username : email,
-					password : password
 				},
 				success : function(data, textStatus, jqXHR){
-					ref.trigger('loginSuccess');
+					ref.loginSuccess();
 				},
 				error : function(res, textStatus, errorThrown){
-					if(res.status == 401){
-						ref.trigger('loginError', "Incorrect email or password");
-					}else if(res.status == 500){
-						var data = $.parseJSON(res.responseText);
-						console.log(data.message);
-						ref.trigger('loginError', data.message);
-					}
+					var data = $.parseJSON(res.responseText);
+					console.log(data.message);
+					ref.loginError(data.message);
 				}
 			});
-	    }
+		},
+		
+		loginSuccess: function() {
+			this.undelegateEvents();
+			this.$el.find('.modal-body').html("<p class='text-success'>A password recovery mail has been sent to your email id. Please follow the link in the email to generate a new password.</p>");
+			this.$el.find('.modal-footer').html('<button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>');
+		},
+		
+		loginError: function(msg) {
+			this.alert.html(msg);
+			this.alert.css('display', 'block');
+		}
 	});
 	
 	var LoginBoxView = Backbone.View.extend({
@@ -41,11 +73,9 @@ $(function($){
 		},
 		
 		initialize : function(){
-			this.render({mode : this.model.get('mode')});
+			this.render({mode : this.options.mode});
 			
 			_.bindAll(this, 'submit', 'loginSuccess', 'loginError');
-	        this.model.bind('loginSuccess', this.loginSuccess);
-	        this.model.bind('loginError', this.loginError);
 	        
 	        this.loginBox = $('#login-box');
 	        this.alert = $('#login-alert');
@@ -59,14 +89,39 @@ $(function($){
 			var email = this.email.val();
 			var password = this.password.val();
 			
-			this.model.login(email, password);
+			var ref = this;
+			$.ajax({
+				url : '/' + (this.options.mode == 'login' ? 'login' : 'api/users/signup'),
+				type : 'post',
+				data : {
+					username : email,
+					password : password
+				},
+				success : function(data, textStatus, jqXHR){
+					ref.loginSuccess();
+				},
+				error : function(res, textStatus, errorThrown){
+					if(res.status == 401){
+						ref.loginError("Incorrect email or password");
+					}else if(res.status == 500){
+						var data = $.parseJSON(res.responseText);
+						console.log(data.message);
+						ref.loginError(data.message);
+					}
+				}
+			});
 		},
 		
 		loginSuccess: function() {
-			this.loginBox.modal("hide");
 			this.undelegateEvents();
 			
-			eventBus.trigger('logged_in');
+			if(this.options.mode == 'login'){
+				this.loginBox.modal("hide");
+				eventBus.trigger('logged_in');
+			}else{
+				this.$el.find('.modal-body').html("<p class='text-success'>A verification mail has been sent to your email id. Please follow the link in the email to verify your account.</p>");
+				this.$el.find('.modal-footer').html('<button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>');
+			}
 		},
 		
 		loginError: function(msg) {
@@ -78,11 +133,19 @@ $(function($){
 	eventBus.on('global_header_rendered', function(view){
 		console.log("event heard");
 		$('#login-btn').click(function(event){
-			new LoginBoxView({model : new LoginModel({mode : 'login'})});
+			new LoginBoxView({mode : 'login'});
 		});
 		
 		$('#signup-btn').click(function(event){
-			new LoginBoxView({model : new LoginModel({mode : 'signup'})});
+			new LoginBoxView({mode : 'signup'});
 		});
+		
+		$('#forgot-btn').click(function(event){
+			new ForgotView();
+		});
+	});
+	
+	eventBus.on('open_login_box', function(){
+		new LoginBoxView({mode : 'login'});
 	});
 });

@@ -127,6 +127,8 @@ var ErrorCodes = new function(){
 	this.USER_EMAIL_CANT_BE_CHANGED = status({code : 1502, message : "The email can not be changed"});
 	this.EMAIL_OR_PASSWORD_NULL = status({code : 1503, message : "Email or Password is empty"});
 	this.EMAIL_OR_PASSWORD_INCORRECT = status({code : 1504, message : "Email or Password is incorrect"});
+	this.EMAIL_DOES_NOT_EXISTS = status({code : 1505, message : "This email is not registered"});
+	this.EMAIL_NULL = status({code : 1506, message : "Email is empty"});
 	
 	/**
 	 * Transitions related
