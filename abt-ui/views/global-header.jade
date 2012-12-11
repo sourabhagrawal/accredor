@@ -1,12 +1,51 @@
 div(id='login-box-container')
-div.row
-	div.span2 
-		h1 accredor
-	div.span2.pull-right
-		div.btn-toolbar
-			- if(auth == false){
-				a.btn.btn-primary(id='login-btn') LOGIN
-				a.btn.btn-success(id='signup-btn') SIGNUP
-			- }else{
-				a.btn.btn-primary(href='/logout') Logout
-			- }
+div(id='global-header')
+script(type="text-template", id="login-box-template")
+	|	<div class="modal hide fade" id="login-box"  tabindex="-1"  role="dialog">
+	|		<div class="modal-header">
+	|			<button class="close" type="button" data-dismiss="modal" aria-hidden="true" />
+	|			<h3><% typeof(mode) == 'undefined' || mode == 'login' ? print('LOGIN') : print('SIGNUP') %></h3>
+	|		</div>
+	|		<div class="modal-body">
+	|			<div class="alert alert-error" id='login-alert' style='display:none;'></div>
+	|			<form class="form-horizontal" id='login-form'>
+	|				<div class="control-group">
+	|					<label class="control-label" for="username">Email Id</label>
+	|					<div class="controls">
+	|						<input type="text" id="email-field" placeholder="Email Id" />
+	|					</div>
+	|				</div>
+	|				<div class="control-group">
+	|					<label class="control-label" for="username">Password</label>
+	|					<div class="controls">
+	|						<input type='password' id='password-field' placeholder="Password" />
+	|					</div>
+	|				</div>
+	|			</form>
+	|		</div>
+	|		<div class="modal-footer">
+	|			<% if(typeof(mode) == 'undefined' || mode == 'login'){ %>
+	|				<button class="btn btn-link pull-left" id='login-form-forgot-btn'>Forgot Password?</button>
+	|				<button class="btn btn-primary" id='login-form-submit-btn'>LOGIN</button>
+	|			<% }else{ %>
+	|				<button class="btn btn-success" id='login-form-submit-btn'>SIGNUP</button>
+	|			<% } %>
+	|		</div>
+	|	</div>
+
+script(type="text-template", id="global-header-template")
+	|	<div class="row">
+	|		<div class="span2"> 
+	|			<h1>accredor</h1>
+	|		</div>
+	|		<div class="span2 pull-right">
+	|			<div class="btn-toolbar">
+	|				<% if(typeof(auth) == 'undefined' || auth == false){ %>
+	|					<a class="btn btn-primary", id='login-btn'>LOGIN</a>
+	|					<a class="btn btn-success", id='signup-btn'>SIGNUP</a>
+	|				<% }else{ %>
+	|					<a class="btn btn-primary", href='/logout'>LOGOUT</a>
+	|				<% } %>
+	|			</div>
+	|		</div>
+	|	</div>

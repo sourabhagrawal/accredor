@@ -44,4 +44,7 @@ $(function($){
 			}
 		}
 	});
+	
+	if(window.eventBus == undefined)
+		window.eventBus = _.extend({}, Backbone.Events);
 });

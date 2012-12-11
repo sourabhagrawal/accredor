@@ -1,5 +1,4 @@
 $(function($){
-	
 	var LoginModel = Backbone.Model.extend({
 	    defaults: {},
 	    login : function(email, password){
@@ -36,8 +35,8 @@ $(function($){
 			"click #login-form-submit-btn" : "submit"
 		},
 		
-		render : function(){
-			this.$el.html(this.template());
+		render : function(args){
+			this.$el.html(this.template(args));
 			return this;
 		},
 		
@@ -66,6 +65,8 @@ $(function($){
 		loginSuccess: function() {
 			this.loginBox.modal("hide");
 			this.undelegateEvents();
+			
+			eventBus.trigger('logged_in');
 		},
 		
 		loginError: function(msg) {
@@ -74,11 +75,14 @@ $(function($){
 		}
 	});
 	
-	$('#login-btn').click(function(event){
-		new LoginBoxView({model : new LoginModel({mode : 'login'})});
-	});
-	
-	$('#signup-btn').click(function(event){
-		new LoginBoxView({model : new LoginModel({mode : 'signup'})});
+	eventBus.on('global_header_rendered', function(view){
+		console.log("event heard");
+		$('#login-btn').click(function(event){
+			new LoginBoxView({model : new LoginModel({mode : 'login'})});
+		});
+		
+		$('#signup-btn').click(function(event){
+			new LoginBoxView({model : new LoginModel({mode : 'signup'})});
+		});
 	});
 });
