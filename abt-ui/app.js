@@ -79,24 +79,9 @@ var benchRoute = require('./routes/w3/bench');
 var loginRoute = require('./routes/w3/login');
 
 app.get('/login', loginRoute.index);
-app.post('/login', passport.authenticate('local'), loginRoute.authenticate);
-//app.post('/login', function(req, res, next) {
-//	passport.authenticate('local', function(err, user, info) {
-//		console.log(err);
-//		console.log(user);
-//		console.log(info);
-////		if (err) { return next(err); }
-////		if (!user) {
-////			req.flash('error', info.message);
-////			return res.redirect('/login')
-////		}
-////		req.logIn(user, function(err) {
-////			if (err) { return next(err); }
-////			return res.redirect('/users/' + user.username);
-////		});
-//	})(req, res, next);
-//});
+app.post('/login', loginRoute.authenticate);
 app.get('/logout', loginRoute.logout);
+app.get('/verify', loginRoute.verify);
 
 app.get('/', baseRoute.index);
 app.get('/bench', benchRoute.index);

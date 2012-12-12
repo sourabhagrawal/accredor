@@ -8,6 +8,10 @@ var usersDao = require(DAOS_DIR + 'users_dao');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
 var emails_impl = require('./emails_impl');
+var Bus = require(LIB_DIR + 'bus');
+
+var algorithm = 'aes256';
+var key = 'sutta';
 
 var UsersImpl = comb.define(impl,{
 	instance : {
@@ -17,44 +21,64 @@ var UsersImpl = comb.define(impl,{
 			options.dao = usersDao;
             this._super([options]);
 		},
+		
 		create : function(params, callback){
+			var bus = new Bus();
+			
 			var ref = this;
 			var m = this._getSuper();
 			
-			this.search(function(err, data){
-				// If error occurred
-				if(err){
-					callback(err);
-					return;
-				}
-				
-				if(data && data.totalCount > 0){ // User with same email exists 
-					callback(response.error(codes.error.USER_EMAIL_EXISTS()));
-				}else{
-					/**
-					 * Prefill
-					 */
-					var password = params.password;
-					if(password == undefined){
-						callback(response.error(codes.error.FIELD_REQUIRED(['Password'])));
-					}else{
-						var md5sum = crypto.createHash('md5');
-						var hash = md5sum.update(password).digest("hex");
-						params.password = hash;
-						params.isVerified = false;
-						params.isDisabled = false;
-						
-						m.call(ref, params, function(err, data){
-							/**
-							 * TODO : Send a verification mail to the email address
-							 */
-							
-							
-							callback(err, data);
-						});
+			bus.on(this, 'start', function(){
+				ref.search(function(err, data){
+					// If error occurred
+					if(err){
+						callback(err);
+						return;
 					}
+					
+					if(data && data.totalCount > 0){ // User with same email exists 
+						callback(response.error(codes.error.USER_EMAIL_EXISTS()));
+					}else{
+						bus.fire('noDuplicates');
+					}
+				}, 'email:eq:' + params.email);
+			});
+			
+			bus.on('noDuplicates', function(){
+				/**
+				 * Prefill
+				 */
+				var password = params.password;
+				if(password == undefined){
+					callback(response.error(codes.error.FIELD_REQUIRED(['Password'])));
+				}else{
+					var md5sum = crypto.createHash('md5');
+					var hash = md5sum.update(password).digest("hex");
+					params.password = hash;
+					params.isVerified = false;
+					params.isDisabled = false;
+					
+					m.call(ref, params, function(err, data){
+						if(err == undefined)
+							bus.fire('created', data);
+						
+						callback(err, data);
+					});
 				}
-			}, 'email:eq:' + params.email);
+			});
+			
+			bus.on('created', function(data){
+				var email = data.data['email'];
+				
+				ref.sendVerificationEmail(email, function(err, data){
+					if(err != undefined){
+						logger.error(err);
+					}else{
+						logger.debug(data);
+					}
+				});
+			});
+			bus.fire('start');
 		},
 		
 		update : function(id, params, callback){
@@ -101,11 +125,15 @@ var UsersImpl = comb.define(impl,{
 					}
 					
 					if(data && data.totalCount == 1){ // User found
-						callback(null,response.success(data.data[0], 1, codes.success.USER_EMAIL_EXISTS()));
+						var user = data.data[0];
+						if(user['isVerified'] == 0 || user['isVerified'] == false){
+							callback(response.error(codes.error.EMAIL_NOT_VERIFIED()));
+						}else
+							callback(null,response.success(data.data[0], 1, codes.success.USER_EMAIL_EXISTS()));
 					}else{
 						callback(response.error(codes.error.EMAIL_OR_PASSWORD_INCORRECT()));
 					}
-				}, 'email:eq:' + email + '___password:eq:' + hash + '___isVerified:eq:1', 0, 1);
+				}, 'email:eq:' + email + '___password:eq:' + hash, 0, 1);
 			}
 		},
 		
@@ -117,6 +145,11 @@ var UsersImpl = comb.define(impl,{
 			if(email == null){
 				callback(response.error(codes.error.EMAIL_NULL()));
 			}else{
+				var bus = new Bus();
+				
+				var ref = this;
+				
+				
 				this.search(function(err, data){
 					// If error occurred
 					if(err){
@@ -125,22 +158,112 @@ var UsersImpl = comb.define(impl,{
 					}
 					
 					if(data && data.totalCount == 1){ // User found
-						var algorithm = 'aes256';
-						var key = 'sutta';
 						var text = email + "|" + (new Date());
 						var cipher = crypto.createCipher(algorithm, key);  
 						var encrypted = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
 						logger.debug("encrypted token : " + encrypted);
 						
-						/**
-						 * TODO : Send a recovery email
-						 */
+						var url = 'http://' + DOMAIN_HOST + '/recover?t=' + encrypted;
+						
+						emails_impl.sendFromTemplate('recovery_email.jade', 
+								{
+									url : url, 
+									domain_name : DOMAIN_NAME
+								}, 
+								{
+									to : email,
+									from : DOMAIN_SUPPORT_ID,
+									subject : 'Regenerate password for your ' + DOMAIN_NAME + ' account'
+								}, 
+								function(err, data){
+									if(err != undefined){
+										logger.error(err);
+									}else{
+										logger.debug(data);
+									}
+								});
+						
 						callback(null,response.success(data.data[0], 1, codes.success.USER_EMAIL_EXISTS()));
 					}else{
 						callback(response.error(codes.error.EMAIL_DOES_NOT_EXISTS()));
 					}
-				}, 'email:eq:' + email + '___isVerified:eq:1', 0, 1);
+				}, 'email:eq:' + email, 0, 1);
 			}
+		},
+		
+		sendVerificationEmail : function(email, callback){
+			var text = email + "|" + Date.now();
+			var cipher = crypto.createCipher(algorithm, key);  
+			var encrypted = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
+			logger.debug("encrypted token : " + encrypted);
+			
+			var url = 'http://' + DOMAIN_HOST + '/verify?t=' + encrypted;
+			
+			emails_impl.sendFromTemplate('verification_email.jade', 
+					{
+						url : url, 
+						domain_name : DOMAIN_NAME
+					}, 
+					{
+						to : email,
+						from : DOMAIN_SUPPORT_ID,
+						subject : 'Verify your ' + DOMAIN_NAME + ' account'
+					}, 
+					callback);
+		},
+		
+		validateToken : function(token, callback){
+			try{
+				var decipher = crypto.createDecipher(algorithm, key);
+				var decrypted = decipher.update(token, 'hex', 'utf8') + decipher.final('utf8');
+				
+				var tokens = decrypted.split('|');
+				if(tokens.length != 2){
+					callback(response.error(codes.error.TOKEN_INVALID()));
+				}else{
+					try{
+						var email = tokens[0];
+						var date = new Date(tokens[1]);
+						var elapsed = Date.now() - date;
+						if(elapsed < 30 * 24 * 60 * 60 * 1000){ // 30 days
+							callback(null,response.success(email, 1, codes.success.TOKEN_VALID()));
+						}else{
+							callback(response.error(codes.error.TOKEN_EXPIRED()));
+						}
+					}catch(e){
+						logger.error(e);
+						callback(response.error(codes.error.TOKEN_INVALID()));
+					}
+				}
+			}catch(e){
+				logger.error(e);
+				callback(response.error(codes.error.TOKEN_INVALID()));
+			}
+			
+		},
+		
+		verify : function(token, callback){
+			var ref = this;
+			this.validateToken(token, function(err, data){
+				if(err != undefined){
+					callback(err, null);
+				}else{
+					var email = data.data;
+					ref.search(function(err, data){
+						// If error occurred
+						if(err){
+							callback(err);
+							return;
+						}
+						
+						if(data && data.totalCount == 1){ // User found
+							ref.update(data.data[0].id, {isVerified : 1}, callback);
+						}else{
+							callback(response.error(codes.error.EMAIL_DOES_NOT_EXISTS()));
+						}
+					}, 'email:eq:' + email, 0, 1);
+				}
+			});
 		}
 	}
 });

@@ -3,6 +3,16 @@ var logger = require(LIB_DIR + 'log_factory').create("users_route");
 var usersImpl = require(IMPLS_DIR + 'users_impl');
 
 var UsersRoute = function(app){
+	app.get('/users/verify', function(req, res){
+		usersImpl.verify(req.query.token, function(err, data){
+			if(err == undefined){
+				routeUtils.respond(req, res, data);
+			}else{
+				routeUtils.respond(req, res, err);
+			}
+		});
+	});
+	
 	app.get('/users/:id', function(req, res){
 		routeUtils.getById(req, res, usersImpl);
 	});
@@ -41,6 +51,16 @@ var UsersRoute = function(app){
 	
 	app.post('/users/forgot', function(req, res){
 		usersImpl.forgot(req.body.username, function(err, data){
+			if(err == undefined){
+				routeUtils.respond(req, res, data);
+			}else{
+				routeUtils.respond(req, res, err);
+			}
+		});
+	});
+	
+	app.post('/users/send_verification', function(req, res){
+		usersImpl.sendVerificationEmail(req.body.username, function(err, data){
 			if(err == undefined){
 				routeUtils.respond(req, res, data);
 			}else{

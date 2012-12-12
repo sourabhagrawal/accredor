@@ -40,7 +40,6 @@ $(function($){
 				},
 				error : function(res, textStatus, errorThrown){
 					var data = $.parseJSON(res.responseText);
-					console.log(data.message);
 					ref.loginError(data.message);
 				}
 			});
@@ -75,7 +74,7 @@ $(function($){
 		initialize : function(){
 			this.render({mode : this.options.mode});
 			
-			_.bindAll(this, 'submit', 'loginSuccess', 'loginError');
+			_.bindAll(this, 'submit', 'loginSuccess', 'loginError', 'sendVerificationMail', 'emailSent');
 	        
 	        this.loginBox = $('#login-box');
 	        this.alert = $('#login-alert');
@@ -83,6 +82,35 @@ $(function($){
 			this.password = $('#password-field');
 			
 			this.loginBox.modal().css({'width': '360px'});
+		},
+		
+		sendVerificationMail : function(){
+			var email = this.email.val();
+			
+			var ref = this;
+			$.ajax({
+				url : '/api/users/send_verification',
+				type : 'post',
+				data : {
+					username : email
+				},
+				success : function(data, textStatus, jqXHR){
+					ref.emailSent();
+				},
+				error : function(res, textStatus, errorThrown){
+					if(res.status == 500){
+						var data = $.parseJSON(res.responseText);
+						ref.loginError(data.message);
+					}
+				}
+			});
+		},
+		
+		emailSent : function(){
+			this.undelegateEvents();
+			
+			this.$el.find('.modal-body').html(message_verification_email_sent);
+			this.$el.find('.modal-footer').html('<button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>');
 		},
 		
 		submit : function(){
@@ -105,7 +133,6 @@ $(function($){
 						ref.loginError("Incorrect email or password");
 					}else if(res.status == 500){
 						var data = $.parseJSON(res.responseText);
-						console.log(data.message);
 						ref.loginError(data.message);
 					}
 				}
@@ -119,7 +146,7 @@ $(function($){
 				this.loginBox.modal("hide");
 				eventBus.trigger('logged_in');
 			}else{
-				this.$el.find('.modal-body').html("<p class='text-success'>A verification mail has been sent to your email id. Please follow the link in the email to verify your account.</p>");
+				this.$el.find('.modal-body').html(message_verification_email_sent);
 				this.$el.find('.modal-footer').html('<button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>');
 			}
 		},
@@ -127,6 +154,13 @@ $(function($){
 		loginError: function(msg) {
 			this.alert.html(msg);
 			this.alert.css('display', 'block');
+			
+			var ref = this;
+			if($('#send-verification-btn')){
+				$('#send-verification-btn').click(function(event){
+					ref.sendVerificationMail();
+				});
+			}
 		}
 	});
 	

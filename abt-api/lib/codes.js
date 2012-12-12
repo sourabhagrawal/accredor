@@ -78,6 +78,7 @@ var SuccessCodes = new function(){
 	 * Sign-up and Authentication related
 	 */
 	this.USER_EMAIL_EXISTS = message("User found");
+	this.TOKEN_VALID = message("URL token is valid");
 	
 	/**
 	 * Email related
@@ -129,6 +130,12 @@ var ErrorCodes = new function(){
 	this.EMAIL_OR_PASSWORD_INCORRECT = status({code : 1504, message : "Email or Password is incorrect"});
 	this.EMAIL_DOES_NOT_EXISTS = status({code : 1505, message : "This email is not registered"});
 	this.EMAIL_NULL = status({code : 1506, message : "Email is empty"});
+	this.EMAIL_NOT_VERIFIED = status({code : 1507, message : "This email id is not verified. " +
+			"Please follow the Verification mail sent to your email id. <br />In case you haven't received it " +
+			"<a href='#' id='send-verification-btn'>Click Here</a>"});
+	this.TOKEN_INVALID = status({code : 1508, message : "The URL Token is invalid. Please check if you pasted the correct url given in the email"});
+	this.TOKEN_EXPIRED = status({code : 1509, message : "The URL Token has expired"});
+	
 	
 	/**
 	 * Transitions related
@@ -142,6 +149,7 @@ var ErrorCodes = new function(){
 	 * Email related
 	 */
 	this.EMAIL_BATCH_UPDATE_FAILED = status({code : 1701, message : "Batch update for email failed"});
+	this.EMAIL_BODY_NOT_BUILT = status({code : 1702, message : "Email body could not be built."});
 	
 };
 

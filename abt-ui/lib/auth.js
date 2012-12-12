@@ -23,10 +23,10 @@ exports.init = function(){
 				if (err) { return done(err); }
 				if (data && data.status && data.status.code == 1000){
 					logger.debug("Login successfull : " + JSON.stringify(data));
-					done(null, data.data);
+					done(null, data);
 				}else{
 					logger.debug("Login failed : " + data.message);
-					return done(null, false); 
+					return done(null, data); 
 				}
 			});
 		}
@@ -46,7 +46,8 @@ exports.filter = function(req, res, next){
 	return function(req, res, next) {
 		logger.debug(req.method + " request on " + req.url);
 		var blackList = ['^/api/'];
-		var whiteList = ['/api/users/signup', '/api/users/forgot'];
+		var whiteList = ['/api/users/signup', '/api/users/forgot', 
+		                 'api/users/send_verification', 'api/users/verify'];
 		var skipAuth = true;
 		_.each(blackList, function(url){
 			if(req.url.match(url)){

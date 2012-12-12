@@ -1,5 +1,6 @@
 var comb = require('comb');
 var _ = require('underscore');
+var jade = require('jade');
 var logger = require(LIB_DIR + 'log_factory').create("emails_impl");
 var impl = require('./impl.js');
 var emitter = require(LIB_DIR + 'emitter');
@@ -120,6 +121,32 @@ var ExperimentsImpl = comb.define(impl,{
 					logger.error(error);
 					callback(response.error(codes.error.EMAIL_BATCH_UPDATE_FAILED()));
 				});
+		},
+		
+		generateEmailBody : function(template, params, callback){
+			var tplPath = EMAILS_DIR + template;
+			
+			jade.renderFile(tplPath, params, function(err, html){
+				if(err != undefined){
+					logger.error(err);
+					callback(response.error(codes.error.EMAIL_BODY_NOT_BUILT()));
+				}else{
+					callback(null, html);
+				}
+			});
+		},
+		
+		sendFromTemplate : function(template, templateOpts, emailOpts, callback){
+			var ref = this;
+			ref.generateEmailBody(template, templateOpts, function(err, html){
+				if(err != undefined){
+					logger.error("Failed to compile " + template + " email template");
+					callback(err);
+				}else{
+					emailOpts.body = html;
+					ref.create(emailOpts, callback);
+				}
+			});
 		}
 	}
 });

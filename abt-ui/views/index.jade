@@ -1,10 +1,5 @@
 html(lang='en')
-	head
-		meta(charset='utf-8')
-		meta(name='viewport', content='width=device-width, initial-scale=1.0')
-		
-		title Yet another AB Testing Tool
-		include boot
+	include head
 	body
 		include global-header
 		div.well.container
@@ -12,5 +7,5 @@ html(lang='en')
 				input.input-large(type='text', id="url-box", name="url", placeholder="Your URL") 
 				&nbsp;
 				button.btn.btn-primary Submit
-	script(src="/javascripts/index.js")
+	script(src="/js/index.js")
 	
