@@ -29,3 +29,7 @@ exports.logout = function(req, res){
 exports.verify = function(req, res){
 	res.render('verify');
 };
+
+exports.recover = function(req, res){
+	res.render('recover');
+};

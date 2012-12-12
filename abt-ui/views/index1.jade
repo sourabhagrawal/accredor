@@ -1,0 +1,11 @@
+html(lang='en')
+	include head
+	body
+		include global-header
+		div.well.container
+			form.form-inline(action="/bench")
+				input.input-large(type='text', id="url-box", name="url", placeholder="Your URL") 
+				&nbsp;
+				button.btn.btn-primary Submit
+	script(src="/js/index.js")
+	

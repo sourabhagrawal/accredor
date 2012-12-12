@@ -82,6 +82,7 @@ app.get('/login', loginRoute.index);
 app.post('/login', loginRoute.authenticate);
 app.get('/logout', loginRoute.logout);
 app.get('/verify', loginRoute.verify);
+app.get('/recover', loginRoute.recover);
 
 app.get('/', baseRoute.index);
 app.get('/bench', benchRoute.index);

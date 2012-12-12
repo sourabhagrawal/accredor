@@ -47,8 +47,8 @@ $(function($){
 		
 		loginSuccess: function() {
 			this.undelegateEvents();
-			this.$el.find('.modal-body').html("<p class='text-success'>A password recovery mail has been sent to your email id. Please follow the link in the email to generate a new password.</p>");
-			this.$el.find('.modal-footer').html('<button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>');
+			this.$el.find('.p-modal-body').html("<p class='text-success'>A password recovery mail has been sent to your email id. Please follow the link in the email to generate a new password.</p>");
+			this.$el.find('.form-actions').html('<a class="btn pull-right" data-dismiss="modal" aria-hidden="true">OK</a>');
 		},
 		
 		loginError: function(msg) {
@@ -109,8 +109,8 @@ $(function($){
 		emailSent : function(){
 			this.undelegateEvents();
 			
-			this.$el.find('.modal-body').html(message_verification_email_sent);
-			this.$el.find('.modal-footer').html('<button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>');
+			this.$el.find('.p-modal-body').html(message_verification_email_sent);
+			this.$el.find('.form-actions').html('<button class="btn pull-right" data-dismiss="modal" aria-hidden="true">OK</button>');
 		},
 		
 		submit : function(){
@@ -146,8 +146,8 @@ $(function($){
 				this.loginBox.modal("hide");
 				eventBus.trigger('logged_in');
 			}else{
-				this.$el.find('.modal-body').html(message_verification_email_sent);
-				this.$el.find('.modal-footer').html('<button class="btn" data-dismiss="modal" aria-hidden="true">OK</button>');
+				this.$el.find('.p-modal-body').html(message_verification_email_sent);
+				this.$el.find('.form-actions').html('<button class="btn pull-right" data-dismiss="modal" aria-hidden="true">OK</button>');
 			}
 		},
 		

@@ -1,11 +1,122 @@
+!!! 5
 html(lang='en')
-	include head
+head
+		meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+		meta(charset='utf-8')
+		title Accredor
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		meta(name='description', content='')
+		meta(name='keywords', content='')
+		meta(name='author', content='')
+		link(href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic', rel='stylesheet', type='text/css')
+		link(href='http://fonts.googleapis.com/css?family=Oswald:400,700', rel='stylesheet', type='text/css')
+		
+		include boot
 	body
 		include global-header
-		div.well.container
-			form.form-inline(action="/bench")
-				input.input-large(type='text', id="url-box", name="url", placeholder="Your URL") 
-				&nbsp;
-				button.btn.btn-primary Submit
-	script(src="/js/index.js")
-	
+		//
+			Note down the syntax before editing. It is the default twitter bootstrap navigation 
+		.navbar
+			.navbar-inner
+				.container
+					a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+						| Menu
+					.nav-collapse
+						ul.nav
+							li
+								a(href='/') Home
+							li
+								a(href='/') FAQ
+							li
+								a(href='/') About Us
+							li
+								a(href='/') Contact
+		//
+			Navigation Ends 
+		//
+			Content strats 
+		.content
+			.container
+				.row
+					.span12
+						.main-content
+							.row
+								.span7
+									h2 What is A/B Testing?
+									p
+										| A/B testing is a simple way of comparing two or more versions of a web-page in order to find which has better response rate or convertion rate.
+										| Visitors on a A/B test will be distributed across various versions including the control (e.g. original), to see which single version is most effective in increasing a response rate or other desired outcome.
+									h2 Who needs A/B Testing?
+									p
+										| If you own or manage a website that directly or indirectly generates or affects revenues for you or your business than you need to do A/B Testing.
+								.span5
+									.main-box
+										h4 Features
+										p
+											| Nam risus magna, fringilla sit amet blandit viverra, dignissim eget est. Etiam adipiscing posuere justo, nec iaculis justo dictum non.
+										ul
+											li Cras tincidunt mi non arcu	eleifend
+											li Aenean ullamcorper justo	diam faucibus
+											li Maecenas hendrerit neque id ante	mattis
+						.cta
+							.row
+								.span8
+									p.cbig Increase response times, convertions and revenues on you website.
+									p.csmall
+										| You don't need to have any knowledge of HTML and web design. And as of now it's 
+										strong free.
+								.span2
+									buttom.btn.btn-large.btn-primary(href='#', style='color:#fff') GET STARTED
+						.row
+							.span3
+								.afeature
+									.afmatter
+										i.icon-cloud
+										h4 Nulla ullamcorper
+										p
+											| Praesent at tellus porttitor	sagittis. Mauris tempor nulla. Ut tempus interdum mauris vel vehicula.
+							.span3
+								.afeature
+									.afmatter
+										i.icon-home
+										h4 Praesent at tellus
+										p
+											| Praesent at tellus porttitor	sagittis. Mauris tempor nulla. Ut tempus interdum mauris vel vehicula.
+							.span3
+								.afeature
+									.afmatter
+										i.icon-gift
+										h4 Nulla ullamcorper
+										p
+											| Praesent at tellus porttitor sagittis. Mauris tempor nulla. Ut tempus interdum mauris vel vehicula.
+							.span3
+								.afeature
+									.afmatter
+										i.icon-user
+										h4 Mauris tempor
+										p
+											| Praesent at tellus porttitor	sagittis. Mauris tempor nulla. Ut tempus interdum mauris vel vehicula.
+						//
+							Features ends 
+						.bor
+
+		//
+			Content ends
+		include global_footer 
+		script(src='/lib/ericka/js/jquery.flexslider-min.js')
+		script(src='/lib/ericka/js/jquery.isotope.js')
+		script(src='/lib/ericka/js/jquery.prettyPhoto.js')
+		script(src='/lib/ericka/js/filter.js')
+		script(src='/lib/ericka/js/jquery.tweet.js')
+		script(src='/lib/ericka/js/custom.js')
+		
+		script(type='text/javascript')
+			/* Flex Slider */
+			$(window).load(function() {
+			$('.flexslider').flexslider({
+			animation: "slide",
+			controlNav: true,
+			pauseOnHover: true,
+			slideshowSpeed: 15000
+			});
+			});
