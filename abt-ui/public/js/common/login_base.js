@@ -1,10 +1,5 @@
 var BaseLoginView = Backbone.View.extend({
-	events : {
-		"click #login-form-submit-btn" : "submit"
-	},
-	
 	render : function(){
-		console.log(this.$el);
 		this.$el.html(this.template());
 		return this;
 	},
@@ -14,12 +9,8 @@ var BaseLoginView = Backbone.View.extend({
 		
 		_.bindAll(this, 'submit', 'sendVerificationMail', 'emailSent');
         
-        this.loginBox = $('#login-box');
-        this.alert = $('#login-alert');
 		this.email = $('#email-field');
 		this.password = $('#password-field');
-		
-		this.loginBox.modal().css({'width': '360px'});
 	},
 	
 	sendVerificationMail : function(){

@@ -3,9 +3,18 @@ input[type="text"], input[type="password"]{
 }
 
 header{
-	padding-top : 15px;
+	padding-top : 5px;
 }
 
 header .list{
-	top : -15px;
+	top : -5px;
+}
+
+.top-bar{
+	background:#444; 
+	color:#fff;
+}
+
+.top-bar ul{
+	margin:5px 15px 5px 5px;
 }

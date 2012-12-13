@@ -1,0 +1,24 @@
+script(type="text-template", id="global-header-template-alt")
+	|	<div class="top-bar">
+	|		<div class="container">
+	|			<div class="row">
+	|				<div class="span3"><div class="logo"><h1 style="color:#eee">accredor</h1></div></div>
+	|				<div class="offset5 span3">
+	|					<ul class="nav nav-pills" style="margin-right:15px;">
+	|					<% if(typeof(auth) == 'undefined' || auth == false){ %>
+	|						<li class="pull-right">
+	|							<a href="#" id='login-btn'>LOGIN</a>
+	|						</li>
+	|						<li class="pull-right">
+	|							<a href="#" id='signup-btn'>SIGNUP</a>
+	|						</li>
+	|					<% }else{ %>
+	|						<li class="pull-right">
+	|							<a href='/logout'>LOGOUT</a>
+	|						</li>
+	|					<% } %>
+	|					</ul>
+	|				</div>
+	|			</div>
+	|		</div>
+	|	</div>
