@@ -264,6 +264,24 @@ var UsersImpl = comb.define(impl,{
 					}, 'email:eq:' + email, 0, 1);
 				}
 			});
+		},
+		
+		updatePassword : function(email, password, callback){
+			var ref = this;
+			this.search(function(err, data){
+				// If error occurred
+				if(err){
+					callback(err);
+					return;
+				}
+				
+				if(data && data.totalCount == 1){ // User found
+					// Mark verified also because user came here through his email.
+					ref.update(data.data[0].id, {email : email, password : password, isVerified : 1}, callback);
+				}else{
+					callback(response.error(codes.error.EMAIL_DOES_NOT_EXISTS()));
+				}
+			}, 'email:eq:' + email, 0, 1);
 		}
 	}
 });

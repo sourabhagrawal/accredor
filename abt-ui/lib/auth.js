@@ -47,7 +47,8 @@ exports.filter = function(req, res, next){
 		logger.debug(req.method + " request on " + req.url);
 		var blackList = ['^/api/'];
 		var whiteList = ['/api/users/signup', '/api/users/forgot', 
-		                 'api/users/send_verification', 'api/users/verify'];
+		                 'api/users/send_verification', 'api/users/verify',
+		                 'api/users/validate_token', '/api/users/update_password'];
 		var skipAuth = true;
 		_.each(blackList, function(url){
 			if(req.url.match(url)){

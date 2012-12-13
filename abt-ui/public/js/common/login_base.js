@@ -10,7 +10,6 @@ var BaseLoginView = Backbone.View.extend({
 	},
 	
 	initialize : function(){
-		console.log('in initialize');
 		this.render();
 		
 		_.bindAll(this, 'submit', 'sendVerificationMail', 'emailSent');
