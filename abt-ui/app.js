@@ -11,7 +11,7 @@ var CONFIG = require('config');
 var log4js = require('log4js');
 var passport = require('passport');
 
-var constants = require('./lib/constants');
+require('./lib/constants');
 var logger = require(LIB_DIR + 'log_factory').create("app");
 var auth = require(LIB_DIR + 'auth');
 
@@ -33,6 +33,10 @@ var apiProxy = httpProxy.createServer(function (req, res, proxy) {
 		port: 10001
 	});
 });
+
+app.locals.domain = DOMAIN_HOST;
+app.locals.domain_name = DOMAIN_NAME;
+app.locals.support_id = DOMAIN_SUPPORT_ID;
 
 app.configure(function(){
   app.set('port', port);
