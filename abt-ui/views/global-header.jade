@@ -1,6 +1,25 @@
 div(id='login-box-container')
 header
 	.container(id='global-header')
+//
+	Note down the syntax before editing. It is the default twitter bootstrap navigation 
+.navbar
+	.navbar-inner
+		.container
+			a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+				| Menu
+			.nav-collapse
+				ul.nav
+					li
+						a(href='/') Home
+					li
+						a(href='/') FAQ
+					li
+						a(href='/') About Us
+					li
+						a(href='/') Contact
+//
+	Navigation Ends 
 	
 script(type="text-template", id="login-box-template")
 	|	<div class="modal respond well hide fade" id="login-box"  tabindex="-1"  role="dialog">

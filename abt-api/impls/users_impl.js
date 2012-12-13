@@ -223,7 +223,7 @@ var UsersImpl = comb.define(impl,{
 				}else{
 					try{
 						var email = tokens[0];
-						var date = new Date(tokens[1]);
+						var date = tokens[1];
 						var elapsed = Date.now() - date;
 						if(elapsed < 30 * 24 * 60 * 60 * 1000){ // 30 days
 							callback(null,response.success(email, 1, codes.success.TOKEN_VALID()));

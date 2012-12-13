@@ -36,3 +36,21 @@ footer
 				p.copy
 					| Copyright &copy; 
 					a(href='http://accredor.com') Accredor.com
+
+script(src='/lib/ericka/js/jquery.flexslider-min.js')
+script(src='/lib/ericka/js/jquery.isotope.js')
+script(src='/lib/ericka/js/jquery.prettyPhoto.js')
+script(src='/lib/ericka/js/filter.js')
+script(src='/lib/ericka/js/jquery.tweet.js')
+script(src='/lib/ericka/js/custom.js')
+
+script(type='text/javascript')
+	/* Flex Slider */
+	$(window).load(function() {
+		$('.flexslider').flexslider({
+			animation: "slide",
+			controlNav: true,
+			pauseOnHover: true,
+			slideshowSpeed: 15000
+		});
+	});
