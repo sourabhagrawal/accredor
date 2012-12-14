@@ -30,7 +30,7 @@ var VariationsImpl = comb.define(impl,{
 				}else{
 					m.call(ref, params, callback);
 				}
-			}, 'experimentId:eq:' + params.experimentId + '___name:eq:' + params.name);
+			}, 'experimentId:eq:' + params.experimentId + '___name:eq:' + params.name + '___isDisabled:eq:0');
 		},
 		
 		update : function(id, params, callback){
@@ -44,19 +44,24 @@ var VariationsImpl = comb.define(impl,{
 					if(model == undefined){
 						callback(response.error(codes.error.RECORD_WITH_ID_NOT_EXISTS([ref.displayName, id])));
 					}else{
-						ref.search(function(err,data){
-							// If error occurred
-							if(err){
-								callback(err);
-								return;
-							}
-							
-							if(data && data.totalCount > 0){ // Records with same User Id and Name can not exist 
-								callback(response.error(codes.error.VARIATION_EXPERIMENT_ID_NAME_EXISTS()));
-							}else{
-								m.call(ref, id, params, callback);
-							}
-						}, 'experimentId:eq:' + (params.experimentId || model.experimentId) + '___name:eq:' + (params.name || model.name));
+						if(params.name && params.name != model.name){ //Name is getting updated
+							var name = params.name || model.name;
+							ref.search(function(err,data){
+								// If error occurred
+								if(err){
+									callback(err);
+									return;
+								}
+								
+								if(data && data.totalCount > 0){ // Records with same User Id and Name can not exist 
+									callback(response.error(codes.error.VARIATION_EXPERIMENT_ID_NAME_EXISTS()));
+								}else{
+									m.call(ref, id, params, callback);
+								}
+							}, 'experimentId:eq:' + (params.experimentId || model.experimentId) + '___name:eq:' + name + '___isDisabled:eq:0');
+						}else{
+							m.call(ref, id, params, callback);
+						}
 					}
 				}, function(error){
 					callback(response.error(codes.error.RECORD_WITH_ID_NOT_FETCHED([ref.displayName, id])));

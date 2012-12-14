@@ -14,6 +14,10 @@ var VariationsRoute = function(app){
 	app.put('/variations/:id', function(req, res){
 		routeUtils.update(req, res, variationsImpl);
 	});
+	
+	app['delete']('/variations/:id', function(req, res){
+		routeUtils.deleteById(req, res, variationsImpl);
+	});
 		
 	app.get('/variations', function(req, res){
 		routeUtils.search(req, res, variationsImpl);

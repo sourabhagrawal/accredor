@@ -73,6 +73,8 @@ var Impl = comb.define(null,{
 					if(model == undefined){
 						callback(response.error(codes.error.RECORD_WITH_ID_NOT_EXISTS([ref.displayName, id])));
 					}else{
+						delete params.id;
+						logger.info(params);
 						ref._dao.update(model, params).then(function(m){
 							callback(null,response.success(m.toJSON(), 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
 						}, function(error){
@@ -86,6 +88,12 @@ var Impl = comb.define(null,{
 				});
 			}
 			
+		},
+		
+		deleteById : function(id, params, callback){
+			params = params || {};
+			params.isDisabled = 1;
+			this.update(id, params, callback);
 		},
 		
 		/**

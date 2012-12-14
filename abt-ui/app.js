@@ -91,6 +91,7 @@ app.get('/recover', loginRoute.recover);
 app.get('/', baseRoute.index);
 app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);
+app.get('/create', require('./routes/w3/create').index);
 
 /**
  * Initialize the Server

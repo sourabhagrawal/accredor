@@ -21,24 +21,32 @@ var ModelsFactory = comb.define(null,{
                 }
             };
             
+            var staticConf = {
+            	typecastEmptyStringToNull : false
+            };
+            
             this.Experiments = patio.addModel("Experiments",{
-            	pre:pre
+            	pre:pre,
+            	"static" : staticConf
             }).oneToMany("Variations",{key : "experiment_id"})
 				.oneToMany("Links",{key : "experiment_id"})
 				.manyToOne("Users",{key : "user_id"});
 			
             this.Variations = patio.addModel("Variations",{
-            	pre:pre
+            	pre:pre,
+            	"static" : staticConf
             }).manyToOne("Experiments",{key : "experiment_id"});
 			
             this.Links = patio.addModel("Links",{
 				plugins:[patio.plugins.ValidatorPlugin],
-            	pre:pre
+            	pre:pre,
+            	"static" : staticConf
             }).manyToOne("Experiments",{key : "experiment_id"});
 			this.Links.validate("url").isUrl();
 			
 			this.Goals = patio.addModel("Goals",{
-            	pre:pre
+            	pre:pre,
+            	"static" : staticConf
             }).manyToOne("Users",{key : "user_id"});
 			
 			this.Users = patio.addModel("Users",{
@@ -48,6 +56,7 @@ var ModelsFactory = comb.define(null,{
 			        typecastOnAssignment : false
 			    },
 				pre:pre,
+            	"static" : staticConf,
                 post : {
                 	load : function(next){
                 		this.password = null;
@@ -58,15 +67,18 @@ var ModelsFactory = comb.define(null,{
 			this.Users.validate("email").isEmail();
 			
 			this.States = patio.addModel("States",{
-            	pre:pre
+            	pre:pre,
+            	"static" : staticConf
             });
 			
 			this.Transitions = patio.addModel("Transitions",{
-            	pre:pre
+            	pre:pre,
+            	"static" : staticConf
             });
 			
 			this.Emails = patio.addModel("Emails",{
-            	pre:pre
+            	pre:pre,
+            	"static" : staticConf
             });
 			
             patio.syncModels().then(function(){

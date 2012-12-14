@@ -52,6 +52,17 @@ var RouteUtils = new function(){
 		});
 	},
 	
+	this.deleteById = function(req, res, impl){
+		logger.debug("Entering deleteById");
+		impl.deleteById(req.params.id, {updatedBy : req.user.id}, function(err, data){
+			if(err == undefined){
+				ref.respond(req, res, data);
+			}else{
+				ref.respond(req, res, err);
+			}
+		});
+	},
+	
 	/**
 	 * 
 	 * @param query 'field1:op1:value1___field2:op2:value2'
