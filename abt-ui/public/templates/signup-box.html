@@ -1,0 +1,42 @@
+<div class="modal respond well" id="signup-box"  tabindex="-1"  role="dialog">
+	<div class="title">
+		<h4>SIGNUP</h4>
+	</div>
+	<div class="form">
+		<form class="form-horizontal" id='signup-form'>
+			<div class="p-modal-body">
+				<div class="alert alert-error" id='signup-alert' style='display:none;'></div>
+				<div class="control-group">
+					<label class="control-label" for="email-field">Email Id</label>
+					<div class="controls">
+						<input type="text" id="email-field" placeholder="Email Id" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="password-field">Password</label>
+					<div class="controls">
+						<input type='password' id='password-field' placeholder="Password" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="retype-password">Retype Password</label>
+					<div class="controls">
+						<input type='password' id='retype-password' placeholder="Retype Password" />
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						<label class="checkbox" for="terms">
+							<input type='checkbox' id='terms' /> I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. 
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-actions">
+				<a class="btn btn-success" id='signup-form-submit-btn'>SIGNUP</a>
+				<a type="button" data-dismiss="modal" class="btn btn-danger">CANCEL</a>
+			</div>
+			<div><a class="btn btn-link" id='login-link' style='margin-left:5px;'>Have an Account?</a></div>
+		</form>
+	</div>
+</div>

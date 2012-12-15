@@ -53,10 +53,10 @@ var ModelsFactory = comb.define(null,{
 				plugins:[patio.plugins.ValidatorPlugin],
 				static : {
 			        typecastOnLoad : false,
-			        typecastOnAssignment : false
+			        typecastOnAssignment : false,
+			        typecastEmptyStringToNull : false
 			    },
 				pre:pre,
-            	"static" : staticConf,
                 post : {
                 	load : function(next){
                 		this.password = null;

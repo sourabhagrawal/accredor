@@ -1,14 +1,16 @@
-var BaseLoginView = Backbone.View.extend({
+Views.BaseLoginView = Views.BaseView.extend({
 	render : function(){
 		this.$el.html(this.template());
 		return this;
 	},
 	
 	initialize : function(){
-		this.render();
+		this._super('initialize');
 		
 		_.bindAll(this, 'submit', 'sendVerificationMail', 'emailSent');
-        
+	},
+	
+	init : function(){
 		this.email = $('#email-field');
 		this.password = $('#password-field');
 	},

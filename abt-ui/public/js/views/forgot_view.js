@@ -1,4 +1,4 @@
-var ForgotView = Backbone.View.extend({
+Views.ForgotView = Views.BaseView.extend({
 	events : {
 		"click #forgot-submit-btn" : "submit"
 	},
@@ -9,17 +9,21 @@ var ForgotView = Backbone.View.extend({
 	},
 	
 	initialize : function(){
+		this._super('initialize');
 		this.$el = $("#forgot-box-container");
-		this.template = _.template($('#forgot-box-template').html());
-		
+		this.loadTemplate('forgot-box');
+		_.bindAll(this, 'submit', 'success', 'error');
+	},
+	
+	init : function(){
 		this.render();
 		
-		_.bindAll(this, 'submit', 'success', 'error');
-        
-        this.forgotBox = $('#forgot-box');
-        this.alert = $('#forgot-alert');
-		this.email = $('#email-field');
+		this._super('init');
 		
+		this.forgotBox = $('#forgot-box');
+        this.alert = $('#forgot-alert');
+		this.email = $('#forgot-email-field');
+        
 		this.forgotBox.modal().css({'width': '360px'});
 	},
 	

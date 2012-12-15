@@ -98,10 +98,8 @@ $(function($){
 	
 	var variations = new SplitVariationList();
 	
-	var SplitVariationView = Backbone.View.extend({
+	var SplitVariationView = Views.BaseView.extend({
 		tagName : "div",
-		
-		template : _.template($('#split-variation-template').html()),
 		
 		events : {
 			"click .delete" : "destroy",
@@ -111,10 +109,17 @@ $(function($){
 		},
 		
 		initialize : function(){
+			this._super('initialize');
+			this.loadTemplate('split-variation');
+			
 			this.model.bind('destroy', this.remove, this);
 //			this.model.bind('change', this.change, this);
 			this.model.bind('error', this.error, this);
 			this.model.bind('sync', this.render, this);
+		},
+		
+		init : function(){
+			this._super('init');
 		},
 		
 		render : function(){
@@ -147,10 +152,8 @@ $(function($){
 		}
 	});
 	
-	var SplitExperimentView = Backbone.View.extend({
+	var SplitExperimentView = Views.BaseView.extend({
 		el : $("#split-experiment"),
-		
-		template : _.template($('#split-experiment-template').html()),
 		
 		events : {
 			"click #delete-all" : "deleteAll",
@@ -159,9 +162,16 @@ $(function($){
 		},
 		
 		initialize : function(){
+			this._super('initialize');
+			this.loadTemplate('split-experiment');
+			
 			variations.bind('add', this.add, this);
 //			variations.bind('reset', this.addAll, this);
 //			variations.bind('all', this.render, this);
+		},
+		
+		init : function(){
+			this._super('init');
 			
 			this.render();
 			
@@ -252,5 +262,7 @@ $(function($){
 		}
 	});
 	
-	new SplitExperimentView();
+	templateLoader.loadRemoteTemplate("split-variation", "/templates/split-variation.html", function(data){
+		new SplitExperimentView();
+	});
 });
