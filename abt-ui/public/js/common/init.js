@@ -57,7 +57,7 @@ $(function($){
 			var data = $.parseJSON(request.responseText);
 			if(data.status && data.status.code == 1000){
 //				settings.success(data);
-				console.log(data.success.message);
+//				console.log(data.success.message);
 			}else{
 				var message = "An unknown error occurred";
 				if(data.message)
