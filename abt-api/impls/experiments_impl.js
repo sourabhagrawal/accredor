@@ -27,7 +27,7 @@ var ExperimentsImpl = comb.define(impl,{
 			// Name should not be blank
 			var name = params['name'];
 			try{
-				check(name, 'required').notNull().notEmpty();
+				check(name).notNull().notEmpty();
 			}catch(e){
 				callback(response.error(codes.error.EXPERIMENT_NAME_REQUIRED()));
 				return;

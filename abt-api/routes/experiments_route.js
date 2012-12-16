@@ -9,7 +9,7 @@ var ExperimentsRoute = function(app){
 	
 	app.post('/experiments', function(req, res){
 		req.body = req.body || {};
-		req.body.userId = req.user.id;
+		req.body.userId = req.body.userId || req.user.id;
 		routeUtils.create(req, res, experimentsImpl);
 	});
 	

@@ -12,7 +12,8 @@ vows.describe("The variations API")
 		topic : function(){
 			client.create({
 				experimentId : 1,
-				name : 'abcde'
+				name : 'abcde',
+				type : 'URL'
 			},this.callback);
 		},
 		'should create an Variation' : testUtils.assertSuccess,
@@ -23,7 +24,8 @@ vows.describe("The variations API")
 			topic : function(){
 				client.create({
 					experimentId : 1,
-					name : 'abcde'
+					name : 'abcde',
+					type : 'URL'
 				},this.callback);
 			},
 			'should fail with an error' : testUtils.assertFailure(codes.error.VARIATION_EXPERIMENT_ID_NAME_EXISTS)
@@ -32,7 +34,8 @@ vows.describe("The variations API")
 			topic : function(){
 				client.create({
 					experimentId : 2,
-					name : 'abcde'
+					name : 'abcde',
+					type : 'URL'
 				},this.callback);
 			},
 			'should create an Variation' : testUtils.assertSuccess,
@@ -41,7 +44,8 @@ vows.describe("The variations API")
 			topic : function(){
 				client.create({
 					experimentId : 1,
-					name : 'abcd'
+					name : 'abcd',
+					type : 'URL'
 				},this.callback);
 			},
 			'should create an Variation' : testUtils.assertSuccess,

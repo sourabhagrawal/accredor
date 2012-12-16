@@ -101,7 +101,7 @@ var ErrorCodes = new function(){
 	this.UPDATION_FAILED = status({code : 1105, message : "{1} with id : {2} could not be updated"});
 	this.DELETION_FAILED = status({code : 1106, message : "{1} with id : {2} could not be deleted"});
 	this.SEARCH_FAILED = status({code : 1107, message : "Search on {1}s could not be completed"});
-	this.FIELD_REQUIRED = status({code : 1108, message : "{1} can not be empty"});
+	this.FIELD_REQUIRED = status({code : 1108, message : "{1} can not be blank"});
 	
 	/**
 	 * Experiments related
@@ -114,6 +114,11 @@ var ErrorCodes = new function(){
 	 * Variations related
 	 */
 	this.VARIATION_EXPERIMENT_ID_NAME_EXISTS = status({code : 1301, message : "Variation with this Name already exists for this experiment"});
+	this.VARIATION_NAME_REQUIRED = status({code : 1302, message : "Variation Name can not be blank"});
+	this.VARIATION_TYPE_REQUIRED = status({code : 1303, message : "Variation Type can not be blank"});
+	this.VARIATION_CONTROL_EXISTS = status({code : 1304, message : "Control Variation already exists for this experiment"});
+	this.VARIATION_EXPERIMENT_ID_CANT_UPDATE = status({code : 1305, message : "Can't update the Experiment of a Variation"});
+	this.VARIATION_TYPE_CANT_UPDATE = status({code : 1306, message : "Can't update the type of a Variation"});
 	
 	/**
 	 * Goals Related

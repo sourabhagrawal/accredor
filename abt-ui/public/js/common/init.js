@@ -43,6 +43,11 @@ $(function($){
 			601: function(){
 				// Open the Login Modal
 				Utils.openLoginBox();
+			},
+			
+			202 : function(url){
+				console.log(arguments);
+				window.location.replace(document.location.protocol + '//' + document.location.host + url);
 			}
 		}
 	});

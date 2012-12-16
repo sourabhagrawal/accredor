@@ -37,6 +37,8 @@ CREATE TABLE `variations` (
   `name` varchar(255) NOT NULL,
   `percent` FLOAT NOT NULL,
   `script` TEXT NOT NULL DEFAULT '',
+  `type` VARCHAR(32) NOT NULL, -- URL
+  `is_control` TINYINT NOT NULL DEFAULT 0,
   `is_disabled` TINYINT NOT NULL DEFAULT 0,
   `created_by` varchar(255) NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,

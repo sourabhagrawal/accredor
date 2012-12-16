@@ -33,7 +33,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(function(req, res, next) {
-	  logger.debug(req.method + " request on " + req.url);
+	  logger.info(req.method + " request on " + req.url);
 	  if(req.headers.authorization && req.headers.authorization.search('Basic ') === 0) {
 		// fetch login and password
 		var authString = new Buffer(req.headers.authorization.split(' ')[1], 'base64').toString();

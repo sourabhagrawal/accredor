@@ -10,7 +10,7 @@ exports.authenticate = function(req, res, next) {
 				res.cookie('isAuthenticated', 1);
 				res.cookie('uid', req.user.id);
 				res.cookie('uemail', req.user.email);
-				res.send(data);
+				res.send(202, '/dashboard');
 			});
 		}else{
 			res.send(500, data);

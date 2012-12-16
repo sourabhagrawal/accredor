@@ -8,7 +8,7 @@ var CONFIG = require('config');
 var Client = comb.define(null,{
 	instance : {
 		host : CONFIG.url.api,
-		auth : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo=',
+		auth : 'Basic MTpkdW1teXBhc3MK',
 		constructor : function(options){
 			options = options || {};
 			this._super(arguments);

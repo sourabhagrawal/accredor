@@ -1,4 +1,7 @@
 $(function($){
+	
+	new Views.DashboardHeaderView();
+	
 	var SplitVariation = Backbone.Model.extend({
 		defaults : function(){
 			var order = variations.nextOrder();
@@ -6,7 +9,7 @@ $(function($){
 			if(order == 1)
 				name = "Control";
 			return {
-				isControl : false,
+				isControl : 0,
 				order : order,
 				name : name,
 				percent : 0
@@ -33,7 +36,7 @@ $(function($){
 			if(!attrs.name || attrs.name.trim() == ''){
 				return 'Variation Name can not be blank';
 			}
-			if(!attrs.url || attrs.url.trim() == ''){
+			if(!attrs.script || attrs.script.trim() == ''){
 				return 'Variation URL can not be blank';
 			}
 			if(isNaN(attrs.percent)){
@@ -104,7 +107,7 @@ $(function($){
 		events : {
 			"click .delete" : "destroy",
 			"blur #name" : "save",
-			"blur #url" : "save",
+			"blur #script" : "save",
 			"blur #percent" : "save"
 		},
 		
@@ -125,7 +128,7 @@ $(function($){
 		render : function(){
 			this.$el.html(this.template(this.model.toJSON()));
 			if(this.model.isControl()){
-				this.$el.find("#url").prop('disabled', true);
+				this.$el.find("#script").prop('disabled', true);
 			}
 			return this;
 		},
@@ -230,9 +233,9 @@ $(function($){
 				var url = this.url.val();
 				var control = variations.control();
 				if(control.length == 0)
-					variations.create({isControl : true, url : url, experimentId : this.id});
+					variations.create({isControl : 1, type : 'URL', script : url, experimentId : this.id});
 				else{
-					control[0].set({url : url});
+					control[0].set({script : url});
 				}
 			}
 		},
@@ -240,7 +243,7 @@ $(function($){
 		create : function(){
 			if(this.id){
 				var url = this.url.val();
-				variations.create({url : url, experimentId : this.id});
+				variations.create({script : url, type : 'URL', experimentId : this.id});
 			}
 		},
 		

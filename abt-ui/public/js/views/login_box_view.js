@@ -70,7 +70,6 @@ Views.LoginBoxView = Views.BaseLoginView.extend({
 		this.undelegateEvents();
 		
 		this.loginBox.modal("hide");
-		eventBus.trigger('logged_in');
 	},
 	
 	loginError: function(msg) {

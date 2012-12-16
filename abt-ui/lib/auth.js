@@ -7,8 +7,6 @@ var logger = require(LIB_DIR + 'log_factory').create("app");
 exports.init = function(){
 	passport.use(new LocalStrategy(
 		function(username, password, done) {
-			console.log("Will authenticate here");
-			
 			request({
 				uri : 'http://localhost:10001/users/authenticate',
 				method : 'post',
@@ -61,7 +59,7 @@ exports.filter = function(req, res, next){
 			}
 		});
 		if(skipAuth == true){
-			logger.debug(req.url + " : skipped authentication");
+			logger.info(req.url + " : skipped authentication");
 		}
 		if (skipAuth == true || req.isAuthenticated()){
 			return next();

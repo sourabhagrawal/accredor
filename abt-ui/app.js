@@ -55,7 +55,6 @@ app.configure(function(){
   app.use('/api/', apiProxy);
   app.use(express.bodyParser());
   app.use(app.router);
-//  app.use(log4js.connectLogger(logger));
   app.use(function(req, res, next){
 	  request(req.session.url + req.url, function (error, response, body) {
 		  if (!error && response.statusCode == 200) {
@@ -69,7 +68,6 @@ app.configure(function(){
 	});
   app.use(function(err, req, res, next) {
 	  // only handle `next(err)` calls
-	  console.log("Error occurred");
 	  logger.error(err);
 	  next();
   });
@@ -91,7 +89,7 @@ app.get('/recover', loginRoute.recover);
 app.get('/', baseRoute.index);
 app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);
-app.get('/create', require('./routes/w3/create').index);
+app.get('/dashboard', require('./routes/w3/dashboard').index);
 
 /**
  * Initialize the Server
