@@ -22,7 +22,7 @@ var app = express();
 
 auth.init();
 
-var port = process.env.PORT || 10000;
+var port = process.env.PORT || 8080;
 
 var apiProxy = httpProxy.createServer(function (req, res, proxy) {
 	var user = req.user || {};
@@ -86,12 +86,12 @@ app.get('/logout', loginRoute.logout);
 app.get('/verify', loginRoute.verify);
 app.get('/recover', loginRoute.recover);
 
-app.get('/', baseRoute.index);
+//app.get('/', baseRoute.index);
 app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);
 app.get('/dashboard', require('./routes/w3/dashboard').index);
 
-app.get('/soon', function(req, res){
+app.get('/', function(req, res){
 	res.render('soon');
 });
 
