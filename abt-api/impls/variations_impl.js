@@ -92,14 +92,12 @@ var VariationsImpl = comb.define(impl,{
 				var m = this._getSuper();
 				
 				bus.on('start', function(){
-					ref._dao.getById(id).then(function(model){
-						if(model == undefined){
-							callback(response.error(codes.error.RECORD_WITH_ID_NOT_EXISTS([ref.displayName, id])));
+					ref.getById(id, function(err, data){
+						if(err){
+							callback(err);
 						}else{
-							bus.fire('modelFound', model);
+							bus.fire('modelFound', data.data);
 						}
-					}, function(error){
-						callback(response.error(codes.error.RECORD_WITH_ID_NOT_FETCHED([ref.displayName, id])));
 					});
 				});
 				
@@ -134,8 +132,8 @@ var VariationsImpl = comb.define(impl,{
 					}
 				});
 				
-				bus.on('noDuplicates', function(){
-					if(params.isControl == 1){
+				bus.on('noDuplicates', function(model){
+					if(params.isControl && params.isControl == 1 && model.isControl == 0){ //Setting a Non-Control variation Control
 						ref.search(function(err,data){
 							// If error occurred
 							if(err){

@@ -13,10 +13,18 @@ Views.BaseView = Backbone.View.extend({
 	},
 	
 	init : function(){
-		console.log('template_loaded');
+//		console.log('template_loaded');
 	},
 	
 	initialize : function(){
 		this.bind('template_loaded', this.init, this);
-	}
+	},
+	
+	close: function() {
+        // Unregister for event to stop memory leak
+        eventBus.off( 'close_view', this.close, this );
+//        this.remove();
+        this.undelegateEvents();
+//        this.views = [];   // Clear the view array
+    }
 });

@@ -5,21 +5,23 @@ html(lang='en')
 		.container(style='margin-top:20px')
 			.row-fluid
 				.span2.well
-					ul.nav.nav-list
+					ul.nav.nav-list(id='dashboard-nav')
 						li.nav-header Actions
 						li.active
-							a(href='#') Create Experiment
+							a(href='#', id='create-experiment') Create Experiment
 						li
 							a(href='#') Create Goal
 						li.divider
 						li.nav-header Resources
 						li
-							a(href='#') Experiments
+							a(href='#', id='nav-experiments') Experiments
 							ul.nav.nav-list
 								li
-									a(href='#') Running
+									a(href='#', id='nav-ready-experiments') Ready
 								li
-									a(href='#') Stopped
+									a(href='#', id='nav-running-experiments') Running
+								li
+									a(href='#', id='nav-stopped-experiments') Stopped
 						li
 							a(href='#') Goals
 							ul.nav.nav-list
@@ -28,6 +30,6 @@ html(lang='en')
 								li
 									a(href='#') Disabled
 				.span10
-					.container-fluid(id="split-experiment", style='min-height:200px;')
+					.container-fluid(id="dashboard-content", style='min-height:200px;')
 		include common/global-footer 
 	script(src="/js/dashboard.js")

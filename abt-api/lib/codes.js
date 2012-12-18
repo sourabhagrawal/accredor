@@ -109,6 +109,7 @@ var ErrorCodes = new function(){
 	this.EXPERIMENT_USER_ID_NAME_EXISTS = status({code : 1201, message : "Experiment with this Name already exists"});
 	this.EXPERIMENT_USER_ID_CANT_UPDATE = status({code : 1202, message : "Can't update the User of an Experiment"});
 	this.EXPERIMENT_NAME_REQUIRED = status({code : 1203, message : "Experiment Name can not be blank"});
+	this.EXPERIMENT_URL_EMPTY = status({code : 1204, message : "Experiment URL can not be blank"});
 	
 	/**
 	 * Variations related

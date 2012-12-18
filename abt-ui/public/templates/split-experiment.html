@@ -27,7 +27,7 @@
 					<span class="pull-right">Experiment URL</span>
 				</div>
 				<div class="span9">
-					<input id="ex_url" type="text" placeholder="http://" style="width:100%" value="<% %>"/>
+					<input id="url" type="text" placeholder="http://" style="width:100%" value="<% if(typeof(links) != 'undefined' && links.length > 0) print(links[0]['url']) %>"/>
 				</div>
 			</div>
 		</div>

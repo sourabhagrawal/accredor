@@ -8,6 +8,7 @@ var experimentsDao = require(DAOS_DIR + 'experiments_dao');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
 var StateMachine = require('./transitions_impl');
+var linksImpl = require('./links_impl');
 var Bus = require(LIB_DIR + 'bus');
 
 var ExperimentsImpl = comb.define(impl,{
@@ -140,6 +141,161 @@ var ExperimentsImpl = comb.define(impl,{
 				bus.fire('start');
 			}
 			
+		},
+		
+		createSplitExperiment : function(params, callback){
+			var bus = new Bus();
+			
+			var ref = this;
+			
+			// Name should not be blank
+			var url = params['url'];
+			try{
+				check(url).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+				return;
+			}
+			
+			bus.on('start', function(){
+				ref.create(params, function(err, data){
+					if(err){
+						callback(err, null);// Respond back with error
+					}else{
+						//Create a link
+						var experiment = data.data;
+						bus.fire('experiment_created', params, experiment);
+					}
+				});
+			});
+			
+			bus.on('experiment_created', function(params, experiment){
+				var payload = {
+					experimentId : experiment.id,
+					url : params['url'],
+					createdBy : experiment.createdBy
+				};
+				linksImpl.create(payload, function(err, data){
+					if(err){
+						callback(err);
+					}else{
+						var link = data.data;
+						experiment.links = [link];
+						callback(null,response.success(experiment, 1, codes.success.RECORD_CREATED([ref.displayName])));
+					}
+				});
+			});
+			
+			bus.fire('start');
+		},
+		
+		updateSplitExperiment : function(id, params, callback){
+			var bus = new Bus();
+			
+			var ref = this;
+			
+			// Name should not be blank
+			var url = params['url'];
+			try{
+				check(url).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+				return;
+			}
+			
+			bus.on('start', function(){
+				ref.update(id, params, function(err, data){
+					if(err){
+						callback(err, null);// Respond back with error
+					}else{
+						//Create a link
+						var experiment = data.data;
+						bus.fire('experiment_updated', id, params, experiment);
+					}
+				});
+			});
+			
+			bus.on('experiment_updated', function(id, params, experiment){
+				linksImpl.search(function(err, data){
+					if(err){
+						callback(err);
+					}else{
+						if(data.totalCount > 0){
+							var link = data.data[0];
+							bus.fire('link_fetched', link.id, params, experiment);
+						}else{
+							bus.fire('create_link', params, experiment);
+						}
+						
+					}
+				}, 'experimentId:eq:' + id + "___isDisabled:eq:0");
+			});
+			
+			bus.on('create_link', function(params, experiment){
+				var payload = {
+					experimentId : experiment.id,
+					url : params['url'],
+					createdBy : experiment.createdBy
+				};
+				linksImpl.create(payload, function(err, data){
+					if(err){
+						callback(err);
+					}else{
+						var link = data.data;
+						experiment.links = [link];
+						callback(null,response.success(experiment, 1, codes.success.RECORD_CREATED([ref.displayName])));
+					}
+				});
+			});
+			
+			bus.on('link_fetched', function(linkId, params, experiment){
+				var payload = {
+					url : params['url'],
+					updatedBy : experiment.createdBy
+				};
+				linksImpl.update(linkId, payload, function(err, data){
+					if(err){
+						callback(err);
+					}else{
+						var link = data.data;
+						experiment.links = [link];
+						callback(null,response.success(experiment, 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
+					}
+				});
+			});
+			
+			bus.fire('start');
+		},
+		
+		getSplitExperimentById : function(id, callback){
+			var bus = new Bus();
+			
+			var ref = this;
+			bus.on('start', function(){
+				ref.getById(id, function(err, data){
+					if(err){
+						callback(err, null);// Respond back with error
+					}else{
+						//Get Links
+						var experiment = data.data;
+						bus.fire('experiment_fetched', experiment);
+					}
+				});
+			});
+			
+			bus.on('experiment_fetched', function(experiment){
+				linksImpl.search(function(err, data){
+					if(err){
+						callback(err);
+					}else{
+						var links = data.data;
+						experiment.links = links;
+						callback(null,response.success(experiment, 1, codes.success.RECORD_FETCHED([ref.displayName, id])));
+					}
+				}, 'experimentId:eq:' + experiment.id + "___isDisabled:eq:0");
+			});
+			
+			bus.fire('start');
 		}
 	}
 });

@@ -1,0 +1,21 @@
+<td><%= name %></td>
+<td>
+	<% 
+		if(status == 'started') print('Running');
+		if(status == 'created') print('Ready to Start');
+		if(status == 'stopped') print('Stopped');
+	%>
+</td>
+<td><%= createdAt %></td>
+<td>
+	<div class='btn-ttolbar'>
+		<button class="btn" id='primary-action'>
+			<% 
+				if(status == 'started') print('Stop');
+				if(status == 'created') print('Start');
+				if(status == 'stopped') print('Resume');
+			%>
+		</button>
+		<button class="btn" id='edit'>Edit</button>
+	</div>
+</td>

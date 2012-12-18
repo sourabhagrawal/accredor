@@ -1,11 +1,11 @@
 var SplitVariation = Backbone.Model.extend({
 	defaults : function(){
-		var order = variations.nextOrder();
-		var name = 'Variation #' + (order - 1);
-		if(order == 1)
+		var order = variations.length;
+		var name = 'Variation #' + order;
+		if(order == 0)
 			name = "Control";
 		return {
-			isControl : 0,
+			isControl : order == 0 ? 1 : 0,
 			order : order,
 			name : name,
 			percent : 0
@@ -21,7 +21,7 @@ var SplitVariation = Backbone.Model.extend({
 		if(response.status && response.status.code == 1000){
 			return response.data;
 		}
-		return null;
+		return response;
 	},
 	
 	isControl : function(){
@@ -48,9 +48,9 @@ var SplitVariation = Backbone.Model.extend({
 		console.log(error);
 		if(error.status == 500){
 			var data = $.parseJSON(error.responseText);
-			this.set('status', {isError : true, message : data.message});
+			this.set('status', {isError : true, message : data.message}, {silent : true});
 		}else{
-			this.set('status', {isError : true, message : error.statusText});
+			this.set('status', {isError : true, message : error.statusText}, {silent : true});
 		}
 	},
 	
@@ -69,10 +69,6 @@ var SplitVariationList = Backbone.Collection.extend({
 			return response.data;
 		}
 		return null;
-	},
-	nextOrder : function(){
-		if(this.length == 0) return 1;
-		return this.last().get('order') + 1;
 	},
 	control : function(){
 		return this.filter(function(variation){
@@ -112,7 +108,7 @@ var SplitVariationView = Views.BaseView.extend({
 		this.loadTemplate('split-variation');
 		
 		this.model.bind('destroy', this.remove, this);
-//			this.model.bind('change', this.change, this);
+//		this.model.bind('change', this.change, this);
 		this.model.bind('error', this.error, this);
 		this.model.bind('sync', this.render, this);
 	},
@@ -159,32 +155,77 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	},
 	
 	initialize : function(){
-		this.$el = $("#split-experiment");
+		this.$el = $("#dashboard-content");
 		this._super('initialize');
 		this.loadTemplate('split-experiment');
 		
 		variations.bind('add', this.add, this);
-//			variations.bind('reset', this.addAll, this);
-//			variations.bind('all', this.render, this);
+		variations.bind('reset', this.addAll, this);
+//		variations.bind('all', this.render, this);
+		
+		eventBus.on( 'close_view', this.close, this );
 	},
 	
 	init : function(){
 		this._super('init');
 		
+		if(this.options.id){
+			this.id = this.options.id;
+		}
+		
+		var ref = this;
+		if(this.id){
+			$.ajax({
+				url : '/api/experiments/split_experiment/' + this.id,
+				type : 'GET',
+				success : function(data, textStatus, jqXHR){
+					ref.experiment = data.data;
+					ref.onGet();
+				},
+				error : function(res, textStatus, errorThrown){
+					if(res.status == 500){
+						var data = $.parseJSON(res.responseText);
+						ref.showError(data.message);
+					}
+				}
+			});
+		}else{
+			this.onGet();
+		}
+		
+		
+	},
+	
+	onGet : function(){
 		this.render();
-		
-		this.okBtn = this.$('#ok-btn');
-		
-		this.name = this.$('#name');
-		this.url = this.$('#ex_url');
-		this.alert = this.$('#split-variation-alert');
 	},
 	
 	render : function(){
 		this.$el.html(this.template(this.experiment));
 		
-		if(this.id)
+		this.name = this.$('#name');
+		this.url = this.$('#url');
+		this.alert = this.$('#split-variation-alert');
+		this.okBtn = this.$('#ok-btn');
+		
+		if(this.id){
 			this.$('#variations-container').show();
+			
+			variations.fetch({
+				data : {
+					q : 'experimentId:eq:' + this.id + '___isDisabled:eq:0',
+					sortBy : 'id',
+					sortDir : 'ASC'
+				}
+			});
+		}
+	},
+	
+	close : function(){
+		this._super('close');
+		
+		variations.off();
+		variations.reset();
 	},
 	
 	showError : function(msg){
@@ -194,7 +235,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	},
 	
 	createOrUpdateExperiment : function(){
-		var url = '/api/experiments/';
+		var url = '/api/experiments/split_experiment/';
 		var data = {
 			name : this.name.val(),
 			url : this.url.val()
@@ -216,8 +257,13 @@ Views.SplitExperimentView = Views.BaseView.extend({
 			success : function(data, textStatus, jqXHR){
 				ref.id = data.data.id;
 				ref.experiment = data.data;
+				
 				ref.render();
-				ref.createControl(isUpdate);
+				
+				if(!isUpdate)
+					ref.create();
+				else
+					ref.updateControl();
 			},
 			error : function(res, textStatus, errorThrown){
 				if(res.status == 500){
@@ -228,22 +274,17 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		});
 	},
 	
-	createControl : function(isUpdate){
-		if(!isUpdate){
-			var url = this.url.val();
-			var control = variations.control();
-			if(control.length == 0)
-				variations.create({isControl : 1, type : 'URL', script : url, experimentId : this.id});
-			else{
-				control[0].set({script : url});
-			}
-		}
+	updateControl : function(){
+		var url = this.url.val();
+		var control = variations.control();
+		if(control.length > 0)
+			control[0].set({script : url});
 	},
 	
 	create : function(){
 		if(this.id){
 			var url = this.url.val();
-			variations.create({script : url, type : 'URL', experimentId : this.id});
+			variations.create({type : 'URL', script : url, experimentId : this.id});
 		}
 	},
 	
