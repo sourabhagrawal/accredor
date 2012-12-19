@@ -39,18 +39,19 @@ var SplitVariation = Backbone.Model.extend({
 			return 'Enter a valid percent value. e.g. 50.0';
 			return;
 		}
-		if(parseFloat(attrs.percent) + variations.percent() > 100){
+		if(parseFloat(attrs.percent) + variations.percent(attrs.id) > 100){
 			return 'Variations percent allocation exceeding 100%';
 		}
 	},
 	
 	error : function(model, error){
-		console.log(error);
 		if(error.status == 500){
 			var data = $.parseJSON(error.responseText);
 			this.set('status', {isError : true, message : data.message}, {silent : true});
-		}else{
+		}else if(error.statusText != undefined){
 			this.set('status', {isError : true, message : error.statusText}, {silent : true});
+		}else{
+			this.set('status', {isError : true, message : error}, {silent : true});
 		}
 	},
 	
@@ -80,11 +81,12 @@ var SplitVariationList = Backbone.Collection.extend({
 			return !variation.get('isControl');
 		});
 	},
-	percent : function(){
+	percent : function(excludeId){
 		var percent = 0.0;
 		if(this.length > 0){
 			this.each(function(model){
-				percent += parseFloat(model.get('percent'));
+				if(model.id != excludeId)
+					percent += parseFloat(model.get('percent'));
 			});
 		}
 		return percent;
@@ -192,8 +194,6 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		}else{
 			this.onGet();
 		}
-		
-		
 	},
 	
 	onGet : function(){
@@ -259,12 +259,12 @@ Views.SplitExperimentView = Views.BaseView.extend({
 				ref.id = data.data.id;
 				ref.experiment = data.data;
 				
-				ref.render();
-				
 				if(!isUpdate)
 					ref.create();
 				else
 					ref.updateControl();
+				
+				ref.render();
 			},
 			error : function(res, textStatus, errorThrown){
 				if(res.status == 500){

@@ -22,6 +22,13 @@ vows.describe("The goals API")
 		'should create an Goal' : testUtils.assertSuccess,
 		'should have an Id' : function(err, res){
 			id = res.body.data.id;
+			assert.isNotNull(id);
+		},
+		'should have a status' : function(err, res){
+			assert.isNotNull(res.body.data.status);
+		},
+		'should have an url' : function(err, res){
+			assert.isNotNull(res.body.data.url);
 		},
 		'with same User Id and Name' : {
 			topic : function(){
