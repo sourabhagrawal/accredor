@@ -74,7 +74,6 @@ var Impl = comb.define(null,{
 						callback(response.error(codes.error.RECORD_WITH_ID_NOT_EXISTS([ref.displayName, id])));
 					}else{
 						delete params.id;
-						logger.info(params);
 						ref._dao.update(model, params).then(function(m){
 							callback(null,response.success(m.toJSON(), 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
 						}, function(error){

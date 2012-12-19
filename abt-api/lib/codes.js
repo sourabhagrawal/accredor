@@ -112,6 +112,7 @@ var ErrorCodes = new function(){
 	this.EXPERIMENT_URL_EMPTY = status({code : 1204, message : "Experiment URL can not be blank"});
 	this.EXPERIMENT_TYPE_REQUIRED = status({code : 1205, message : "Experiment Type can not be blank"});
 	this.EXPERIMENT_TYPE_CANT_UPDATE = status({code : 1206, message : "Can't update the type of a Experiment"});
+	this.INVALID_EXPERIMENT_URL = status({code : 1207, message : "Experiment URL is not a valid URL"});
 	
 	/**
 	 * Variations related
@@ -164,6 +165,12 @@ var ErrorCodes = new function(){
 	 */
 	this.EMAIL_BATCH_UPDATE_FAILED = status({code : 1701, message : "Batch update for email failed"});
 	this.EMAIL_BODY_NOT_BUILT = status({code : 1702, message : "Email body could not be built."});
+	
+	/**
+	 * Links related
+	 */
+	this.LINK_URL_REQUIRED = status({code : 1801, message : "Link URL can not be blank"});
+	this.INVALID_LINK_URL = status({code : 1802, message : "Link URL not a valid URL"});
 	
 };
 

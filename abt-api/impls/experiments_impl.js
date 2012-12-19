@@ -163,12 +163,20 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			var ref = this;
 			
-			// Name should not be blank
+			// URL should not be blank
 			var url = params['url'];
 			try{
 				check(url).notNull().notEmpty();
 			}catch(e){
 				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+				return;
+			}
+			
+			// URL should be valid
+			try{
+				check(params['url']).isUrl();
+			}catch(e){
+				callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
 				return;
 			}
 			
@@ -215,6 +223,14 @@ var ExperimentsImpl = comb.define(impl,{
 				check(url).notNull().notEmpty();
 			}catch(e){
 				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+				return;
+			}
+			
+			// URL should be valid
+			try{
+				check(params['url']).isUrl();
+			}catch(e){
+				callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
 				return;
 			}
 			

@@ -60,6 +60,8 @@ var GoalView = Views.BaseView.extend({
 	},
 	
 	primaryAction : function(){
+		this.disable();
+		
 		var status = this.model.get('status');
 		if(status == 'created')
 			this.model.save('status', 'stopped');
@@ -68,6 +70,8 @@ var GoalView = Views.BaseView.extend({
 	},
 	
 	save : function(e){
+		this.disable();
+		
 		var attr = e.target.id;
 		var value = $(e.target).val();
 		var params = {};
@@ -75,7 +79,21 @@ var GoalView = Views.BaseView.extend({
 	    this.model.save(params);
 	},
 	
+	disable : function(){
+		this.$el.find('input').prop('disabled' , true);
+		this.$el.find('select').prop('disabled' , true);
+		this.$el.find('a').prop('disabled' , true);
+	},
+	
+	enable : function(){
+		this.$el.find('input').prop('disabled' , false);
+		this.$el.find('select').prop('disabled' , false);
+		this.$el.find('a').prop('disabled' , false);
+	},
+	
 	markError : function(){
+		this.enable();
+		
 		this.$el.addClass('error');
 	}
 });

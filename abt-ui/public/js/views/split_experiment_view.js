@@ -135,7 +135,14 @@ var SplitVariationView = Views.BaseView.extend({
 		this.render();
 	},
 	
+	disable : function(){
+		this.$el.find('input').prop('disabled' , true);
+		this.$el.find('a').prop('disabled' , true);
+	},
+	
 	save : function(e){
+		this.disable();
+		
 		var attr = e.target.id;
 		var value = $(e.target).val();
 		var params = {};
@@ -144,7 +151,6 @@ var SplitVariationView = Views.BaseView.extend({
 	},
 	
 	error : function(model, error){
-		console.log(error);
 		this.render();
 	}
 });
@@ -229,9 +235,21 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	},
 	
 	showError : function(msg){
+		this.enable();
+		
 		this.alert.find('.alert').addClass('alert-error');
 		this.alert.find('.alert').html(msg);
 		this.alert.show();
+	},
+	
+	disable : function(){
+		this.$el.find('input').prop('disabled' , true);
+		this.$el.find('a').prop('disabled' , true);
+	},
+	
+	enable : function(){
+		this.$el.find('input').prop('disabled' , false);
+		this.$el.find('a').prop('disabled' , false);
 	},
 	
 	createOrUpdateExperiment : function(){
@@ -239,7 +257,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		var data = {
 			name : this.name.val(),
 			url : this.url.val(),
-			type : 'SPLITTER'
+			type : 'splitter'
 		};
 		if(this.id){
 			this.persistExperiment(url + this.id, 'put', data, true);
@@ -250,6 +268,8 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	},
 	
 	persistExperiment : function(url, method, data, isUpdate){
+		this.disable();
+		
 		var ref = this;
 		$.ajax({
 			url : url,
@@ -285,7 +305,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	create : function(){
 		if(this.id){
 			var url = this.url.val();
-			variations.create({type : 'URL', script : url, experimentId : this.id});
+			variations.create({type : 'url', script : url, experimentId : this.id});
 		}
 	},
 	
