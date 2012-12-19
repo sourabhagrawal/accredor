@@ -12,7 +12,7 @@ vows.describe("The users API")
 		topic : function(){
 			client.create({
 				email : 'xyz@abc.com',
-				password : 'abcdef'
+				password : 'abcdef123'
 			},this.callback);
 		},
 		'should create an User' : testUtils.assertSuccess,
@@ -27,27 +27,36 @@ vows.describe("The users API")
 			topic : function(){
 				client.create({
 					email : 'xyz@abc.com',
-					password : 'abcdef'
+					password : 'abcdef123'
 				},this.callback);
 			},
 			'should fail with an error' : testUtils.assertFailure(codes.error.USER_EMAIL_EXISTS)
 		},
-		'with different invalid email' : {
+		'with invalid email' : {
 			topic : function(){
 				client.create({
 					email : 'abcde',
-					password : 'abcdef'
+					password : 'abcdef123'
 				},this.callback);
 			},
-			'should fail with an error' : testUtils.assertFailure(codes.error.CREATION_FAILED)
+			'should fail with an error' : testUtils.assertFailure(codes.error.NOT_VALID_EMAIL)
+		},
+		'with invalid password' : {
+			topic : function(){
+				client.create({
+					email : 'xyz@abc.com',
+					password : 'abcd'
+				},this.callback);
+			},
+			'should fail with an error' : testUtils.assertFailure(codes.error.PASSWORD_TOO_SHORT)
 		},
 		'without password' : {
 			topic : function(){
 				client.create({
-					email : 'abcd'
+					email : 'pqr@abc.com'
 				},this.callback);
 			},
-			'should fail with an error' : testUtils.assertFailure(codes.error.FIELD_REQUIRED)
+			'should fail with an error' : testUtils.assertFailure(codes.error.PASSWORD_TOO_SHORT)
 		}
 	}
 }).addBatch({
@@ -93,6 +102,12 @@ vows.describe("The users API")
 			client.update(id, {email : 'tata@xyz.com'}, this.callback);
 		},
 		'should fail with an error' : testUtils.assertFailure(codes.error.USER_EMAIL_CANT_BE_CHANGED)
+	},
+	'A PUT on User with Id and short password' : {
+		topic : function(){
+			client.update(id, {password : 'abcd'}, this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.PASSWORD_TOO_SHORT)
 	},
 }).addBatch({
 	'A POST on User authenticate' : {

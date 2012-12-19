@@ -3,13 +3,17 @@ $(function($){
 	new Views.DashboardHeaderView();
 	
 	$('#dashboard-nav li').click(function(e){
+		$('#dashboard-nav li.active i').removeClass('icon-white');
 		$('#dashboard-nav li.active').removeClass('active');
 		$(this).addClass('active');
+		$(this).children('i').addClass('icon-white');
 	});
 	
 	$('#dashboard-nav li ul li').click(function(e){
+		$('#dashboard-nav li.active i').removeClass('icon-white');
 		$('#dashboard-nav .active').removeClass('active');
 		$(this).addClass('active');
+		$(this).children('i').addClass('icon-white');
 		e.stopPropagation();
 	});
 	

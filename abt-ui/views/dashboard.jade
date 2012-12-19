@@ -4,32 +4,50 @@ html(lang='en')
 		include common/global-header
 		.container(style='margin-top:20px')
 			.row-fluid
-				.span2.well
+				.span3.well
 					ul.nav.nav-list(id='dashboard-nav')
 						li.nav-header Actions
 						li.active
-							a(href='#', id='create-experiment') Create Experiment
+							a(href='#', id='create-experiment') 
+								i.icon-wrench
+								|  Create Experiment
 						li
-							a(href='#') Create Goal
+							a(href='#') 
+								i.icon-file
+								|  Create Goal
 						li.divider
 						li.nav-header Resources
 						li
-							a(href='#', id='nav-experiments') Experiments
+							a(href='#', id='nav-experiments') 
+								i.icon-random
+								|  Experiments
 							ul.nav.nav-list
 								li
-									a(href='#', id='nav-ready-experiments') Ready
+									a(href='#', id='nav-ready-experiments') 
+										i.icon-thumbs-up
+										|  Ready
 								li
-									a(href='#', id='nav-running-experiments') Running
+									a(href='#', id='nav-running-experiments') 
+										i.icon-play
+										|  Running
 								li
-									a(href='#', id='nav-stopped-experiments') Stopped
+									a(href='#', id='nav-stopped-experiments') 
+										i.icon-stop
+										|  Stopped
 						li
-							a(href='#') Goals
+							a(href='#') 
+								i.icon-road
+								|  Goals
 							ul.nav.nav-list
 								li
-									a(href='#') Active
+									a(href='#') 
+										i.icon-ok
+										|  Active
 								li
-									a(href='#') Disabled
-				.span10
+									a(href='#') 
+										i.icon-ban-circle
+										|  Disabled
+				.span9
 					.container-fluid(id="dashboard-content", style='min-height:200px;')
 		include common/global-footer 
 	script(src="/js/dashboard.js")

@@ -1,6 +1,7 @@
 var comb = require('comb');
 var _ = require('underscore');
 var crypto = require('crypto');
+var check = require('validator').check;
 var logger = require(LIB_DIR + 'log_factory').create("users_impl");
 var impl = require('./impl.js');
 var emitter = require(LIB_DIR + 'emitter');
@@ -27,6 +28,24 @@ var UsersImpl = comb.define(impl,{
 			
 			var ref = this;
 			var m = this._getSuper();
+			
+			// Email should be a valid email
+			var email = params['email'];
+			try{
+				check(email).notNull().notEmpty().isEmail();
+			}catch(e){
+				callback(response.error(codes.error.NOT_VALID_EMAIL()));
+				return;
+			}
+			
+			// Password should be atleast 6 characters long
+			var password = params['password'];
+			try{
+				check(password).notNull().notEmpty().len(6);
+			}catch(e){
+				callback(response.error(codes.error.PASSWORD_TOO_SHORT([6])));
+				return;
+			}
 			
 			bus.on(this, 'start', function(){
 				ref.search(function(err, data){
@@ -95,6 +114,14 @@ var UsersImpl = comb.define(impl,{
 						if(params.email == undefined || model.email == params.email){
 							var password = params.password;
 							if(password != undefined){
+								// Password should be atleast 6 characters long
+								try{
+									check(password).notNull().notEmpty().len(6);
+								}catch(e){
+									callback(response.error(codes.error.PASSWORD_TOO_SHORT([6])));
+									return;
+								}
+								
 								var md5sum = crypto.createHash('md5');
 								var hash = md5sum.update(password).digest("hex");
 								params.password = hash;
@@ -267,6 +294,14 @@ var UsersImpl = comb.define(impl,{
 		},
 		
 		updatePassword : function(email, password, callback){
+			// Password should be atleast 6 characters long
+			try{
+				check(password).notNull().notEmpty().len(6);
+			}catch(e){
+				callback(response.error(codes.error.PASSWORD_TOO_SHORT([6])));
+				return;
+			}
+			
 			var ref = this;
 			this.search(function(err, data){
 				// If error occurred

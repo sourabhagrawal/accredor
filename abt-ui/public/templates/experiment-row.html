@@ -9,13 +9,24 @@
 <td><%= createdAt %></td>
 <td>
 	<div class='btn-ttolbar'>
-		<button class="btn" id='primary-action'>
+		<a class="btn" id='primary-action'>
 			<% 
-				if(status == 'started') print('Stop');
-				if(status == 'created') print('Start');
-				if(status == 'stopped') print('Resume');
+				if(status == 'started'){;
 			%>
-		</button>
-		<button class="btn" id='edit'>Edit</button>
+			<i class="icon-stop"></i> Stop
+			<%
+				} else if(status == 'created'){
+			%>
+			<i class="icon-play"></i> Start
+			<%	
+				}
+				if(status == 'stopped'){;
+			%>
+			<i class="icon-play"></i> Resume
+			<%	
+				}
+			%>
+		</a>
+		<button class="btn" id='edit'><i class="icon-edit icon-white"></i> Edit</button>
 	</div>
 </td>

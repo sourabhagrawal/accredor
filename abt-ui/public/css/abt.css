@@ -19,3 +19,11 @@ header .list{
 .top-bar ul{
 	margin:10px 15px 5px 5px;
 }
+
+[class^="icon-"], [class*=" icon-"]{
+	background:none!important;
+}
+
+.btn [class^="icon-"], .btn [class*=" icon-"] {
+    line-height: 1.3em;
+}

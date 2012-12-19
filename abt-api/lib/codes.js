@@ -141,6 +141,8 @@ var ErrorCodes = new function(){
 			"<a href='#' id='send-verification-btn'>Click Here</a>"});
 	this.TOKEN_INVALID = status({code : 1508, message : "The URL Token is invalid. Please check if you pasted the correct url given in the email"});
 	this.TOKEN_EXPIRED = status({code : 1509, message : "The URL Token has expired"});
+	this.NOT_VALID_EMAIL = status({code : 1510, message : "The email is not a valid email address"});
+	this.PASSWORD_TOO_SHORT = status({code : 1511, message : "The password should be atleast {1} characters long"});
 	
 	
 	/**
