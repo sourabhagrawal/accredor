@@ -8,6 +8,8 @@ var GoalsRoute = function(app){
 	});
 	
 	app.post('/goals', function(req, res){
+		req.body = req.body || {};
+		req.body.userId = req.body.userId || req.user.id;
 		routeUtils.create(req, res, goalsImpl);
 	});
 	

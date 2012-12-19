@@ -13,9 +13,39 @@ EXPERIMENT = {
 	//States
 	CREATED : 'created',
 	STARTED : 'started',
-	STOPPED : 'stopped'
+	STOPPED : 'stopped',
+	
+	types : {
+		SPLITTER : 'splitter'
+	}
 };
 
+/**
+ * Variation entity
+ */
+VARIATION = {
+	name : 'variation',
+	
+	types : {
+		URL : 'URL'
+	}
+};
+
+/**
+ * Goal entity
+ */
+GOAL = {
+	name : 'goal',
+	
+	CREATED : 'created',
+	STOPPED : 'stopped',
+	
+	types : {
+		VISIT : 'visit',
+		ENGAGEMENT : 'engagement',
+		CLICK : 'click'
+	}
+};
 
 /**
  * Email entity

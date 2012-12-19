@@ -1,11 +1,13 @@
 var comb = require('comb');
 var _ = require('underscore');
+var check = require('validator').check;
 var logger = require(LIB_DIR + 'log_factory').create("goals_impl");
 var impl = require('./impl.js');
 var emitter = require(LIB_DIR + 'emitter');
 var goalsDao = require(DAOS_DIR + 'goals_dao');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
+var StateMachine = require('./transitions_impl');
 var Bus = require(LIB_DIR + 'bus');
 
 var GoalsImpl = comb.define(impl,{
@@ -22,9 +24,54 @@ var GoalsImpl = comb.define(impl,{
 			var ref = this;
 			var m = this._getSuper();
 			
-			params['type'] = 'URL_VISIT';
+			// Name should not be blank
+			var name = params['name'];
+			try{
+				check(name).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.GOAL_NAME_REQUIRED()));
+				return;
+			}
+			
+			// Type should not be blank
+			try{
+				check(params['type']).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.GOAL_TYPE_REQUIRED()));
+				return;
+			}
+			
+			// URL should not be blank
+			try{
+				check(params['url']).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.GOAL_URL_REQUIRED()));
+				return;
+			}
+			
+			// URL should not be blank
+			try{
+				check(params['url']).isUrl();
+			}catch(e){
+				callback(response.error(codes.error.INVALID_GOAL_URL()));
+				return;
+			}
 			
 			bus.on('start', function(){
+				StateMachine.getStartState(GOAL.name, function(err, data){
+					if(err != null){
+						callback(err, null);
+						return;
+					}else{
+						startState = data.data[0].name;
+						params['status'] = startState; // Start State
+						
+						bus.fire('stateSet');
+					}
+				});
+			});
+			
+			bus.on('stateSet', function(){
 				ref.search(function(err,data){
 					// If error occurred
 					if(err){
@@ -75,6 +122,25 @@ var GoalsImpl = comb.define(impl,{
 						callback(response.error(codes.error.GOAL_USER_ID_CANT_UPDATE()));
 						return;
 					}
+					
+					if(params.url && params.url != model.url){ // URL is getting changes
+						// URL should not be blank
+						try{
+							check(params['url']).notNull().notEmpty();
+						}catch(e){
+							callback(response.error(codes.error.GOAL_URL_REQUIRED()));
+							return;
+						}
+						
+						// URL should not be blank
+						try{
+							check(params['url']).isUrl();
+						}catch(e){
+							callback(response.error(codes.error.INVALID_GOAL_URL()));
+							return;
+						}
+					}
+					
 					if(params.name && params.name != model.name){ //Name is getting updated
 						var name = params.name || model.name;
 						ref.search(function(err,data){
@@ -96,6 +162,21 @@ var GoalsImpl = comb.define(impl,{
 				});
 				
 				bus.on('noDuplicates', function(model){
+					if(params.status && params.status != model.status){
+						StateMachine.isValidTransition(GOAL.name, model.status, params.status, function(err, data){
+							if(err != null){
+								callback(err, null);
+								return;
+							}else{
+								bus.fire('validOrNoTransitions');
+							}
+						});
+					}else{
+						bus.fire('validOrNoTransitions');
+					}
+				});
+				
+				bus.on('validOrNoTransitions', function(){
 					m.call(ref, id, params, callback);
 				});
 				

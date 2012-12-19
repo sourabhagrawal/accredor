@@ -14,7 +14,9 @@ vows.describe("The goals API")
 		topic : function(){
 			client.create({
 				userId : 1,
-				name : 'abcde'
+				name : 'abcde',
+				type : GOAL.types.VISIT,
+				url : 'http://yahoo.com'
 			},this.callback);
 		},
 		'should create an Goal' : testUtils.assertSuccess,
@@ -25,7 +27,9 @@ vows.describe("The goals API")
 			topic : function(){
 				client.create({
 					userId : 1,
-					name : 'abcde'
+					name : 'abcde',
+					type : GOAL.types.VISIT,
+					url : 'http://yahoo.com'
 				},this.callback);
 			},
 			'should fail with an error' : testUtils.assertFailure(codes.error.GOAL_USER_ID_NAME_EXISTS)
@@ -34,7 +38,9 @@ vows.describe("The goals API")
 			topic : function(){
 				client.create({
 					userId : 2,
-					name : 'abcde'
+					name : 'abcde',
+					type : GOAL.types.VISIT,
+					url : 'http://yahoo.com'
 				},this.callback);
 			},
 			'should create an Goal' : testUtils.assertSuccess,
@@ -46,7 +52,9 @@ vows.describe("The goals API")
 			topic : function(){
 				client.create({
 					userId : 1,
-					name : 'abcd'
+					name : 'abcd',
+					type : GOAL.types.VISIT,
+					url : 'http://yahoo.com'
 				},this.callback);
 			},
 			'should create an Goal' : testUtils.assertSuccess,

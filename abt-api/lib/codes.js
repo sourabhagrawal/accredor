@@ -128,6 +128,10 @@ var ErrorCodes = new function(){
 	 */
 	this.GOAL_USER_ID_NAME_EXISTS = status({code : 1401, message : "Goal with this Name already exists"});
 	this.GOAL_USER_ID_CANT_UPDATE = status({code : 1402, message : "Can't update the User of a Goal"});
+	this.GOAL_NAME_REQUIRED = status({code : 1403, message : "Goal name can not be blank"});
+	this.GOAL_TYPE_REQUIRED = status({code : 1404, message : "Goal Type can not be blank"});
+	this.GOAL_URL_REQUIRED = status({code : 1405, message : "Goal URL can not be blank"});
+	this.INVALID_GOAL_URL = status({code : 1406, message : "Goal URL not a valid URL"});
 	
 	/**
 	 * Sign-up and Authentication related

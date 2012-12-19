@@ -1,0 +1,38 @@
+<td>
+	<input id="name" type="text" placeholder="Variation Name" style="width:100%" value='<%= name %>'>
+</td>
+<td>
+	<input id="url" type="text" placeholder="http://" style="width:100%" value='<%= url %>'>
+</td>
+<td>
+	<select id="type" value='<%= type %>'>
+	  <option value='engagement' <%= type == 'engagement' ? 'selected' : '' %>>Engagement</option>
+	  <option value='visit' <%= type == 'visit' ? 'selected' : '' %>>Visit</option>
+	  <!-- <option>click</option> -->
+	</select>
+</td>
+<td>
+	<% 
+		if(status == 'created') print('Active');
+		if(status == 'stopped') print('Stopped');
+	%>
+</td>
+<td>
+	<div class='btn-ttolbar'>
+		<a class="btn" id='primary-action'>
+			<%
+				if(status == 'created'){
+			%>
+			<i class="icon-ban-circle"></i> Disable
+			<%	
+				}
+				if(status == 'stopped'){;
+			%>
+			<i class="icon-ok"></i> Activate
+			<%	
+				}
+			%>
+		</a>
+		<!-- <a class="btn" id='edit'><i class="icon-save"></i></a> -->
+	</div>
+</td>

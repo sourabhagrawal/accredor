@@ -13,7 +13,7 @@ vows.describe("The variations API")
 			client.create({
 				experimentId : 1,
 				name : 'abcde',
-				type : VARIATION_TYPE_URL
+				type : VARIATION.types.URL
 			},this.callback);
 		},
 		'should create an Variation' : testUtils.assertSuccess,
@@ -25,7 +25,7 @@ vows.describe("The variations API")
 				client.create({
 					experimentId : 1,
 					name : 'abcde',
-					type : VARIATION_TYPE_URL
+					type : VARIATION.types.URL
 				},this.callback);
 			},
 			'should fail with an error' : testUtils.assertFailure(codes.error.VARIATION_EXPERIMENT_ID_NAME_EXISTS)
@@ -35,7 +35,7 @@ vows.describe("The variations API")
 				client.create({
 					experimentId : 2,
 					name : 'abcde',
-					type : VARIATION_TYPE_URL
+					type : VARIATION.types.URL
 				},this.callback);
 			},
 			'should create an Variation' : testUtils.assertSuccess,
@@ -45,7 +45,7 @@ vows.describe("The variations API")
 				client.create({
 					experimentId : 1,
 					name : 'abcd',
-					type : VARIATION_TYPE_URL
+					type : VARIATION.types.URL
 				},this.callback);
 			},
 			'should create an Variation' : testUtils.assertSuccess,

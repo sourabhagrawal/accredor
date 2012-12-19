@@ -53,4 +53,23 @@ $(function($){
 	$('#nav-stopped-experiments').click(function(){
 		Utils.openExperimentsListView({status : 'stopped'});
 	});
+	
+	Utils.openGoalsListView = function(filter){
+		eventBus.trigger('close_view');
+		templateLoader.loadRemoteTemplate("goal-row", "/templates/goal-row.html", function(data){
+			new Views.GoalsListView({filter : filter});
+		});
+	};
+	
+	$('#nav-goals').click(function(){
+		Utils.openGoalsListView();
+	});
+	
+	$('#nav-active-goals').click(function(){
+		Utils.openGoalsListView({status : 'created'});
+	});
+	
+	$('#nav-disabled-goals').click(function(){
+		Utils.openGoalsListView({status : 'stopped'});
+	});
 });

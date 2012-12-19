@@ -17,7 +17,7 @@
 					<span class="pull-right">Experiment Name</span>
 				</div>
 				<div class="span9">
-					<input id="name" type="text" placeholder="Experiment Name" style="width:100%" value="<%= name %>" />
+					<input id="name" type="text" placeholder="Experiment Name" style="width:100%" value="<%= name %>" required/>
 				</div>
 			</div>
 		</div>
@@ -27,7 +27,7 @@
 					<span class="pull-right">Experiment URL</span>
 				</div>
 				<div class="span9">
-					<input id="url" type="text" placeholder="http://" style="width:100%" value="<% if(typeof(links) != 'undefined' && links.length > 0) print(links[0]['url']) %>"/>
+					<input id="url" type="text" placeholder="http://" style="width:100%" value="<% if(typeof(links) != 'undefined' && links.length > 0) print(links[0]['url']) %>"  required/>
 				</div>
 			</div>
 		</div>

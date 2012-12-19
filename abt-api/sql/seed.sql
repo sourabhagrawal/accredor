@@ -22,3 +22,11 @@ INSERT INTO `transitions` values(NULL, 'email', 4, 5, 'SYSTEM', 'SYSTEM', NOW(),
 INSERT INTO `transitions` values(NULL, 'email', 5, 6, 'SYSTEM', 'SYSTEM', NOW(), NOW());
 INSERT INTO `transitions` values(NULL, 'email', 5, 7, 'SYSTEM', 'SYSTEM', NOW(), NOW());
 INSERT INTO `transitions` values(NULL, 'email', 5, 4, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+
+-- Insert States for Goals
+INSERT INTO `states` values(8, 'goal', 'created', 1, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+INSERT INTO `states` values(9, 'goal', 'stopped', 0, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+
+-- Insert transitions for Goals
+INSERT INTO `transitions` values(NULL, 'goal', 8, 9, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+INSERT INTO `transitions` values(NULL, 'goal', 9, 8, 'SYSTEM', 'SYSTEM', NOW(), NOW());

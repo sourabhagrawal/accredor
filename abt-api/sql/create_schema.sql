@@ -67,6 +67,7 @@ CREATE TABLE `goals` (
   `user_id` BIGINT NOT NULL,
   `name` varchar(255) NOT NULL,
   `url` varchar(1024) NOT NULL,
+  `status` varchar(32) NOT NULL, -- CREATED, DISABLED
   `type` char(32) NOT NULL, -- VISIT, ENGAGEMENT, CLICK
   `prop` varchar(1024),
   `is_disabled` TINYINT NOT NULL DEFAULT 0,
