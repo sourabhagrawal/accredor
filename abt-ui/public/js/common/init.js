@@ -34,6 +34,9 @@ window.Views = {};
  
 })(Backbone);
 
+if(window.eventBus == undefined)
+	window.eventBus = _.extend({}, Backbone.Events);
+
 $(function($){
 	$(".alert").alert();
 	
@@ -85,7 +88,4 @@ $(function($){
 			}
 		}
 	});
-	
-	if(window.eventBus == undefined)
-		window.eventBus = _.extend({}, Backbone.Events);
 });

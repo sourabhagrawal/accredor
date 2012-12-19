@@ -22,6 +22,7 @@ CREATE TABLE `experiments` (
   `user_id` BIGINT NOT NULL,
   `name` varchar(255) NOT NULL,
   `status` varchar(32) NOT NULL,
+  `type` VARCHAR(32) NOT NULL, -- SPLITTER
   `is_disabled` TINYINT NOT NULL DEFAULT 0,
   `created_by` varchar(255) NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
@@ -65,7 +66,9 @@ CREATE TABLE `goals` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `user_id` BIGINT NOT NULL,
   `name` varchar(255) NOT NULL,
-  `type` char(32) NOT NULL,
+  `url` varchar(1024) NOT NULL,
+  `type` char(32) NOT NULL, -- VISIT, ENGAGEMENT, CLICK
+  `prop` varchar(1024),
   `is_disabled` TINYINT NOT NULL DEFAULT 0,
   `created_by` varchar(255) NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,

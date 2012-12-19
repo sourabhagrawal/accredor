@@ -14,7 +14,8 @@ vows.describe("The experiments API")
 		topic : function(){
 			client.create({
 				userId : 1,
-				name : 'abcde'
+				name : 'abcde',
+				type : EXPERIMENT_TYPE_SPLITTER
 			},this.callback);
 		},
 		'should create an Experiment' : testUtils.assertSuccess,
@@ -25,7 +26,8 @@ vows.describe("The experiments API")
 			topic : function(){
 				client.create({
 					userId : 1,
-					name : 'abcde'
+					name : 'abcde',
+					type : EXPERIMENT_TYPE_SPLITTER
 				},this.callback);
 			},
 			'should fail with an error' : testUtils.assertFailure(codes.error.EXPERIMENT_USER_ID_NAME_EXISTS)
@@ -34,7 +36,8 @@ vows.describe("The experiments API")
 			topic : function(){
 				client.create({
 					userId : 2,
-					name : 'abcde'
+					name : 'abcde',
+					type : EXPERIMENT_TYPE_SPLITTER
 				},this.callback);
 			},
 			'should create an Experiment' : testUtils.assertSuccess,
@@ -46,7 +49,8 @@ vows.describe("The experiments API")
 			topic : function(){
 				client.create({
 					userId : 1,
-					name : 'abcd'
+					name : 'abcd',
+					type : EXPERIMENT_TYPE_SPLITTER
 				},this.callback);
 			},
 			'should create an Experiment' : testUtils.assertSuccess,

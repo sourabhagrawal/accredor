@@ -1,6 +1,10 @@
 var passport = require('passport');
 var logger = require(LIB_DIR + 'log_factory').create("login");
 
+exports.index = function(req, res){
+	res.render('login');
+};
+
 exports.authenticate = function(req, res, next) {
 	passport.authenticate('local', function(err, data, info) {
 		if (err) { return next(err); }

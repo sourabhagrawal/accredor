@@ -110,6 +110,8 @@ var ErrorCodes = new function(){
 	this.EXPERIMENT_USER_ID_CANT_UPDATE = status({code : 1202, message : "Can't update the User of an Experiment"});
 	this.EXPERIMENT_NAME_REQUIRED = status({code : 1203, message : "Experiment Name can not be blank"});
 	this.EXPERIMENT_URL_EMPTY = status({code : 1204, message : "Experiment URL can not be blank"});
+	this.EXPERIMENT_TYPE_REQUIRED = status({code : 1205, message : "Experiment Type can not be blank"});
+	this.EXPERIMENT_TYPE_CANT_UPDATE = status({code : 1206, message : "Can't update the type of a Experiment"});
 	
 	/**
 	 * Variations related

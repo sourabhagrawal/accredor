@@ -5,7 +5,7 @@ Views.HeaderView = Views.BaseView.extend({
 	
 	render : function(){
 		this.$el.html(this.template({auth : this.isAuthenticated()}));
-		eventBus.trigger('global_header_rendered');
+		eventBus.trigger('header_rendered');
 		return this;
 	},
 	
@@ -17,4 +17,18 @@ Views.HeaderView = Views.BaseView.extend({
 	init : function(){
 		this.render();
 	}
+});
+
+eventBus.on('header_rendered', function(view){
+	$('#login-btn').click(function(event){
+		new Views.LoginBoxView();
+	});
+	
+	$('#signup-btn').click(function(event){
+		new Views.SignUpView();
+	});
+});
+
+eventBus.on('open_login_box', function(){
+	new Views.LoginBoxView();
 });

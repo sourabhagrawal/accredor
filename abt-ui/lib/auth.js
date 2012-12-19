@@ -43,7 +43,7 @@ exports.init = function(){
 exports.filter = function(req, res, next){
 	return function(req, res, next) {
 		logger.debug(req.method + " request on " + req.url);
-		var blackList = ['^/api/'];
+		var blackList = ['^/api/', '^/dashboard*'];
 		var whiteList = ['/api/users/signup', '/api/users/forgot', 
 		                 'api/users/send_verification', 'api/users/verify',
 		                 'api/users/validate_token', '/api/users/update_password'];
@@ -64,8 +64,12 @@ exports.filter = function(req, res, next){
 		if (skipAuth == true || req.isAuthenticated()){
 			return next();
 		}else{ //Say Unauthorized
-			res.status(LOGIN_REQUIRED);
-			res.send();
+			if(req.xhr === true){
+				res.status(LOGIN_REQUIRED);
+				res.send();
+			}else{
+				res.redirect('/login');
+			}
 		}
 	};
 };

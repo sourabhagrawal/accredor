@@ -34,6 +34,14 @@ var ExperimentsImpl = comb.define(impl,{
 				return;
 			}
 			
+			// Type should not be blank
+			try{
+				check(params['type']).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.EXPERIMENT_TYPE_REQUIRED()));
+				return;
+			}
+			
 			bus.on('start', function(){
 				StateMachine.getStartState(EXPERIMENT.name, function(err, data){
 					if(err != null){
@@ -99,6 +107,13 @@ var ExperimentsImpl = comb.define(impl,{
 						callback(response.error(codes.error.EXPERIMENT_USER_ID_CANT_UPDATE()));
 						return;
 					}
+					
+					if(params.type && params.type != model.type){
+						// Can't change the type of a experiment
+						callback(response.error(codes.error.EXPERIMENT_TYPE_CANT_UPDATE()));
+						return;
+					}
+					
 					if(params.name && params.name != model.name){ //Name is getting updated
 						var name = params.name || model.name;
 						ref.search(function(err,data){

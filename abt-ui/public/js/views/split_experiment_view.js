@@ -238,7 +238,8 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		var url = '/api/experiments/split_experiment/';
 		var data = {
 			name : this.name.val(),
-			url : this.url.val()
+			url : this.url.val(),
+			type : 'SPLITTER'
 		};
 		if(this.id){
 			this.persistExperiment(url + this.id, 'put', data, true);
