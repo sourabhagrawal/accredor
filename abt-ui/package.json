@@ -18,6 +18,9 @@
     "underscore" : "*",
     "passport" : "*",
     "passport-local" : "*",
-    "http-proxy" : "*"
+    "http-proxy" : "*",
+    "connect-assetmanager" : "*",
+    "connect-assetmanager-handlers" : "*",
+    "step" : "*"
   }
 }

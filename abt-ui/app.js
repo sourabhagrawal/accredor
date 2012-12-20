@@ -10,10 +10,18 @@ var request = require('request');
 var CONFIG = require('config');
 var log4js = require('log4js');
 var passport = require('passport');
+var assetManager = require('connect-assetmanager');
 
 require('./lib/constants');
 var logger = require(LIB_DIR + 'log_factory').create("app");
 var auth = require(LIB_DIR + 'auth');
+var assetGroups = require(LIB_DIR + 'asset_groups');
+
+/**
+ * Initialize asset manager
+ */
+assetManagerGroups = assetGroups.getAll();
+var assetsManagerMiddleware = assetManager(assetManagerGroups);
 
 /**
  * Initialize App
@@ -51,6 +59,7 @@ app.configure(function(){
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(auth.filter());
+  app.use(assetsManagerMiddleware);
   app.use(express.static(path.join(__dirname, 'public')));
   app.use('/api/', apiProxy);
   app.use(express.bodyParser());
