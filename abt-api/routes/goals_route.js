@@ -20,6 +20,10 @@ var GoalsRoute = function(app){
 	app.get('/goals', function(req, res){
 		routeUtils.search(req, res, goalsImpl);
 	});
+	
+	app['delete']('/goals/:id', function(req, res){
+		routeUtils.deleteById(req, res, goalsImpl);
+	});
 };
 
 module.exports = function(app){

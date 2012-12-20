@@ -36,6 +36,7 @@ var GoalView = Views.BaseView.extend({
 	
 	events : {
 		"click #primary-action" : "primaryAction",
+		"click #delete" : "destroy",
 		"blur #name" : "save",
 		"blur #url" : "save",
 		"blur #type" : "save"
@@ -47,6 +48,7 @@ var GoalView = Views.BaseView.extend({
 		
 		this.model.bind('sync', this.render, this);
 		this.model.bind('error', this.markError, this);
+		this.model.bind('destroy', this.remove, this);
 	},
 	
 	init : function(){
@@ -57,6 +59,11 @@ var GoalView = Views.BaseView.extend({
 		this.$el.html(this.template(this.model.toJSON()));
 		this.$el.removeClass('error');
 		return this;
+	},
+	
+	destroy : function(){
+		if(confirm("Are you sure you want to delete this Goal?"))
+			this.model.destroy();
 	},
 	
 	primaryAction : function(){
@@ -130,6 +137,9 @@ Views.GoalsListView = Views.BaseView.extend({
 			});
 			data.q = q;
 		}
+		
+		if(!data.q) data.q = 'isDisabled:eq:0';
+		else data.q += '___isDisabled:eq:0';
 		
 		goals.fetch({
 			data : data

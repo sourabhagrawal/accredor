@@ -8,8 +8,8 @@
 </td>
 <td><%= createdAt %></td>
 <td>
-	<div class='btn-ttolbar'>
-		<a class="btn" id='primary-action'>
+	<div class="btn-group">
+	  	<a class="btn" id='primary-action'>
 			<% 
 				if(status == 'started'){;
 			%>
@@ -27,6 +27,12 @@
 				}
 			%>
 		</a>
-		<button class="btn" id='edit'><i class="icon-edit icon-white"></i> Edit</button>
+	  	<a class="btn dropdown-toggle" data-toggle="dropdown">
+	    	<span class="caret"></span>
+	 	</a>
+	  	<ul class="dropdown-menu">
+	    	<li><a href='#' id='edit'><i class="icon-edit icon-white"></i> Edit</a></li>
+	    	<li><a href='#' id="delete"><i class="icon-trash"></i> Delete</a></li>
+	  	</ul>
 	</div>
 </td>

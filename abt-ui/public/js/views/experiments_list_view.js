@@ -50,7 +50,8 @@ var ExperimentView = Views.BaseView.extend({
 	
 	events : {
 		"click #primary-action" : "primaryAction",
-		"click #edit" : "edit"
+		"click #edit" : "edit",
+		"click #delete" : "destroy"
 	},
 	
 	initialize : function(){
@@ -58,6 +59,7 @@ var ExperimentView = Views.BaseView.extend({
 		this.loadTemplate('experiment-row');
 		
 		this.model.bind('sync', this.render, this);
+		this.model.bind('destroy', this.remove, this);
 	},
 	
 	init : function(){
@@ -67,6 +69,11 @@ var ExperimentView = Views.BaseView.extend({
 	render : function(){
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
+	},
+	
+	destroy : function(){
+		if(confirm("Are you sure you want to delete this Experiment?"))
+			this.model.destroy();
 	},
 	
 	primaryAction : function(){
@@ -114,6 +121,9 @@ Views.ExperimentsListView = Views.BaseView.extend({
 			});
 			data.q = q;
 		}
+		
+		if(!data.q) data.q = 'isDisabled:eq:0';
+		else data.q += '___isDisabled:eq:0';
 		
 		experiments.fetch({
 			data : data

@@ -13,8 +13,8 @@ var SplitVariation = Backbone.Model.extend({
 	},
 	
 	initialize : function(){
-		this.bind('error', this.error, this);
-		this.bind('sync', this.synced, this);
+//		this.bind('error', this.error, this);
+//		this.bind('sync', this.synced, this);
 	},
 	
 	parse : function(response){

@@ -1,7 +1,4 @@
 $(function($){
-	
-	new Views.DashboardHeaderView();
-	
 	$('#dashboard-nav li').click(function(e){
 		$('#dashboard-nav li.active i').removeClass('icon-white');
 		$('#dashboard-nav li.active').removeClass('active');
@@ -28,6 +25,17 @@ $(function($){
 	
 	$('#create-experiment').click(function(){
 		Utils.openSplitExperimentForm();
+	});
+	
+	Utils.openGoalForm = function(id){
+		eventBus.trigger('close_view');
+		templateLoader.loadRemoteTemplate("goal-create", "/templates/goal-create.html", function(data){
+			new Views.CreateGoalView();
+		});
+	};
+	
+	$('#create-goal').click(function(){
+		Utils.openGoalForm();
 	});
 	
 	Utils.openExperimentsListView = function(filter){

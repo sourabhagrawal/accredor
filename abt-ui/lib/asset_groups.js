@@ -4,7 +4,7 @@ var customAssetHandler = require(LIB_DIR + 'asset_handler');
 var assetGroups = function(){
 	var roots = [__dirname + '/../public/lib/bootstrap/img/',
 	            __dirname + '/../public/lib/ericka/img/'];
-	var debug = false;
+	var debug = true;
 	var config = {
 	    /**
 	     * CSS Groups
@@ -81,6 +81,7 @@ var assetGroups = function(){
 				'/js/views/global_header_view.js',
 				'/js/views/dashboard_header_view.js',
 				'/js/views/split_experiment_view.js',
+				'/js/views/create_goal_view.js',
 				'/js/views/experiments_list_view.js',
 				'/js/views/goals_list_view.js'
 	        ],

@@ -1,0 +1,74 @@
+!!! 5
+html(lang='en')
+	include common/head
+	body
+		include common/global-header
+		.content
+			.container
+				.faq
+					.row
+						.span10
+							.hero
+								h3
+									span Frequently Asked Questions
+								p
+							#accordion2.accordion
+								.accordion-group
+									.accordion-heading
+										a.accordion-toggle.collapsed(data-toggle='collapse', data-parent='#accordion', href='#collapseOne')
+											h5
+												i.icon-plus
+												| What amount of technical knowledge is required to use #{DOMAIN_NAME} ?
+									#collapseOne.accordion-body.collapse(style='height: 0px;')
+										.accordion-inner
+											p
+												| No technical knowledge is required for using #{DOMAIN_NAME}.
+												| All operations are user friendly and have been designed keeping in mind this aspect.
+								.accordion-group
+									.accordion-heading
+										a.accordion-toggle.collapsed(data-toggle='collapse', data-parent='#accordion', href='#collapseTwo')
+											h5
+												i.icon-plus
+												| What do I need to do to install #{DOMAIN_NAME} on my website ?
+									#collapseTwo.accordion-body.collapse(style='height: 0px;')
+										.accordion-inner
+											p
+												| Once you add one line of JavaScript to your website, 
+												| you can create experiments through our online editor without modifying your website code again. 
+												| By separating experiments from production code, #{DOMAIN_NAME} dramatically speeds up the time to implement testing, 
+												| since you don't have to redeploy code every time you want to run a test. 
+												| It also helps keep you organized by not cluttering up production code with experiments.
+								.accordion-group
+									.accordion-heading
+										a.accordion-toggle.collapsed(data-toggle='collapse', data-parent='#accordion', href='#collapseThree')
+											h5
+												i.icon-plus
+												| How many experiments can I run at a time ?
+									#collapseThree.accordion-body.collapse(style='height: 0px;')
+										.accordion-inner
+											p
+												| You can run any number of experiments at any given point in time.
+												| You can as well have any number of variations for each experiment.
+								.accordion-group
+									.accordion-heading
+										a.accordion-toggle.collapsed(data-toggle='collapse', data-parent='#accordion', href='#collapseFour')
+											h5
+												i.icon-plus
+												| How many goals can I track at a time ?
+									#collapseFour.accordion-body.collapse(style='height: 0px;')
+										.accordion-inner
+											p
+												| You can track any number of goals at any given point in time.
+								.accordion-group
+									.accordion-heading
+										a.accordion-toggle.collapsed(data-toggle='collapse', data-parent='#accordion', href='#collapseFive')
+											h5
+												i.icon-plus
+												| How many users can I track per day ?
+									#collapseFive.accordion-body.collapse(style='height: 0px;')
+										.accordion-inner
+											p
+												| Being a free service we can't guarantee to track all of your users.
+												| Though we try very hard to track a large number of users we still have to throttle the usage of our service.
+												| But, we ensure that we maintain the percentages intact. 
+		include common/global-footer

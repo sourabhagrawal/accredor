@@ -14,6 +14,7 @@ header .list{
 	background:#444; 
 	color:#fff;
 	height : 53px;
+	margin-bottom : 20px;
 }
 
 .top-bar ul{
@@ -25,5 +26,21 @@ header .list{
 }
 
 .btn [class^="icon-"], .btn [class*=" icon-"] {
-    line-height: 1.3em;
+    line-height: 1.3em!important;
+}
+
+li [class^="icon-"], .btn [class*=" icon-"] {
+    line-height: 1.3em!important;
+}
+
+.faq .accordion-heading i{
+	line-height : 29px!important;
+}
+
+.dropdown-toggle {
+    height: 20px;
+}
+
+.dropdown-menu a {
+    color: #333333;
 }

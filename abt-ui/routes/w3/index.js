@@ -9,3 +9,7 @@ exports.terms = function(req, res){
 exports.privacyPolicy = function(req, res){
 	res.render('privacy-policy');
 };
+
+exports.faqs = function(req, res){
+	res.render('faqs');
+};

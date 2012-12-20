@@ -5,9 +5,9 @@
 	<input id="url" type="text" placeholder="http://" style="width:100%" value='<%= url %>'>
 </td>
 <td>
-	<select id="type" value='<%= type %>'>
-	  <option value='engagement' <%= type == 'engagement' ? 'selected' : '' %>>Engagement</option>
+	<select id="type">
 	  <option value='visit' <%= type == 'visit' ? 'selected' : '' %>>Visit</option>
+	  <option value='engagement' <%= type == 'engagement' ? 'selected' : '' %>>Engagement</option>
 	  <!-- <option>click</option> -->
 	</select>
 </td>
@@ -18,8 +18,8 @@
 	%>
 </td>
 <td>
-	<div class='btn-ttolbar'>
-		<a class="btn" id='primary-action'>
+	<div class="btn-group">
+	  	<a class="btn" id='primary-action'>
 			<%
 				if(status == 'created'){
 			%>
@@ -33,6 +33,12 @@
 				}
 			%>
 		</a>
-		<!-- <a class="btn" id='edit'><i class="icon-save"></i></a> -->
+	  	<a class="btn dropdown-toggle" data-toggle="dropdown">
+	    	<span class="caret"></span>
+	 	</a>
+	  	<ul class="dropdown-menu">
+	    	<li><a href='#' id="delete"><i class="icon-trash"></i> Delete</a></li>
+	  	</ul>
 	</div>
+	<!-- <a class="btn" id='edit'><i class="icon-save"></i></a> -->
 </td>

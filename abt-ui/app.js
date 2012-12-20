@@ -98,6 +98,7 @@ app.get('/recover', loginRoute.recover);
 app.get('/', baseRoute.index);
 app.get('/terms', baseRoute.terms);
 app.get('/privacy-policy', baseRoute.privacyPolicy);
+app.get('/faqs', baseRoute.faqs);
 
 app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);

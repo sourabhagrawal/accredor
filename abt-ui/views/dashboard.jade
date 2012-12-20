@@ -2,7 +2,7 @@ html(lang='en')
 	include common/head
 	body
 		include common/global-header
-		.container(style='margin-top:20px')
+		.container
 			.row-fluid
 				.span3.well
 					ul.nav.nav-list(id='dashboard-nav')
@@ -12,7 +12,7 @@ html(lang='en')
 								i.icon-wrench
 								|  Create Experiment
 						li
-							a(href='#') 
+							a(href='#', id='create-goal') 
 								i.icon-file
 								|  Create Goal
 						li.divider

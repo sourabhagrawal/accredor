@@ -58,6 +58,10 @@ var ExperimentsRoute = function(app){
 	app.get('/experiments', function(req, res){
 		routeUtils.search(req, res, experimentsImpl);
 	});
+	
+	app['delete']('/experiments/:id', function(req, res){
+		routeUtils.deleteById(req, res, experimentsImpl);
+	});
 };
 
 module.exports = function(app){

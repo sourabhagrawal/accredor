@@ -1,6 +1,10 @@
 var Utils = Utils || {};
 
 $(function($){
+	Utils.isAuthenticated = function(){
+		return $.cookie("isAuthenticated") == 1 ? true : false; 
+	};
+	
 	Utils.openLoginBox = function(){
 		eventBus.trigger('open_login_box');
 	};

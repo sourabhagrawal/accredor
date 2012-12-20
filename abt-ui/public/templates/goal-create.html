@@ -1,0 +1,43 @@
+<h3>Create Goal</h3>
+<hr/>
+<div class="row-fluid">
+	<div class="span7">
+		<div class="row-fluid" id='goal-alert' style='display:none;'>
+			<div class="span12">
+				<div class="alert"></div>
+			</div>
+		</div>
+		<form class="form-horizontal">
+		  <div class="control-group">
+		    <label class="control-label" for="name">Name</label>
+		    <div class="controls">
+		      <input type="text" id="name" placeholder="Name" required/>
+		    </div>
+		  </div>
+		  <div class="control-group">
+		    <label class="control-label" for="type">Type</label>
+		    <div class="controls">
+		     	<select id="type">
+					<option value='visit'>Visit</option>
+					<option value='engagement'>Engagement</option>
+					<!-- <option>click</option> -->
+				</select>
+				<span class="help-block">
+					A Visit Goal is triggered when the user visits a url <br>
+					A Engagement Goal is triggered when the user clicks somewhere on the page
+				</span>
+		    </div>
+		  </div>
+		  <div class="control-group">
+		    <label class="control-label" for="url">URL</label>
+		    <div class="controls">
+		      <input type="text" id="url" placeholder="URL" required/>
+		    </div>
+		  </div>
+		  <div class="form-actions">
+			  <a type="button" class="btn" id='submit-btn'>Create Goal</a>
+			  <a type="button" class="btn" id='reset-btn'>Reset</a>
+		  </div>
+		</form>
+	</div>
+</div>
