@@ -87,6 +87,9 @@ app.get('/verify', loginRoute.verify);
 app.get('/recover', loginRoute.recover);
 
 app.get('/', baseRoute.index);
+app.get('/terms', baseRoute.terms);
+app.get('/privacy-policy', baseRoute.privacyPolicy);
+
 app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);
 app.get('/dashboard', require('./routes/w3/dashboard').index);
