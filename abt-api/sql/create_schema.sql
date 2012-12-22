@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `script_details`;
 DROP TABLE IF EXISTS `variations`;
 DROP TABLE IF EXISTS `links`;
 DROP TABLE IF EXISTS `experiments`;
