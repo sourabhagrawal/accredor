@@ -8,12 +8,19 @@
   "dependencies": {
     "express": "3.0.0rc4",
     "jade": "*",
+    "mime" : "*",
+    "jsdom" : "*",
+    "request" : "*",
     "config" : "*",
     "log4js" : "*",
-    "underscore" : "*",
-    "http-proxy" : "*",
-    "redis" : "*",
+    "patio" : "*",
     "comb" : "*",
-    "uglify-js" : "*"
+    "underscore" : "*",
+    "passport" : "*",
+    "passport-local" : "*",
+    "http-proxy" : "*",
+    "connect-assetmanager" : "*",
+    "connect-assetmanager-handlers" : "*",
+    "step" : "*"
   }
 }

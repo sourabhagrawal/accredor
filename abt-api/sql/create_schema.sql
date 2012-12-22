@@ -79,6 +79,20 @@ CREATE TABLE `goals` (
   CONSTRAINT fk_goals_users_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `script_details` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `data` TEXT DEFAULT NULL,
+  `is_disabled` TINYINT NOT NULL DEFAULT 0,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_experiments_users_user_id FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS transitions;
 DROP TABLE IF EXISTS states;
 
