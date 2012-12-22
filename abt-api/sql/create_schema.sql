@@ -90,7 +90,7 @@ CREATE TABLE `script_details` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT fk_experiments_users_user_id FOREIGN KEY (user_id) REFERENCES users(id)
+  CONSTRAINT fk_script_details_users_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS transitions;
