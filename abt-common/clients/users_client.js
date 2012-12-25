@@ -23,6 +23,46 @@ var UsersClient = comb.define(client,{
 					password : password
 				}
 			}, callback);
+		},
+		
+		signup : function(username, password, callback){
+			request({
+				uri : this.host + this.url + '/signup',
+				method : 'post',
+				headers : {
+					authorization : this.auth
+				},
+				json : {
+					username : username,
+					password : password
+				}
+			}, callback);
+		},
+		
+		forgot : function(username, callback){
+			request({
+				uri : this.host + this.url + '/forgot',
+				method : 'post',
+				headers : {
+					authorization : this.auth
+				},
+				json : {
+					username : username
+				}
+			}, callback);
+		},
+		
+		sendVerificationEmail : function(username, callback){
+			request({
+				uri : this.host + this.url + '/send_verification',
+				method : 'post',
+				headers : {
+					authorization : this.auth
+				},
+				json : {
+					username : username
+				}
+			}, callback);
 		}
 	}
 });

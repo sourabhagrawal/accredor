@@ -25,6 +25,11 @@ var ModelsFactory = comb.define(null,{
             	typecastEmptyStringToNull : false
             };
             
+            this.ScriptDetails = patio.addModel("ScriptDetails",{
+            	pre:pre,
+            	"static" : staticConf
+            });
+            
             this.Experiments = patio.addModel("Experiments",{
             	pre:pre,
             	"static" : staticConf

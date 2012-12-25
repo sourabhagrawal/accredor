@@ -66,7 +66,7 @@ var TransitionsImpl = comb.define(impl,{
 						if(data && data.status && data.status.code == 1000 && data.totalCount == 1){
 							callback(null, data);
 						}else{
-							callback(response.error(codes.error.TRANSITION_NOT_ALLOWED()));
+							callback(response.error(codes.error.TRANSITION_NOT_ALLOWED(fromStateName, toStateName, entityName)));
 						}
 					}
 				}, "entityName:eq:" + entityName + "___fromStateId:eq:" + bus.fromState.id + "___toStateId:eq:" + bus.toState.id);

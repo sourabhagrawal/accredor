@@ -85,7 +85,8 @@ CREATE TABLE `script_details` (
   `user_id` BIGINT NOT NULL,
   `file_name` varchar(255) NOT NULL,
   `data` TEXT DEFAULT NULL,
-  `is_disabled` TINYINT NOT NULL DEFAULT 0,
+  `status` varchar(255) NOT NULL, -- NOT_SCRIPTED, PROCESSING, SCRIPTED
+  `is_old` TINYINT NOT NULL DEFAULT 0,
   `created_by` varchar(255) NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,

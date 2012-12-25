@@ -59,3 +59,15 @@ EMAIL = {
 	SENT : 'sent',
 	FAILED : 'failed'
 };
+
+/**
+ * ScriptDetails entity
+ */
+SCRIPT_DETAILS = {
+	name : 'script_details',
+	
+	//States
+	NOT_SCRIPTED : 'not_scripted',
+	PROCESSING : 'processing',
+	SCRIPTED : 'scripted'
+};

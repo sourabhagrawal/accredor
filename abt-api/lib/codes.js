@@ -10,9 +10,12 @@
  * @param message
  * @param params
  */
+
+var _ = require('underscore');
+
 var substitute = function(message, params){
 	if(params != undefined){
-        params.forEach(function(param, index, arr){
+        _.each(params, function(param, index, arr){
         	// Search for index in message and replace with param. e.g. {1} for index 1
             message = message.replace("{" + (index + 1) + "}", param);
         });
@@ -30,7 +33,22 @@ var substitute = function(message, params){
  * @param message
  */
 var message = function(message){
-	var foo = function(options){
+	var foo = function(){
+		var options = undefined;
+		
+		if(arguments.length > 0)
+			options = [];
+		
+		var firstArgument = arguments[0];
+		if(_.isArray(firstArgument)){
+			for(var i = 0; i < firstArgument.length; i++){
+				options[i] = firstArgument[i];
+			}
+		}else{
+			for(var i = 0; i < arguments.length; i++){
+				options[i] = arguments[i];
+			}
+		}
 		return substitute(message, options);
 	};
 	
@@ -45,7 +63,23 @@ var message = function(message){
  * Returns a function that would generate a status code if called with options.
  */
 var status = function(opts){
-	var foo = function(options){
+	var foo = function(){
+		var options = undefined;
+		
+		if(arguments.length > 0)
+			options = [];
+		
+		var firstArgument = arguments[0];
+		if(_.isArray(firstArgument)){
+			for(var i = 0; i < firstArgument.length; i++){
+				options[i] = firstArgument[i];
+			}
+		}else{
+			for(var i = 0; i < arguments.length; i++){
+				options[i] = arguments[i];
+			}
+		}
+		
 		return {code : opts.code, message : substitute(opts.message, options)};
 	};
 	
@@ -102,6 +136,7 @@ var ErrorCodes = new function(){
 	this.DELETION_FAILED = status({code : 1106, message : "{1} with id : {2} could not be deleted"});
 	this.SEARCH_FAILED = status({code : 1107, message : "Search on {1}s could not be completed"});
 	this.FIELD_REQUIRED = status({code : 1108, message : "{1} can not be blank"});
+	this.VALID_USER_REQUIRED = status({code : 1109, message : "Valid user not found"});
 	
 	/**
 	 * Experiments related
@@ -155,7 +190,7 @@ var ErrorCodes = new function(){
 	/**
 	 * Transitions related
 	 */
-	this.TRANSITION_NOT_ALLOWED = status({code : 1601, message : "Transition not allowed"});
+	this.TRANSITION_NOT_ALLOWED = status({code : 1601, message : "Transition not allowed from {1} to {2} in entity : {3}"});
 	this.STATE_NOT_FOUND = status({code : 1602, message : "State with name : {1} for entity : {2} does not exists"});
 	this.STATE_NOT_START_STATE = status({code : 1603, message : "State with name : {1} for entity : {2} is not the start state"});
 	this.START_STATE_NOT_FOUND = status({code : 1604, message : "Start state for entity : {1} does not exists"});
@@ -171,6 +206,13 @@ var ErrorCodes = new function(){
 	 */
 	this.LINK_URL_REQUIRED = status({code : 1801, message : "Link URL can not be blank"});
 	this.INVALID_LINK_URL = status({code : 1802, message : "Link URL not a valid URL"});
+	
+	/**
+	 * Script Details related
+	 */
+	this.SCRIPT_DETAILS_EXISTS = status({code : 1901, message : "Script Details already exists for this user"});
+	this.SCRIPT_DETAILS_USER_ID_CANT_UPDATE = status({code : 1902, message : "User for Script Details can't be updated"});
+	this.SCRIPT_DETAILS_FILE_NAME_CANT_UPDATE = status({code : 1903, message : "File Name for this user can't be updated"});
 	
 };
 

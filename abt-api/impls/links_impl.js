@@ -6,6 +6,7 @@ var impl = require('./impl.js');
 var linksDao = require(DAOS_DIR + 'links_dao');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
+var emitter = require(LIB_DIR + 'emitter');
 
 var LinksImpl = comb.define(impl,{
 	instance : {
@@ -18,6 +19,15 @@ var LinksImpl = comb.define(impl,{
 		
 		create : function(params, callback){
 			var m = this._getSuper();
+			
+			// User ID should not be valid
+			var userId = params['userId'];
+			try{
+				check(userId).notNull().notEmpty().isInt();
+			}catch(e){
+				callback(response.error(codes.error.VALID_USER_REQUIRED()));
+				return;
+			}
 			
 			// URL should not be blank
 			try{
@@ -36,6 +46,27 @@ var LinksImpl = comb.define(impl,{
 			}
 			
 			m.call(this, params, callback);
+			
+			// Mark script old for the user
+			emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
+		},
+		
+		update : function(id, params, callback){
+			var m = this._getSuper();
+			
+			// User ID should not be valid
+			var userId = params['userId'];
+			try{
+				check(userId).notNull().notEmpty().isInt();
+			}catch(e){
+				callback(response.error(codes.error.VALID_USER_REQUIRED()));
+				return;
+			}
+			
+			m.call(this, id, params, callback);
+			
+			// Mark script old for the user
+			emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
 		}
 	}
 });

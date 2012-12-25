@@ -22,6 +22,7 @@ var EmailWorker = function(){
 	 */
 	var ref = this;
 	
+	CONFIG.email = CONFIG.email || {};
 	var interval = CONFIG.email.interval || 10 * 1000; //10 Secs
 	var batchSize = CONFIG.email.batchSize || 5;
 	
@@ -32,6 +33,7 @@ var EmailWorker = function(){
 			emailsImpl.updateBatchToProcessing(batchSize, function(err, data){
 				if(err != null){
 					logger.error(err);
+					setTimeout(ref.run, interval);
 				}else{
 					if(data && data.status && data.status.code == 1000){
 						if(data.totalCount > 0){
@@ -80,6 +82,7 @@ var EmailWorker = function(){
 							logger.info("No queued emails found. Will try again after " + interval + " millisecs. Now : " + new Date());
 						}
 					}else{
+						setTimeout(ref.run, interval);
 						logger.error("Unusual error in fetching emails for sending");
 					}
 				}

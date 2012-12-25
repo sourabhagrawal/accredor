@@ -9,6 +9,7 @@ var usersDao = require(DAOS_DIR + 'users_dao');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
 var emails_impl = require('./emails_impl');
+var scriptDetailsImpl = require('./script_details_impl');
 var Bus = require(LIB_DIR + 'bus');
 
 var algorithm = 'aes256';
@@ -80,14 +81,27 @@ var UsersImpl = comb.define(impl,{
 					m.call(ref, params, function(err, data){
 						if(err == undefined)
 							bus.fire('created', data);
-						
-						callback(err, data);
+						else
+							callback(err);
 					});
 				}
 			});
 			
 			bus.on('created', function(data){
-				var email = data.data['email'];
+				var user = data.data;
+				var userId = user['id'];
+				scriptDetailsImpl.create({userId : userId}, function(err, scriptDetailsResp){
+					if(err != undefined){
+						callback(err);
+					}else{
+						bus.fire('script_created', user);
+						callback(null, data);
+					}
+				});
+			});
+			
+			bus.on('script_created', function(user){
+				var email = user['email'];
 				
 				ref.sendVerificationEmail(email, function(err, data){
 					if(err != undefined){
@@ -97,6 +111,7 @@ var UsersImpl = comb.define(impl,{
 					}
 				});
 			});
+			
 			bus.fire('start');
 		},
 		
@@ -172,11 +187,6 @@ var UsersImpl = comb.define(impl,{
 			if(email == null){
 				callback(response.error(codes.error.EMAIL_NULL()));
 			}else{
-				var bus = new Bus();
-				
-				var ref = this;
-				
-				
 				this.search(function(err, data){
 					// If error occurred
 					if(err){
@@ -185,6 +195,8 @@ var UsersImpl = comb.define(impl,{
 					}
 					
 					if(data && data.totalCount == 1){ // User found
+						var user = data.data[0];
+						
 						var text = email + "|" + (new Date());
 						var cipher = crypto.createCipher(algorithm, key);  
 						var encrypted = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
@@ -192,7 +204,8 @@ var UsersImpl = comb.define(impl,{
 						
 						var url = 'http://' + DOMAIN_HOST + '/recover?t=' + encrypted;
 						
-						emails_impl.sendFromTemplate('recovery_email.jade', 
+						emails_impl.sendFromTemplate(
+								'recovery_email.jade', 
 								{
 									url : url, 
 									domain_name : DOMAIN_NAME
@@ -202,15 +215,7 @@ var UsersImpl = comb.define(impl,{
 									from : DOMAIN_SUPPORT_ID,
 									subject : 'Regenerate password for your ' + DOMAIN_NAME + ' account'
 								}, 
-								function(err, data){
-									if(err != undefined){
-										logger.error(err);
-									}else{
-										logger.debug(data);
-									}
-								});
-						
-						callback(null,response.success(data.data[0], 1, codes.success.USER_EMAIL_EXISTS()));
+								callback);
 					}else{
 						callback(response.error(codes.error.EMAIL_DOES_NOT_EXISTS()));
 					}

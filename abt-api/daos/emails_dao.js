@@ -13,8 +13,8 @@ var EmailsDAO = comb.define(DAO,{
 		updateBatch : function(batchSize, filter, params){
 			return this._model.forUpdate().filter(filter).limit(batchSize).all()
 				.then(function(models){
-					models.forEach(function(ex){
-						return ex.update(params);
+					models.forEach(function(email){
+						return email.update(params);
 					});
 				});
 		}

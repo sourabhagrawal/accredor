@@ -25,6 +25,15 @@ var ExperimentsImpl = comb.define(impl,{
 			var ref = this;
 			var m = this._getSuper();
 			
+			// User ID should not be valid
+			var userId = params['userId'];
+			try{
+				check(userId).notNull().notEmpty().isInt();
+			}catch(e){
+				callback(response.error(codes.error.VALID_USER_REQUIRED()));
+				return;
+			}
+			
 			// Name should not be blank
 			var name = params['name'];
 			try{
@@ -74,6 +83,9 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			bus.on('noDuplicates', function(){
 				m.call(ref, params, callback);
+				
+				// Mark script old for the user
+				emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
 			});
 			
 			bus.fire('start');
@@ -89,11 +101,14 @@ var ExperimentsImpl = comb.define(impl,{
 				var ref = this;
 				var m = this._getSuper();
 				
+				var userId = null;
+				
 				bus.on('start', function(){
 					ref._dao.getById(id).then(function(model){
 						if(model == undefined){
 							callback(response.error(codes.error.RECORD_WITH_ID_NOT_EXISTS([ref.displayName, id])));
 						}else{
+							userId = model.userId;
 							bus.fire('modelFound', model);
 						}
 					}, function(error){
@@ -151,6 +166,9 @@ var ExperimentsImpl = comb.define(impl,{
 				
 				bus.on('validOrNoTransitions', function(){
 					m.call(ref, id, params, callback);
+					
+					// Mark script old for the user
+					emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
 				});
 				
 				bus.fire('start');
@@ -180,6 +198,8 @@ var ExperimentsImpl = comb.define(impl,{
 				return;
 			}
 			
+			params['type'] = EXPERIMENT.types.SPLITTER;
+			
 			bus.on('start', function(){
 				ref.create(params, function(err, data){
 					if(err){
@@ -196,7 +216,8 @@ var ExperimentsImpl = comb.define(impl,{
 				var payload = {
 					experimentId : experiment.id,
 					url : params['url'],
-					createdBy : experiment.createdBy
+					createdBy : experiment.createdBy,
+					userId : experiment.userId
 				};
 				linksImpl.create(payload, function(err, data){
 					if(err){
@@ -217,21 +238,14 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			var ref = this;
 			
-			// Name should not be blank
-			var url = params['url'];
-			try{
-				check(url).notNull().notEmpty();
-			}catch(e){
-				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
-				return;
-			}
-			
-			// URL should be valid
-			try{
-				check(params['url']).isUrl();
-			}catch(e){
-				callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
-				return;
+			if(params['url']){
+				// URL should be valid
+				try{
+					check(params['url']).isUrl();
+				}catch(e){
+					callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
+					return;
+				}
 			}
 			
 			bus.on('start', function(){
@@ -247,26 +261,35 @@ var ExperimentsImpl = comb.define(impl,{
 			});
 			
 			bus.on('experiment_updated', function(id, params, experiment){
-				linksImpl.search(function(err, data){
-					if(err){
-						callback(err);
-					}else{
-						if(data.totalCount > 0){
-							var link = data.data[0];
-							bus.fire('link_fetched', link.id, params, experiment);
+					linksImpl.search(function(err, data){
+						if(err){
+							callback(err);
 						}else{
-							bus.fire('create_link', params, experiment);
+							if(params['url']){ // If URL is getting updated
+								if(data.totalCount > 0){
+									var link = data.data[0];
+									bus.fire('link_fetched', link.id, params, experiment);
+								}else{
+									bus.fire('create_link', params, experiment);
+								}
+							}else{
+								if(data.totalCount > 0){
+									var link = data.data[0];
+									experiment.links = [link];
+									callback(null,response.success(experiment, 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
+								}
+							}
+							
 						}
-						
-					}
-				}, 'experimentId:eq:' + id + "___isDisabled:eq:0");
+					}, 'experimentId:eq:' + id + "___isDisabled:eq:0");
 			});
 			
 			bus.on('create_link', function(params, experiment){
 				var payload = {
 					experimentId : experiment.id,
 					url : params['url'],
-					createdBy : experiment.createdBy
+					createdBy : experiment.createdBy,
+					userId : experiment.userId
 				};
 				linksImpl.create(payload, function(err, data){
 					if(err){
@@ -282,7 +305,8 @@ var ExperimentsImpl = comb.define(impl,{
 			bus.on('link_fetched', function(linkId, params, experiment){
 				var payload = {
 					url : params['url'],
-					updatedBy : experiment.createdBy
+					updatedBy : experiment.createdBy,
+					userId : experiment.userId
 				};
 				linksImpl.update(linkId, payload, function(err, data){
 					if(err){

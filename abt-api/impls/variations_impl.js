@@ -23,6 +23,15 @@ var VariationsImpl = comb.define(impl,{
 			var ref = this;
 			var m = this._getSuper();
 			
+			// User ID should not be valid
+			var userId = params['userId'];
+			try{
+				check(userId).notNull().notEmpty().isInt();
+			}catch(e){
+				callback(response.error(codes.error.VALID_USER_REQUIRED()));
+				return;
+			}
+			
 			// Name should not be blank
 			try{
 				check(params['name']).notNull().notEmpty();
@@ -77,6 +86,9 @@ var VariationsImpl = comb.define(impl,{
 			
 			bus.on('controlCheck', function(){
 				m.call(ref, params, callback);
+				
+				// Mark script old for the user
+				emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
 			});
 			
 			bus.fire('start');
@@ -90,6 +102,15 @@ var VariationsImpl = comb.define(impl,{
 				
 				var ref = this;
 				var m = this._getSuper();
+				
+				// User ID should not be valid
+				var userId = params['userId'];
+				try{
+					check(userId).notNull().notEmpty().isInt();
+				}catch(e){
+					callback(response.error(codes.error.VALID_USER_REQUIRED()));
+					return;
+				}
 				
 				bus.on('start', function(){
 					ref.getById(id, function(err, data){
@@ -154,6 +175,9 @@ var VariationsImpl = comb.define(impl,{
 				
 				bus.on('controlCheck', function(){
 					m.call(ref, id, params, callback);
+					
+					// Mark script old for the user
+					emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
 				});
 				
 				bus.fire('start');

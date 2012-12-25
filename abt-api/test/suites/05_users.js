@@ -6,6 +6,7 @@ var codes = require(LIB_DIR + 'codes');
 var client = require(CLIENTS_DIR + 'users_client');
 
 var id;
+var id2;
 vows.describe("The users API")
 .addBatch({
 	'A POST on User' : {
@@ -58,6 +59,23 @@ vows.describe("The users API")
 			},
 			'should fail with an error' : testUtils.assertFailure(codes.error.PASSWORD_TOO_SHORT)
 		}
+	},
+	
+	'A POST on User 2' : {
+		topic : function(){
+			client.create({
+				email : 'pqr@abc.com',
+				password : 'abcdef123'
+			},this.callback);
+		},
+		'should create an User' : testUtils.assertSuccess,
+		'should have an Id' : function(err, res){
+			id2 = res.body.data.id;
+			assert.isNotNull(id2);
+		},
+		'should not be verified' : function(err, res){
+			assert.isFalse(res.body.data.isVerified);
+		},
 	}
 }).addBatch({
 	'A GET on User with Id' : {
@@ -116,6 +134,12 @@ vows.describe("The users API")
 		},
 		'should authenticate the user' : testUtils.assertSuccess,
 	},
+	'A POST on User authenticate for a non-verified user ' : {
+		topic : function(){
+			client.authenticate('pqr@abc.com', 'abcdef123', this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.EMAIL_NOT_VERIFIED)
+	},
 	'A PUT on User authenticate with empty email' : {
 		topic : function(){
 			client.authenticate(null, 'abcpqr', this.callback);
@@ -134,5 +158,34 @@ vows.describe("The users API")
 		},
 		'should fail with an error' : testUtils.assertFailure(codes.error.EMAIL_OR_PASSWORD_INCORRECT)
 	},
+}).addBatch({
+	'A POST on User signup' : {
+		topic : function(){
+			client.signup('abc@abc.com', 'abcpqr', this.callback);
+		},
+		'should signup the user' : testUtils.assertSuccess,
+	}
+})
+.addBatch({
+	'A POST on User forgot' : {
+		topic : function(){
+			client.forgot('abc@abc.com', this.callback);
+		},
+		'should send a recovery mail to user' : testUtils.assertSuccess,
+		'with non-existent email' : {
+			topic : function(){
+				client.forgot('def@abc.com', this.callback);
+			},
+			'should fail with an error' : testUtils.assertFailure(codes.error.EMAIL_DOES_NOT_EXISTS)
+		},
+	}
+})
+.addBatch({
+	'A POST on User Send Verification' : {
+		topic : function(){
+			client.sendVerificationEmail('abc@abc.com', this.callback);
+		},
+		'should send a verification mail to user' : testUtils.assertSuccess,
+	}
 })
 .export(module);

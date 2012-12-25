@@ -8,6 +8,7 @@ var entities = require(LIB_DIR + 'entities');
 
 var id;
 var id2;
+var idSplitter;
 vows.describe("The experiments API")
 .addBatch({
 	'A POST on Experiment' : {
@@ -21,6 +22,7 @@ vows.describe("The experiments API")
 		'should create an Experiment' : testUtils.assertSuccess,
 		'should have an Id' : function(err, res){
 			id = res.body.data.id;
+			assert.isNotNull(id);
 		},
 		'with same User Id and Name' : {
 			topic : function(){
@@ -54,9 +56,63 @@ vows.describe("The experiments API")
 				},this.callback);
 			},
 			'should create an Experiment' : testUtils.assertSuccess,
+		},
+		'with no Name' : {
+			topic : function(){
+				client.create({
+					type : EXPERIMENT.types.SPLITTER
+				},this.callback);
+			},
+			'should fail with an error' : testUtils.assertFailure(codes.error.EXPERIMENT_NAME_REQUIRED)
+		},
+		'with no Type' : {
+			topic : function(){
+				client.create({
+					name : 'djeqwdwq'
+				},this.callback);
+			},
+			'should fail with an error' : testUtils.assertFailure(codes.error.EXPERIMENT_TYPE_REQUIRED)
 		}
 	}
-}).addBatch({
+})
+.addBatch({
+	'A POST on Create Splitter Experiment with correct values' : {
+		topic : function(){
+			client.createSplitExperiment({
+				name : 'splitter experiment',
+				url : 'http://yahoo.com'
+			},this.callback);
+		},
+		'should create an Experiment' : testUtils.assertSuccess,
+		'should have an Id' : function(err, res){
+			idSplitter = res.body.data.id;
+			assert.isNotNull(idSplitter);
+		},
+		'should have links' : function(err, res){
+			var links = res.body.data.links;
+			assert.isNotNull(links);
+			assert.isNotNull(links[0]);
+		}
+	},
+	'A POST on Create Splitter Experiment with no url' : {
+		topic : function(){
+			client.createSplitExperiment({
+				name : 'splitter experiment',
+			},this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.EXPERIMENT_URL_EMPTY)
+	},
+	'A POST on Create Splitter Experiment with invalid url' : {
+		topic : function(){
+			client.createSplitExperiment({
+				name : 'splitter experiment',
+				url : 'hdkjqhkd'
+			},this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.INVALID_EXPERIMENT_URL)
+	}
+})
+.addBatch({
 	'A GET on Experiment with Id' : {
 		topic : function(){
 			client.getById(id,this.callback);
@@ -72,7 +128,24 @@ vows.describe("The experiments API")
 		},
 		'should fail with an error' : testUtils.assertFailure(codes.error.RECORD_WITH_ID_NOT_EXISTS)
 	}
-}).addBatch({
+})
+.addBatch({
+	'A GET on Splitter Experiment with Id' : {
+		topic : function(){
+			client.getSplitExperimentById(idSplitter,this.callback);
+		},
+		'should fetch the experiment' : testUtils.assertSuccess,
+		'should have the same id' : function(err, res){
+			assert.equal(JSON.parse(res.body).data.id, idSplitter);
+		},
+		'should have links' : function(err, res){
+			var links = JSON.parse(res.body).data.links;
+			assert.isNotNull(links);
+			assert.isNotNull(links[0]);
+		}
+	}
+})
+.addBatch({
 	'A PUT on Experiment with Id' : {
 		topic : function(){
 			client.update(id, {name : 'abc'}, this.callback);
@@ -120,6 +193,47 @@ vows.describe("The experiments API")
 			client.update(id2, {status : EXPERIMENT.STOPPED}, this.callback);
 		},
 		'should fail with an error' : testUtils.assertFailure(codes.error.TRANSITION_NOT_ALLOWED)
+	},
+	'A PUT on Experiment with Id and different type' : {
+		topic : function(){
+			client.update(id2, {type : 'a_type'}, this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.EXPERIMENT_TYPE_CANT_UPDATE)
+	},
+})
+.addBatch({
+	'A PUT on Update Splitter Experiment with Id' : {
+		topic : function(){
+			client.updateSplitExperiment(idSplitter, {name : 'abc splitter'}, this.callback);
+		},
+		'should update the experiment' : testUtils.assertSuccess,
+		'should have the same id' : function(err, res){
+			assert.equal(res.body.data.id, idSplitter);
+		},
+		'should have the updated values' : function(err, res){
+			assert.equal(res.body.data.name, 'abc splitter');
+		}
+	},
+	'A PUT on Update Splitter Experiment with Id and invalid url' : {
+		topic : function(){
+			client.updateSplitExperiment(idSplitter, {url : 'http'}, this.callback);
+		},
+		'should fail with an error' : testUtils.assertFailure(codes.error.INVALID_EXPERIMENT_URL)
+	},
+	'A PUT on Update Splitter Experiment with Id and valid url' : {
+		topic : function(){
+			client.updateSplitExperiment(idSplitter, {url : 'http://google.com'}, this.callback);
+		},
+		'should update the experiment' : testUtils.assertSuccess,
+		'should have the same id' : function(err, res){
+			assert.equal(res.body.data.id, idSplitter);
+		},
+		'should have the updated values' : function(err, res){
+			var links = res.body.data.links;
+			assert.isNotNull(links);
+			assert.isNotNull(links[0]);
+			assert.equal(links[0].url, 'http://google.com');
+		}
 	},
 })
 .export(module);

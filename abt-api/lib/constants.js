@@ -20,3 +20,8 @@ EMAILS_DIR = __dirname + '/../views/emails/';
 DOMAIN_HOST = CONFIG.domain.host;
 DOMAIN_NAME = CONFIG.domain.name;
 DOMAIN_SUPPORT_ID = CONFIG.domain.support_id;
+
+/**
+ * Global events
+ */
+EVENT_MARK_SCRIPT_OLD = 'mark_script_old';

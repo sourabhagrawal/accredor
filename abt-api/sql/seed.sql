@@ -30,3 +30,13 @@ INSERT INTO `states` values(9, 'goal', 'stopped', 0, 'SYSTEM', 'SYSTEM', NOW(), 
 -- Insert transitions for Goals
 INSERT INTO `transitions` values(NULL, 'goal', 8, 9, 'SYSTEM', 'SYSTEM', NOW(), NOW());
 INSERT INTO `transitions` values(NULL, 'goal', 9, 8, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+
+-- Insert States for ScriptDetails
+INSERT INTO `states` values(10, 'script_details', 'not_scripted', 1, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+INSERT INTO `states` values(11, 'script_details', 'processing', 0, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+INSERT INTO `states` values(12, 'script_details', 'scripted', 0, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+
+-- Insert Transtions for ScriptDetails
+INSERT INTO `transitions` values(NULL, 'script_details', 10, 11, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+INSERT INTO `transitions` values(NULL, 'script_details', 11, 12, 'SYSTEM', 'SYSTEM', NOW(), NOW());
+INSERT INTO `transitions` values(NULL, 'script_details', 12, 10, 'SYSTEM', 'SYSTEM', NOW(), NOW());

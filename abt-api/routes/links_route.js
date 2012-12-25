@@ -8,10 +8,14 @@ var LinksRoute = function(app){
 	});
 	
 	app.post('/links', function(req, res){
+		req.body = req.body || {};
+		req.body.userId = req.body.userId || req.user.id;
 		routeUtils.create(req, res, linksImpl);
 	});
 	
 	app.put('/links/:id', function(req, res){
+		req.body = req.body || {};
+		req.body.userId = req.body.userId || req.user.id;
 		routeUtils.update(req, res, linksImpl);
 	});
 		

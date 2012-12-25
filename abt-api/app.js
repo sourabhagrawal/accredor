@@ -75,3 +75,4 @@ http.createServer(app).listen(app.get('port'), function(){
 });
 
 require('./workers/email_job');
+require('./workers/script_job');
