@@ -86,6 +86,11 @@ var ModelsFactory = comb.define(null,{
             	"static" : staticConf
             });
 			
+			this.ContactLeads = patio.addModel("ContactLeads",{
+            	pre:pre,
+            	"static" : staticConf
+            });
+			
             patio.syncModels().then(function(){
             	logger.debug("synced");
             	emitter.emit("modelsSynced");

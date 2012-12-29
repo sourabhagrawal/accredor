@@ -21,10 +21,6 @@ footer
 							a(href='#') Getting Started
 						li
 							a(href='/faqs') FAQs
-						li
-							a(href='/terms') Terms of Service
-						li
-							a(href='/privacy-policy') Privacy Policy
 			.span4
 				.widget
 					h4 About
@@ -32,12 +28,14 @@ footer
 						li
 							a(href='#') About Us
 						li
-							a(href='#') Contact Us
+							a(href='/faqs') Contact Us
 			.span12
 				hr
 				p.copy
 					| Copyright &copy; 
-					a(href='http://#{domain}') #{domain}
+					a(href='http://#{domain}') #{domain} | 
+					a(href='/terms') Terms of Service | 
+					a(href='/privacy-policy') Privacy Policy
 
 script(type='text/javascript')
 	/* Flex Slider */

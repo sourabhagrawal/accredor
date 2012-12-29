@@ -43,10 +43,23 @@ exports.init = function(){
 exports.filter = function(req, res, next){
 	return function(req, res, next) {
 		logger.debug(req.method + " request on " + req.url);
+		
+		/**
+		 * Url patterns to be put under auth
+		 */
 		var blackList = ['^/api/', '^/dashboard*'];
-		var whiteList = ['/api/users/signup', '/api/users/forgot', 
-		                 'api/users/send_verification', 'api/users/verify',
-		                 'api/users/validate_token', '/api/users/update_password'];
+		
+		/**
+		 * Url patterns to be excluded from auth
+		 */
+		var whiteList = ['/api/users/signup', 
+		                 '/api/users/forgot', 
+		                 'api/users/send_verification', 
+		                 'api/users/verify',
+		                 'api/users/validate_token', 
+		                 '/api/users/update_password',
+		                 '/api/contact_leads'];
+		
 		var skipAuth = true;
 		_.each(blackList, function(url){
 			if(req.url.match(url)){

@@ -8,4 +8,6 @@ module.exports = function(app){
 	require('./goals_route')(app);
 	require('./users_route')(app);
 	require('./emails_route')(app);
+	require('./script_details_route')(app);
+	require('./contact_leads_route')(app);
 };

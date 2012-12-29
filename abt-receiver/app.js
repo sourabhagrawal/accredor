@@ -19,17 +19,6 @@ var app = express();
 
 var port = process.env.PORT || 10002;
 
-var apiProxy = httpProxy.createServer(function (req, res, proxy) {
-	var user = req.user || {};
-	var userId = user.id || 'dummy_login';
-	req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
-	
-	proxy.proxyRequest(req, res, {
-		host: 'localhost',
-		port: 10001
-	});
-});
-
 app.configure(function(){
   app.set('port', port);
   app.set('views', __dirname + '/views');
@@ -39,10 +28,7 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('sutta'));
-  app.use(express.session({secret : 'sutta'}));
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use('/api/', apiProxy);
   app.use(app.router);
 //  app.use(log4js.connectLogger(logger));
   app.use(function(err, req, res, next) {
@@ -68,3 +54,5 @@ require('./subscribers/subscriber').init();
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
+
+require('./workers/script_file_job');

@@ -1,0 +1,1 @@
+new Views.ContactView();

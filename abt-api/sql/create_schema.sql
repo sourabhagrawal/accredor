@@ -142,3 +142,16 @@ CREATE TABLE `emails` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS contact_leads;
+CREATE TABLE `contact_leads` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `name` varchar(256),
+  `email` varchar(256) NOT NULL,
+  `message` TEXT DEFAULT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

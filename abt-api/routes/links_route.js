@@ -1,5 +1,5 @@
 var routeUtils = require('./route_utils.js');
-var logger = require(LIB_DIR + 'log_factory').create("variations_route");
+var logger = require(LIB_DIR + 'log_factory').create("links_route");
 var linksImpl = require('../impls/links_impl');
 
 var LinksRoute = function(app){
