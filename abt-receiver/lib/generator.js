@@ -1,6 +1,9 @@
 var fs = require('fs');
 var UglifyJS = require("uglify-js");
 
+/**
+ * It generated the JS file to be given to the user
+ */
 var Generator = function(){
 	
 	this.jquery = fs.readFileSync(LIB_DIR + 'src/jquery-1.8.2.js');

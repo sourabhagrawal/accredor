@@ -6,6 +6,7 @@ var experimentsImpl = require('./experiments_impl');
 var variationsImpl = require('./variations_impl');
 var goalsImpl = require('./goals_impl');
 var linksImpl = require('./links_impl');
+var variationVisitsImpl = require('./variation_visits_impl');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
 var emitter = require(LIB_DIR + 'emitter');
@@ -26,30 +27,46 @@ var ReportsDataImpl = comb.define(impl,{
 			variationData.name = variation.name;
 			variationData.isControl = variation.isControl;
 			
-			// TODO Fetch total visits
-			variationData.total = Math.floor((Math.random()*1000)+1);
-			
-			//TODO Fetch hits for all goals
-			variationData.goals = {};
-			_.each(goals, function(goal){
-				var visits = Math.floor((Math.random()*100)+1);
-				var conversion = Math.round((visits * 100.0 / variationData.total) * 100)/100;
-				var improvement = 0;
-				if(!isControl){
-					controlConversion = controlConversions[goal.id];
-					improvement = Math.round((((conversion - controlConversion) * 100) / controlConversion)*100) / 100; 
+			variationVisitsImpl.search(function(err, data){
+				if(err){
+					callback(err);
 				}else{
-					controlConversions[goal.id] = conversion;
+					var rows = data.data;
+					var visitsMap = {};
+					_.each(rows, function(row){
+						var goalId = row['goalId'];
+						var visits = row['visits'];
+						
+						visitsMap[goalId] = visitsMap[goalId] || 0;
+						visitsMap[goalId] += parseInt(visits);
+					});
+					
+					variationData.total = visitsMap["0"] || 0;
+					
+					//TODO Fetch hits for all goals
+					variationData.goals = {};
+					_.each(goals, function(goal){
+						var goalVisits =  visitsMap[goal.id] || 0;
+						var total = variationData.total;
+						var conversion = total == 0 ? 0 : Math.round((goalVisits * 100.0 / total) * 100)/100;
+						var improvement = 0;
+						if(!isControl){
+							controlConversion = controlConversions[goal.id];
+							improvement = controlConversion == 0 ? 0 : Math.round((((conversion - controlConversion) * 100) / controlConversion)*100) / 100; 
+						}else{
+							controlConversions[goal.id] = conversion;
+						}
+						
+						variationData.goals[goal.id] = {
+							visits : goalVisits,
+							conversion : conversion,
+							improvement : improvement
+						};
+					});
+					
+					callback(null, variationData);
 				}
-				
-				variationData.goals[goal.id] = {
-					visits : visits,
-					conversion : conversion,
-					improvement : improvement
-				};
-			});
-			
-			callback(null, variationData);
+			}, 'variationId:eq:' + variation.id);
 		},
 		
 		getReportDataforExperiment : function(ex, goals, callback){
@@ -80,12 +97,11 @@ var ReportsDataImpl = comb.define(impl,{
 						variations = data.data;
 						bus.fire('variations_fetched', variations);
 					}
-				}, 'experimentId:eq:' + ex.id + '___isDisabled:eq:0');
+				}, 'experimentId:eq:' + ex.id + '___isDisabled:eq:0', 0, -1, 'isControl', 'DESC');
 			});
 			
 			bus.on('variations_fetched', function(variations){
 				responseData.variations = [];
-				var count = 0;
 				var controlConversions = {};
 				
 				if(variations.length > 0){
@@ -98,14 +114,19 @@ var ReportsDataImpl = comb.define(impl,{
 								}else{
 									responseData.variations.push(data);
 									
-									if(++count == variations.length){
-										bus.fire('variations_data_added');
-									}
+									bus.fire('control_conversions_fetched', variations, controlConversions);
 								}
 							});
 						}
 					});
-					
+				}else{
+					bus.fire('variations_data_added');
+				}
+			});
+			
+			bus.on('control_conversions_fetched', function(variations, controlConversions){
+				var count = 0;
+				if(variations.length > 0){
 					_.each(variations, function(variation){
 						if(!variation.isControl){
 							ref.getVariationData(variation, goals, controlConversions, function(err, data){
@@ -115,7 +136,7 @@ var ReportsDataImpl = comb.define(impl,{
 								}else{
 									responseData.variations.push(data);
 									
-									if(++count == variations.length){
+									if(++count == variations.length - 1){
 										bus.fire('variations_data_added');
 									}
 								}

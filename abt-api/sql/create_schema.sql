@@ -155,3 +155,16 @@ CREATE TABLE `contact_leads` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS variation_visits;
+CREATE TABLE `variation_visits` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `variation_id` BIGINT NOT NULL,
+  `goal_id` BIGINT NOT NULL DEFAULT 0,
+  `visits` BIGINT NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

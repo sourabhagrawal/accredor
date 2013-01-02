@@ -213,6 +213,13 @@ var ErrorCodes = new function(){
 	this.SCRIPT_DETAILS_EXISTS = status({code : 1901, message : "Script Details already exists for this user"});
 	this.SCRIPT_DETAILS_USER_ID_CANT_UPDATE = status({code : 1902, message : "User for Script Details can't be updated"});
 	this.SCRIPT_DETAILS_FILE_NAME_CANT_UPDATE = status({code : 1903, message : "File Name for this user can't be updated"});
+	
+	/**
+	 * Variation Visits related
+	 */
+	this.VARIATION_ID_NULL = status({code : 2001, message : "Variation Id can not be empty"});
+	this.VISITS_NULL = status({code : 2001, message : "Visits can not be empty"});
+	
 };
 
 exports.success = SuccessCodes;

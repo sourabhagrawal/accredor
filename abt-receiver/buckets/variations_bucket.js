@@ -18,11 +18,27 @@ var VariationsBucket = comb.define(Bucket, {
 					_.each(values, function(value){
 						var key = "v:" + value.variationId;
 						
-						ref.client.hincrby(key, 'total', 1, function(err, reply){
+						var lockKey = key + ':total';
+						ref.acquireLock(lockKey, (new Date().getTime() + ref.lockTimeOut + 1), 
+								function(err, reply){
 							if(err){
 								logger.error(err);
-							}else
-								logger.info("v:" + value.variationId + " total : " + reply);
+							}else{
+								logger.info("reply from lock acquisition : " + reply);
+								//Lock acquired
+								ref.client.hincrby(key, 'total', 1, function(err, reply){
+									if(err){
+										logger.error(err);
+									}else
+										logger.info("v:" + value.variationId + " total : " + reply);
+									
+									ref.releaseLock(lockKey, function(err, reply){
+										if(err){
+											logger.error(err);
+										}
+									});
+								});
+							}
 						});
 					});
 				}else if(channel == CHANNEL_GOALS){ // mark the goal hit
@@ -30,11 +46,28 @@ var VariationsBucket = comb.define(Bucket, {
 						var key = "v:" + value.variationId; //e.g. v:1001
 						var field = "g:" + value.goalId; // e.g. g:1004
 						
-						ref.client.hincrby(key, field, 1, function(err, reply){
+						var lockKey = key + ":" + field;
+						ref.acquireLock(lockKey, (new Date().getTime() + ref.lockTimeOut + 1), 
+								function(err, reply){
 							if(err){
 								logger.error(err);
-							}else
-								logger.info("v:" + value.variationId + " g:" + value.goalId + " : " + reply);
+							}else{
+								logger.info("reply from lock acquisition : " + reply);
+								//Lock acquired
+								
+								ref.client.hincrby(key, field, 1, function(err, reply){
+									if(err){
+										logger.error(err);
+									}else
+										logger.info("v:" + value.variationId + " g:" + value.goalId + " : " + reply);
+									
+									ref.releaseLock(lockKey, function(err, reply){
+										if(err){
+											logger.error(err);
+										}
+									});
+								});
+							}
 						});
 					});
 				}

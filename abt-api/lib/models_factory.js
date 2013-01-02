@@ -91,6 +91,11 @@ var ModelsFactory = comb.define(null,{
             	"static" : staticConf
             });
 			
+			this.VariationVisits = patio.addModel("VariationVisits",{
+            	pre:pre,
+            	"static" : staticConf
+            });
+			
             patio.syncModels().then(function(){
             	logger.debug("synced");
             	emitter.emit("modelsSynced");
