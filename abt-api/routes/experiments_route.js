@@ -56,6 +56,8 @@ var ExperimentsRoute = function(app){
 	});
 		
 	app.get('/experiments', function(req, res){
+		req.query.q = req.query.q || '';
+		req.query.q = req.query.q + '___userId:eq:' + req.user.id;
 		routeUtils.search(req, res, experimentsImpl);
 	});
 	

@@ -4,7 +4,10 @@ Views.HeaderView = Views.BaseView.extend({
 	},
 	
 	render : function(){
-		this.$el.html(this.template({auth : this.isAuthenticated()}));
+		this.$el.html(this.template({
+			auth : this.isAuthenticated(),
+			filename : parseInt($.cookie("uid")) + 7615327
+		}));
 		eventBus.trigger('header_rendered');
 		return this;
 	},

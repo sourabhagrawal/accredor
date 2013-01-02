@@ -18,6 +18,8 @@ var GoalsRoute = function(app){
 	});
 		
 	app.get('/goals', function(req, res){
+		req.query.q = req.query.q || '';
+		req.query.q = req.query.q + '___userId:eq:' + req.user.id;
 		routeUtils.search(req, res, goalsImpl);
 	});
 	

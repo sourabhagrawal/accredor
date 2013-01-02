@@ -105,20 +105,22 @@ var Impl = comb.define(null,{
 			if(query != null){
 				var tokens = query.split('___');
 				_.each(tokens, function(token){
-					var filter = {};
-					_.map(token.split(':'), function(prop, key){
-						if(key == 0){
-							filter.field = prop;
-						}else if(key == 1){
-							filter.op = prop;
-						}else if(key == 2){
-							if(prop.indexOf(',') != -1)
-								filter.value = prop.split(',');
-							else
-								filter.value = prop;
-						}
-					});
-					filters.push(filter);
+					if(token.trim() != ''){
+						var filter = {};
+						_.map(token.split(':'), function(prop, key){
+							if(key == 0){
+								filter.field = prop;
+							}else if(key == 1){
+								filter.op = prop;
+							}else if(key == 2){
+								if(prop.indexOf(',') != -1)
+									filter.value = prop.split(',');
+								else
+									filter.value = prop;
+							}
+						});
+						filters.push(filter);
+					}
 				});
 			}
 			

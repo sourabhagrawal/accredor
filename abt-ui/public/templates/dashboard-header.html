@@ -11,7 +11,7 @@
 					<li><a href="/dashboard">Dashboard</a></li>
 					<li><a href="#">Features</a></li>
 					<li><a href="#">Getting Started</a></li>
-					<li><a href="#" id='installation-link'>Installation</a></li>
+					<li><a href="#installation-modal" id='installation-link' data-toggle="modal">Installation</a></li>
 					<li><a href="/faqs">Support</a></li>
 				</ul>
 			</div>
@@ -33,4 +33,22 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<div id="installation-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+    <h3>Accredor Installation</h3>
+  </div>
+  <div class="modal-body">
+    <p>
+		<p>Copy this code and paste it immediately after the opening of the &lt;head&gt; tag:</p>
+		<p><code>&lt;script src=&quot;//www.accredor.com/scripts/<%= filename %>.js&quot;&gt;&lt;/script&gt;</code></p>
+		<p>Include this line on every page you want to run experiments on and track as a goal.</p>
+		<p>This line will not change for you account.</p>
+	</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
 </div>

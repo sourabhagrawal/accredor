@@ -47,3 +47,19 @@ li [class^="icon-"], .btn [class*=" icon-"] {
 .dropdown-menu a {
     color: #333333;
 }
+
+.table-bordered th, .table-bordered td {
+	vertical-align: middle;
+}
+
+.table-centered th, .table-centered td{
+	text-align:center;
+}
+
+.td-label{
+	text-align:right!important;
+}
+
+.tr-separator{
+	border-top: 3px solid #EEEEEE;
+}

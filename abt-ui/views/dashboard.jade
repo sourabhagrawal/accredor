@@ -6,8 +6,13 @@ html(lang='en')
 			.row-fluid
 				.span3.well
 					ul.nav.nav-list(id='dashboard-nav')
-						li.nav-header Actions
 						li.active
+							a(href='#', id='reports') 
+								i.icon-list
+								|  Reports
+						li.divider
+						li.nav-header Actions
+						li
 							a(href='#', id='create-experiment') 
 								i.icon-wrench
 								|  Create Experiment

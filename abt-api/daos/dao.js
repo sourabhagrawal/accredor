@@ -60,7 +60,7 @@ var DAO = comb.define(null,{
 		search : function(filters, start, fetchSize, sortBy, sortDir){
 			//TODO Implement
 			var params = {};
-			filters = filters || {};
+			filters = filters || [];
 			_.each(filters, function(filter){
 				if(filter.field != null && filter.op != null){
 					if(filter.value != null){

@@ -83,7 +83,8 @@ var assetGroups = function(){
 				'/js/views/split_experiment_view.js',
 				'/js/views/create_goal_view.js',
 				'/js/views/experiments_list_view.js',
-				'/js/views/goals_list_view.js'
+				'/js/views/goals_list_view.js',
+				'/js/views/list_reports_view.js'
 	        ],
 	        debug : debug
 	    }

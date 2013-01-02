@@ -1,4 +1,8 @@
 $(function($){
+	
+	/**
+	 * Highlight the right list item
+	 */
 	$('#dashboard-nav li').click(function(e){
 		$('#dashboard-nav li.active i').removeClass('icon-white');
 		$('#dashboard-nav li.active').removeClass('active');
@@ -14,6 +18,21 @@ $(function($){
 		e.stopPropagation();
 	});
 	
+	// Create Experiment
+	Utils.openReports = function(){
+		eventBus.trigger('close_view');
+		templateLoader.loadRemoteTemplate("experiment-report", "/templates/experiment-report.html", function(data){
+			new Views.ListReportsView();
+		});
+	};
+	
+	$('#reports').click(function(){
+		Utils.openReports();
+	});
+	
+	Utils.openReports();
+	
+	// Create Experiment
 	Utils.openSplitExperimentForm = function(id){
 		eventBus.trigger('close_view');
 		templateLoader.loadRemoteTemplate("split-variation", "/templates/split-variation.html", function(data){
@@ -21,12 +40,11 @@ $(function($){
 		});
 	};
 	
-	Utils.openSplitExperimentForm();
-	
 	$('#create-experiment').click(function(){
 		Utils.openSplitExperimentForm();
 	});
 	
+	// Create Goal
 	Utils.openGoalForm = function(id){
 		eventBus.trigger('close_view');
 		templateLoader.loadRemoteTemplate("goal-create", "/templates/goal-create.html", function(data){
@@ -38,6 +56,7 @@ $(function($){
 		Utils.openGoalForm();
 	});
 	
+	// List experiments
 	Utils.openExperimentsListView = function(filter){
 		eventBus.trigger('close_view');
 		templateLoader.loadRemoteTemplate("experiment-row", "/templates/experiment-row.html", function(data){
@@ -62,6 +81,7 @@ $(function($){
 		Utils.openExperimentsListView({status : 'stopped'});
 	});
 	
+	// List Goals
 	Utils.openGoalsListView = function(filter){
 		eventBus.trigger('close_view');
 		templateLoader.loadRemoteTemplate("goal-row", "/templates/goal-row.html", function(data){
