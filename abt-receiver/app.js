@@ -56,3 +56,4 @@ http.createServer(app).listen(app.get('port'), function(){
 });
 
 require('./workers/script_file_job');
+require('./workers/data_push_job');

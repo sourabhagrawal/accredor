@@ -2,6 +2,7 @@ var logger = require(LIB_DIR + 'log_factory').create("variations_bucket");
 var comb = require("comb");
 var _ = require('underscore');
 var Bucket = require('./bucket');
+var Lock = require(LIB_DIR + 'lock');
 
 var VariationsBucket = comb.define(Bucket, {
 	instance : {
@@ -19,7 +20,7 @@ var VariationsBucket = comb.define(Bucket, {
 						var key = "v:" + value.variationId;
 						
 						var lockKey = key + ':total';
-						ref.acquireLock(lockKey, (new Date().getTime() + ref.lockTimeOut + 1), 
+						Lock.acquire(lockKey, (new Date().getTime() + Lock.lockTimeOut + 1), 
 								function(err, reply){
 							if(err){
 								logger.error(err);
@@ -47,7 +48,7 @@ var VariationsBucket = comb.define(Bucket, {
 						var field = "g:" + value.goalId; // e.g. g:1004
 						
 						var lockKey = key + ":" + field;
-						ref.acquireLock(lockKey, (new Date().getTime() + ref.lockTimeOut + 1), 
+						Lock.acquire(lockKey, (new Date().getTime() + Lock.lockTimeOut + 1), 
 								function(err, reply){
 							if(err){
 								logger.error(err);
@@ -61,7 +62,7 @@ var VariationsBucket = comb.define(Bucket, {
 									}else
 										logger.info("v:" + value.variationId + " g:" + value.goalId + " : " + reply);
 									
-									ref.releaseLock(lockKey, function(err, reply){
+									Lock.release(lockKey, function(err, reply){
 										if(err){
 											logger.error(err);
 										}
