@@ -1,6 +1,6 @@
 <div class="row-fluid">
 	<div class="span12">
-		<div class="span2">
+		<div class="span3">
 			<input id="name" type="text" placeholder="Variation Name" style="width:100%" value='<%= name %>'>
 		</div>
 		<div class="span6">
@@ -14,7 +14,7 @@
 			<a href="#" class="delete">Delete</a>
 			<% } %>
 		</div>
-		<div class="span2">
+		<div class="span1">
 			<% if(status && status.isError){ %>
 			<span class="text-error"><%= status.message %></span>
 			<% }else{ %>

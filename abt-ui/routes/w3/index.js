@@ -13,3 +13,11 @@ exports.privacyPolicy = function(req, res){
 exports.faqs = function(req, res){
 	res.render('faqs');
 };
+
+exports.abtesting = function(req, res){
+	res.render('abtesting');
+};
+
+exports.gettingStarted = function(req, res){
+	res.render('getting-started');
+};

@@ -1,11 +1,11 @@
-<% if(typeof(id) == 'undefined'){ %>
-<h3>Create Experiment</h3>
-<% }else{ %>
-<h3>Update Experiment</h3>
-<% } %>
-<hr />
 <div class="row-fluid">
-	<div class="span7">
+	<div class="span8">
+		<% if(typeof(id) == 'undefined'){ %>
+		<h3>Create Experiment</h3>
+		<% }else{ %>
+		<h3>Update Experiment</h3>
+		<% } %>
+		<hr />
 		<div class="row-fluid" id='split-variation-alert' style='display:none;'>
 			<div class="span12">
 				<div class="alert"></div>
@@ -46,32 +46,51 @@
 				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div id="variations-container" style='display:none;'>
-	<div class="bor"></div>
-	<div class="row-fluid">
-		<div class="span12">
-			<div class="span2">
-				<h5>Variation Name</h5>
+		<div id="variations-container" style='display:none;'>
+			<div class="bor"></div>
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="span3">
+						<h5>Variation Name</h5>
+					</div>
+					<div class="span6">
+						<h5>Variation URL</h5>
+					</div>
+					<div class="span1">
+						<h5>%</h5>
+					</div>
+					<div class="span1">
+						<h5>Action</h5>
+					</div>
+					<div class="span1">
+						<h5>Status</h5>
+					</div>
+				</div>
 			</div>
-			<div class="span6">
-				<h5>Variation URL</h5>
-			</div>
-			<div class="span1">
-				<h5>Percentage</h5>
-			</div>
-			<div class="span1">
-				<h5>Action</h5>
-			</div>
-			<div class="span2">
-				<h5>Status</h5>
+			<div id="variations-list"></div>
+			<div id="button-toolbar">
+				<button class="btn add">Add Variation</button>
+				<button class="btn" id="delete-all">Delete All</button>
 			</div>
 		</div>
 	</div>
-	<div id="variations-list"></div>
-	<div id="button-toolbar">
-		<button class="btn add">Add Variation</button>
-		<button class="btn" id="delete-all">Delete All</button>
+	<div class='span4'>
+		<div class='well'>
+			<h4>Split URL Experiment</h4>
+			An experiment is a new change you want to test. Please provide a Name and URL of the page you want to run the experiment on.
+			<br/>
+			<h4>Variations</h4>
+			A Variation is a different design of you page. Please provide the URL of that new design and assign it some percentage of traffic.
+			<ul>
+				<li>The <b>Control</b> variation is your original experiment page.</li>
+				<li>You have to host these new designs on your server before creating this experiment.</li>
+			</ul>
+			<b>Example : </b> If your experiment page URL is http://yourdomain.com/index.html then your variations could be :
+			<br/>
+			Variation #1 : http://yourdomain.com/index_v2.html
+			<br/>
+			Variation #1 : http://yourdomain.com/index_v3.html
+			<br/> or anything else that you may like
+		</div>
 	</div>
 </div>

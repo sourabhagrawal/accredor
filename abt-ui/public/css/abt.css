@@ -10,6 +10,15 @@ header .list{
 	top : -5px;
 }
 
+.margin10{
+	margin-bottom : 10px;
+}
+
+.thumb{
+	padding: 5px;
+	border: 1px solid #EEEEEE;
+}
+
 .top-bar{
 	background:#444; 
 	color:#fff;
@@ -49,11 +58,15 @@ li [class^="icon-"], .btn [class*=" icon-"] {
 }
 
 .table-bordered th, .table-bordered td {
-	vertical-align: middle;
+}
+
+.striped {
+	background:#F9F9F9;
 }
 
 .table-centered th, .table-centered td{
 	text-align:center;
+	vertical-align: middle;
 }
 
 .td-label{

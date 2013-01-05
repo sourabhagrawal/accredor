@@ -1,0 +1,51 @@
+!!! 5
+html(lang='en')
+	include common/head
+	body
+		include common/global-header
+		.content
+			.container-fluid
+				.row-fluid
+					.span10.offset1
+						.hero
+							h3 
+								span Getting Started
+							p
+						.row-fluid
+							.span12
+								.row-fluid.margin10
+									.span4
+										img.thumb(src='/images/signup.jpg', alt='Sign Up')
+									.span8
+										.process-meta 
+											span Create Account
+										p
+											| If you already don't have an account please create one with a valid email address and verify your email address
+											br
+											| Or Log into your existing account
+								.row-fluid.margin10
+									.span6
+										img.thumb(src='/images/create_experiment.jpg', alt='Create Experiment')
+										img.thumb(src='/images/create_variation.jpg', alt='Create Experiment')
+									.span6
+										.process-meta 
+											span Create an Experiment
+										h4 Enter a Name and URL for the experiment
+										p
+											| Provide a Name to the experiment and the URL of the page you wish to optimize.
+											br
+											| Then click "Create Experiment" button.
+										h4 Add Variations
+										p
+											| Add different variations for the page and specify what percentage of users you want to test them on.
+											br
+											| The variation forms
+								.row-fluid.margin10
+									.span4
+										img.thumb(src='/images/create_goal.jpg', alt='Sign Up')
+									.span8
+										.process-meta 
+											span Create a Goal
+										p
+											| Provide a Name and URL to track visits or engagement on a page
+		include common/global-footer

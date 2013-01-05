@@ -2,9 +2,9 @@ html(lang='en')
 	include common/head
 	body
 		include common/global-header
-		.container
+		.container-fluid
 			.row-fluid
-				.span3.well
+				.span2.well
 					ul.nav.nav-list(id='dashboard-nav')
 						li.active
 							a(href='#', id='reports') 
@@ -52,7 +52,7 @@ html(lang='en')
 									a(href='#', id='nav-disabled-goals') 
 										i.icon-ban-circle
 										|  Disabled
-				.span9
+				.span10
 					.container-fluid(id="dashboard-content", style='min-height:200px;')
 		include common/global-footer 
 	script(src="/js/dashboard.js")
