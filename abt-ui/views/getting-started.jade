@@ -8,7 +8,7 @@ html(lang='en')
 				.row-fluid
 					.span10.offset1
 						.hero
-							h3 
+							h1 
 								span Getting Started
 							p
 						.row-fluid
@@ -20,9 +20,16 @@ html(lang='en')
 										.process-meta 
 											span Create Account
 										p
-											| If you already don't have an account please create one with a valid email address and verify your email address
+											| If you already don't have an account please create one with a valid email address and verify your email address.
 											br
-											| Or Log into your existing account
+											| Remember to have a look at our 
+											a(href='/terms') Terms of Service
+											|  and 
+											a(href='/privacy-policy') Privacy Policy
+											| .
+											br
+											| Or Log into your existing account.
+								.bor
 								.row-fluid.margin10
 									.span6
 										img.thumb(src='/images/create_experiment.jpg', alt='Create Experiment')
@@ -37,9 +44,23 @@ html(lang='en')
 											| Then click "Create Experiment" button.
 										h4 Add Variations
 										p
-											| Add different variations for the page and specify what percentage of users you want to test them on.
+											| A Variation is a different design of you page. Please provide the URL of that new design and assign it some percentage of traffic.
+											ul
+												li
+													| The 
+													b Control
+													|	variation is your original experiment page.
+												li
+													| You have to host these new designs on your server before creating this experiment.
+											b Example : 
+											| If your experiment page URL is http://yourdomain.com/index.html then your variations could be :
 											br
-											| The variation forms
+											| Variation #1 : http://yourdomain.com/index_v2.html
+											br
+											| Variation #1 : http://yourdomain.com/index_v3.html
+											br
+											| or anything else that you may like.
+								.bor
 								.row-fluid.margin10
 									.span4
 										img.thumb(src='/images/create_goal.jpg', alt='Sign Up')
@@ -47,5 +68,16 @@ html(lang='en')
 										.process-meta 
 											span Create a Goal
 										p
-											| Provide a Name and URL to track visits or engagement on a page
+											| To measure the user response to your experiments your can set up various goals.
+											br
+											| A goal can measure user actions in the following ways.
+											ul
+												li
+													b Visit: 
+													| Is triggered when a user visits a URL
+												li
+													b Engagement: 
+													| Is triggered when a user clicks anywhere on a page
+										p
+											| Provide a Name and URL to track visits or engagement on a page.
 		include common/global-footer

@@ -23,12 +23,20 @@ Views.HeaderView = Views.BaseView.extend({
 });
 
 eventBus.on('header_rendered', function(view){
-	$('#login-btn').click(function(event){
+	Utils.openLoginBox = function(){
 		new Views.LoginBoxView();
+	};
+	
+	$('#login-btn').click(function(event){
+		Utils.openLoginBox();
 	});
 	
-	$('#signup-btn').click(function(event){
+	Utils.openSignupBox = function(){
 		new Views.SignUpView();
+	};
+	
+	$('#signup-btn').click(function(event){
+		Utils.openSignupBox();
 	});
 });
 
