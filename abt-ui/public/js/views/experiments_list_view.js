@@ -147,7 +147,10 @@ Views.ExperimentsListView = Views.BaseView.extend({
 	},
 	
 	addAll : function(){
-		experiments.each(this.add);
+		if(experiments.length == 0)
+			this.$el.html("<h3>No Experiments found. <a id='create-experiment-btn' href='#'>Click Here</a> to create one.</h3>");
+		else
+			experiments.each(this.add);
 	}
 	
 });

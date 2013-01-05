@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var comb = require('comb');
 var logger = require(LIB_DIR + 'log_factory').create("emails_dao");
 var DAO = require('./dao.js');
@@ -10,13 +11,12 @@ var EmailsDAO = comb.define(DAO,{
             this._super([options]);
 		},
 		
-		updateBatch : function(batchSize, filter, params){
-			return this._model.forUpdate().filter(filter).limit(batchSize).all()
-				.then(function(models){
-					models.forEach(function(email){
-						return email.update(params);
-					});
-				});
+		lockUpdate : function(filter, params){
+			return this._model.forUpdate().first(filter).chain(function(email){
+				if(email)
+					return email.update(params);
+				return;
+			});
 		}
 	}
 });

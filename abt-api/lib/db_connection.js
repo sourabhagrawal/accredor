@@ -50,7 +50,7 @@ emitter.on('syncFailed', function(event){
 	patio.disconnect();
 });
 
-var DB = patio.createConnection({
+var params = {
 	host : CONFIG.db.host,
     port : 3306,
     type : "mysql",
@@ -59,6 +59,8 @@ var DB = patio.createConnection({
     user : CONFIG.db.user,
     password : CONFIG.db.password,
     database : CONFIG.db.database
-});
+};
+
+var DB = patio.createConnection(params);
 
 module.exports = DB;

@@ -159,13 +159,17 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	events : {
 		"click #delete-all" : "deleteAll",
 		"click #ok-btn" : "createOrUpdateExperiment",
-		"click .add" : 'create'
+		"click .add" : 'create',
+		"click #primary-action" : "primaryAction",
+		"click #delete-experiment-btn" : "deleteExperiment"
 	},
 	
 	initialize : function(){
 		this.$el = $("#dashboard-content");
 		this._super('initialize');
 		this.loadTemplate('split-experiment');
+		
+		this.experimentUrl = '/api/experiments/split_experiment/';
 		
 		variations.bind('add', this.add, this);
 		variations.bind('reset', this.addAll, this);
@@ -252,17 +256,35 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		this.$el.find('a').prop('disabled' , false);
 	},
 	
+	primaryAction : function(){
+		var status = this.experiment['status'];
+		var data = {};
+		if(status == 'created')
+			data.status = 'started';
+		else if(status == 'started')
+			data.status = 'stopped';
+		else if(status == 'stopped')
+			data.status = 'started';
+		
+		this.persistExperiment(this.experimentUrl + this.id, 'put', data, true);
+	},
+	
+	deleteExperiment : function(){
+		if(confirm("Are you sure you want to delete this Experiment?")){
+			this.persistExperiment(this.experimentUrl + this.id, 'put', {isDisabled : 1}, true);
+		}
+	},
+	
 	createOrUpdateExperiment : function(){
-		var url = '/api/experiments/split_experiment/';
 		var data = {
 			name : this.name.val(),
 			url : this.url.val(),
 			type : 'splitter'
 		};
 		if(this.id){
-			this.persistExperiment(url + this.id, 'put', data, true);
+			this.persistExperiment(this.experimentUrl + this.id, 'put', data, true);
 		}else{
-			this.persistExperiment(url, 'post', data, false);
+			this.persistExperiment(this.experimentUrl, 'post', data, false);
 		}
 		
 	},
@@ -281,8 +303,13 @@ Views.SplitExperimentView = Views.BaseView.extend({
 				
 				if(!isUpdate)
 					ref.create();
-				else
-					ref.updateControl();
+				else{
+					if(ref.experiment['isDisabled'] == 1){
+						$('#nav-experiments').click();
+						return;
+					}else
+						ref.updateControl();
+				}
 				
 				ref.render();
 			},

@@ -78,7 +78,7 @@ var ExperimentsImpl = comb.define(impl,{
 					}else{
 						bus.fire('noDuplicates');
 					}
-				}, 'userId:eq:' + params.userId + '___name:eq:' + params.name);
+				}, 'userId:eq:' + params.userId + '___name:eq:' + params.name + '___isDisabled:eq:0');
 			});
 			
 			bus.on('noDuplicates', function(){

@@ -192,7 +192,6 @@
 	};
 	
 	var markGoal = function(g){
-		console.log("in markGoal");
 		if(g){
 			// Mark the goal in cookie
 			markGoalInCookie(g);

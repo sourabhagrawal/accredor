@@ -20,13 +20,11 @@ var ScriptWorker = function(){
 	var ref = this;
 	
 	CONFIG.script = CONFIG.script || {};
-	var interval = CONFIG.script.interval || 1 * 1000; //10 Secs
+	var interval = CONFIG.script.interval || 5 * 1000; //5 Secs
 	var batchSize = CONFIG.script.batchSize || 5;
 	
 	this.run = function(){
 		if(CONFIG.script.enabled && (CONFIG.script.enabled == true || CONFIG.script.enabled == 'true')){
-			
-			var localEmitter = new eventEmitter();
 			
 			scriptDetailsImpl.search(function(err, data){
 				if(err){
@@ -36,15 +34,16 @@ var ScriptWorker = function(){
 					if(data && data.data && data.data.length > 0){
 						var scriptDetails = data.data;
 						_.each(scriptDetails, function(scriptDetail){
-							var scriptDetail = data.data[0];
 							var userId = scriptDetail['userId'];
 							
 							logger.info('generating script data for user : ' + userId);
 							
+							var localEmitter = new eventEmitter();
+							
 							var experimentsDone = false;
 							var goalsDone = false;
 							
-							localEmitter.on('check', function(){
+							localEmitter.on('check_u', function(){
 								if(experimentsDone && goalsDone){
 									localEmitter.emit('all_data_fetched');
 								}
@@ -79,7 +78,7 @@ var ScriptWorker = function(){
 													count++;
 													if(count == experiments.length){
 														experimentsDone = true;
-														localEmitter.emit('check');
+														localEmitter.emit('check_u');
 													}
 												}
 											});
@@ -127,7 +126,7 @@ var ScriptWorker = function(){
 										});
 									}else{
 										experimentsDone = true;
-										localEmitter.emit('check');
+										localEmitter.emit('check_u');
 									}
 								}
 							}, 'userId:eq:' + userId + '___isDisabled:eq:0___status:eq:' + EXPERIMENT.STARTED);
@@ -146,13 +145,10 @@ var ScriptWorker = function(){
 												url : goal.url
 											});
 										});
-									}else{
-										goalsDone = true;
-										localEmitter.emit('check');
 									}
 								}
 								goalsDone = true;
-								localEmitter.emit('check');
+								localEmitter.emit('check_u');
 							}, 'userId:eq:' + userId + '___isDisabled:eq:0___status:eq:' + GOAL.CREATED);
 							
 							//If all is fetched. update the script details with new data

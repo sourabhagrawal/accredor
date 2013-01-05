@@ -165,7 +165,10 @@ Views.GoalsListView = Views.BaseView.extend({
 	},
 	
 	addAll : function(){
-		goals.each(this.add);
+		if(goals.length == 0)
+			this.$el.html("<h3>No Goals found. <a id='create-goal-btn' href='#'>Click Here</a> to create one.</h3>");
+		else
+			goals.each(this.add);
 	},
 	
 	showError : function(model, error){

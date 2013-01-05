@@ -44,6 +44,10 @@ $(function($){
 		Utils.openSplitExperimentForm();
 	});
 	
+	$('#dashboard-content').on('click', '#create-experiment-btn', function(){
+		$('#create-experiment').click();
+	});
+	
 	// Create Goal
 	Utils.openGoalForm = function(id){
 		eventBus.trigger('close_view');
@@ -54,6 +58,10 @@ $(function($){
 	
 	$('#create-goal').click(function(){
 		Utils.openGoalForm();
+	});
+	
+	$('#dashboard-content').on('click', '#create-goal-btn', function(){
+		$('#create-goal').click();
 	});
 	
 	// List experiments

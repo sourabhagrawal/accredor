@@ -88,7 +88,12 @@ Views.ListReportsView = Views.BaseView.extend({
 	},
 	
 	addAll : function(){
-		reportsList.each(this.add);
+		if(reportsList.length == 0)
+			this.$el.html("<h3>You do not have any active Experiments or Goals. " +
+					"Create a new <a id='create-experiment-btn' href='#'>Experiment</a> " +
+					"or <a id='create-goal-btn' href='#'>Goal</a></h3>");
+		else
+			reportsList.each(this.add);
 	},
 	
 	close : function(){

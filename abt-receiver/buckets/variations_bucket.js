@@ -33,7 +33,7 @@ var VariationsBucket = comb.define(Bucket, {
 									}else
 										logger.info("v:" + value.variationId + " total : " + reply);
 									
-									ref.releaseLock(lockKey, function(err, reply){
+									Lock.release(lockKey, function(err, reply){
 										if(err){
 											logger.error(err);
 										}

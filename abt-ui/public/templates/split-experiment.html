@@ -36,13 +36,30 @@
 				<div class="span3">
 				</div>
 				<div class="span9">
-					<a class='btn' id="ok-btn">
-						<% if(typeof(id) == 'undefined'){ %>
-						Create Experiment
-						<% }else{ %>
-						Update Experiment
-						<% } %>
+					<% if(typeof(id) == 'undefined'){ %>
+					<a class='btn' id="ok-btn">Create Experiment</a>
+					<% }else{ %>
+					<a class='btn' id="ok-btn">Update Experiment</a>
+					<a class="btn" id='primary-action'>
+						<% 
+							if(status == 'started'){;
+						%>
+						<i class="icon-stop"></i> Stop
+						<%
+							} else if(status == 'created'){
+						%>
+						<i class="icon-play"></i> Start
+						<%	
+							}
+							if(status == 'stopped'){
+						%>
+						<i class="icon-play"></i> Resume
+						<%	
+							}
+						%>
 					</a>
+					<a class='btn' id="delete-experiment-btn">Delete</a>
+					<% } %>
 				</div>
 			</div>
 		</div>

@@ -92,7 +92,8 @@ var DAO = comb.define(null,{
 			var result = this._model.filter(params);
 			
 			if(fetchSize == undefined || (_.isString(fetchSize) && fetchSize.trim() == ''))
-				fetchSize = 10;
+				fetchSize = -1; //Fetch all
+			
 			start = start != undefined && (_.isString(fetchSize) && start.trim() != '') && start >= 0 ? start : 0;
 			
 			if(fetchSize != -1)

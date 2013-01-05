@@ -41,6 +41,8 @@ var ReportsDataImpl = comb.define(impl,{
 						visitsMap[goalId] += parseInt(visits);
 					});
 					
+					console.log(visitsMap);
+					
 					variationData.total = visitsMap["0"] || 0;
 					
 					//TODO Fetch hits for all goals
@@ -66,7 +68,7 @@ var ReportsDataImpl = comb.define(impl,{
 					
 					callback(null, variationData);
 				}
-			}, 'variationId:eq:' + variation.id);
+			}, 'variationId:eq:' + variation.id, 0, -1);
 		},
 		
 		getReportDataforExperiment : function(ex, goals, callback){
@@ -82,7 +84,7 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('start');
 					}
-				}, 'userId:eq: ' + ex.userId + 'isDisabled:eq:0___status:eq:' + GOAL.CREATED);
+				}, 'userId:eq: ' + ex.userId + 'isDisabled:eq:0___status:eq:' + GOAL.CREATED, 0 , -1);
 			}
 			
 			var responseData = {
@@ -200,34 +202,42 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('goals_fetched', goals);
 					}
-				}, 'userId:eq: ' + userId + 'isDisabled:eq:0___status:eq:' + GOAL.CREATED);
+				}, 'userId:eq: ' + userId + 'isDisabled:eq:0___status:eq:' + GOAL.CREATED, 0 , -1);
 			});
 			
 			bus.on('goals_fetched', function(goals){
-				experimentsImpl.search(function(err, data){
-					if(err){
-						callback(err);
-					}else{
-						var experiments = data.data;
-						bus.fire('experiments_fetched', experiments, goals);
-					}
-				}, 'userId:eq: ' + userId + 'isDisabled:eq:0___status:eq:' + EXPERIMENT.STARTED);
+				if(goals.length == 0){
+					callback(null, response.success([], 0, codes.success.RECORDS_SEARCHED([ref.displayName])));
+				}else{
+					experimentsImpl.search(function(err, data){
+						if(err){
+							callback(err);
+						}else{
+							var experiments = data.data;
+							bus.fire('experiments_fetched', experiments, goals);
+						}
+					}, 'userId:eq: ' + userId + 'isDisabled:eq:0___status:eq:' + EXPERIMENT.STARTED, 0 , -1);
+				}
 			});
 			
 			bus.on('experiments_fetched', function(experiments, goals){
 				var count = 0;
-				_.each(experiments, function(experiment){
-					ref.getReportDataforExperiment(experiment, goals, function(err, data){
-						if(err){
-							callback(err);
-						}else{
-							responseData.push(data);
-							if(++count == experiments.length){
-								bus.fire('experiments_data_added');
+				if(experiments.length == 0){
+					callback(null, response.success([], 0, codes.success.RECORDS_SEARCHED([ref.displayName])));
+				}else{
+					_.each(experiments, function(experiment){
+						ref.getReportDataforExperiment(experiment, goals, function(err, data){
+							if(err){
+								callback(err);
+							}else{
+								responseData.push(data);
+								if(++count == experiments.length){
+									bus.fire('experiments_data_added');
+								}
 							}
-						}
+						});
 					});
-				});
+				}
 			});
 			
 			bus.on('experiments_data_added', function(){

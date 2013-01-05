@@ -109,18 +109,36 @@ var ExperimentsImpl = comb.define(impl,{
 			this.update(id, {status : EMAIL.QUEUED}, callback);
 		},
 		
-		updateBatchToProcessing : function(batchSize, callback){
-			this._dao.updateBatch(batchSize, {status : EMAIL.QUEUED}, {status : EMAIL.PROCESSING})
-				.then(function(models){
-					var modelsJSON = []; 
-					_.each(models, function(model){
+		lockUpdate : function(modelsJSON, batchSize, count, callback){
+			var ref = this;
+			this._dao.lockUpdate({status : EMAIL.QUEUED}, {status : EMAIL.PROCESSING})
+				.then(function(model){
+					if(model){
 						modelsJSON.push(model.toJSON());
-					});
-					callback(null,response.success(modelsJSON, modelsJSON.length, codes.success.EMAIL_BATCH_UPDATED()));
+						if(count == batchSize){
+							callback(null, modelsJSON);
+						}else
+							ref.lockUpdate(modelsJSON, batchSize, count + 1, callback);
+					}else{
+						callback(null, modelsJSON);
+					}
 				}, function(error){
 					logger.error(error);
-					callback(response.error(codes.error.EMAIL_BATCH_UPDATE_FAILED()));
+					callback(null, modelsJSON);
+	//				callback(response.error(codes.error.EMAIL_BATCH_UPDATE_FAILED()));
 				});
+		},
+		
+		updateBatchToProcessing : function(batchSize, callback){
+			var modelsJSON = [];
+			
+			this.lockUpdate(modelsJSON, batchSize, 1, function(err, data){
+				if(err){
+					logger.error(err);
+				}else{
+					callback(null, response.success(modelsJSON, modelsJSON.length, codes.success.EMAIL_BATCH_UPDATED()));
+				}
+			});
 		},
 		
 		generateEmailBody : function(template, params, callback){
