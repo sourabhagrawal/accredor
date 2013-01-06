@@ -30,7 +30,7 @@ var app = express();
 
 auth.init();
 
-var port = process.env.PORT || 10000;
+var port = process.env.PORT || 8080;
 
 var apiProxy = httpProxy.createServer(function (req, res, proxy) {
 	var user = req.user || {};

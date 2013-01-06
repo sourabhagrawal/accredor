@@ -17,7 +17,7 @@ var logger = require(LIB_DIR + 'log_factory').create("app");
  */
 var app = express();
 
-var port = process.env.PORT || 10002;
+var port = process.env.PORT || 8082;
 
 app.configure(function(){
   app.set('port', port);
