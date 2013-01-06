@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var passport = require('passport');
 var request = require('request');
+var CONFIG = require('config');
 var LocalStrategy = require('passport-local').Strategy;
 var logger = require(LIB_DIR + 'log_factory').create("app");
 
@@ -8,7 +9,7 @@ exports.init = function(){
 	passport.use(new LocalStrategy(
 		function(username, password, done) {
 			request({
-				uri : 'http://localhost:10001/users/authenticate',
+				uri : CONFIG.url.api + 'users/authenticate',
 				method : 'post',
 				headers : {
 					authorization : 'Basic dGVzdF91c2VyOnRlc3RfcGFzcwo='
