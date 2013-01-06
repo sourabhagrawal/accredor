@@ -38,7 +38,7 @@ var apiProxy = httpProxy.createServer(function (req, res, proxy) {
 	req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
 	proxy.proxyRequest(req, res, {
 		host: 'localhost',
-		port: 10001
+		port: 8081
 	});
 });
 
