@@ -17,6 +17,8 @@
     "comb" : "*",
     "underscore" : "*",
     "vows" : "*",
-    "nodemailer" : "*"
+    "nodemailer" : "*",
+    "validator" : "*",
+    "express-validator" : "*"
   }
 }
