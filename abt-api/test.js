@@ -1,6 +1,17 @@
-var jade = require('jade');
+var knox = require('knox');
 
-jade.renderFile('./views/emails/verification_email.jade', {url : 'http://localhost/verify?t='}, function(err, html){
-	console.log(err);
-	console.log(html);
+var client = knox.createClient({
+    key: 'AKIAIVBQVGKDRVQ46N2Q'
+  , secret: '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'
+  , bucket: 'snippets-bkt'
 });
+
+client.putFile('my.json', '/user.json', function(err, res){
+	// Logic
+	
+});
+
+
+//client.list({}, function(err, data){
+//	console.log(data.length);
+//});

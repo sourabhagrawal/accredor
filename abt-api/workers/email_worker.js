@@ -26,12 +26,9 @@ var EmailWorker = function(){
 	var interval = CONFIG.email.interval || 10 * 1000; //10 Secs
 	var batchSize = CONFIG.email.batchSize || 5;
 	
-	var transport = nodemailer.createTransport("SMTP", {
-	    service: "Gmail",
-	    auth: {
-	        user: "support@accredor.com",
-	        pass: "accresupport"
-	    }
+	var transport = nodemailer.createTransport("SES", {
+	    AWSAccessKeyID: CONFIG.aws.key,
+	    AWSSecretKey: CONFIG.aws.secret
 	});
 	
 	this.run = function(){

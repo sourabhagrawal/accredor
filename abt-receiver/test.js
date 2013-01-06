@@ -1,31 +1,11 @@
-//var redis = require("redis"),
-//	client = redis.createClient();
-//
-//    // if you'd like to select database 3, instead of 0 (default), call
-//    // client.select(3, function() { /* ... */ });
-//
-//    client.on("error", function (err) {
-//        console.log("Error " + err);
-//    });
-//    
-//    for(var i = 0; i < 1000; i++){
-//    	client.append('test-append', '1', redis.print);
-//    	client.append('test-append', '1', redis.print);
-//    }
-//
-////    client.set("string key", "string val", redis.print);
-////    client.hset("hash key", "hashtest 1", "some value", redis.print);
-////    client.hset(["hash key", "hashtest 2", "some other value"], redis.print);
-////    client.hkeys("hash key", function (err, replies) {
-////        console.log(replies.length + " replies:");
-////        replies.forEach(function (reply, i) {
-////            console.log("    " + i + ": " + reply);
-////        });
-////        client.quit();
-////    });
-//    client.quit();
+var knox = require('knox');
 
-var constants = require('./lib/constants');
-var generator = require('./lib/generator');
+var client = knox.createClient({
+    key: 'AKIAIVBQVGKDRVQ46N2Q'
+  , secret: '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'
+  , bucket: 'scripts.accredor.com'
+});
 
-console.log(generator.run("{}"));
+client.putFile('public/scripts/7615328.js', '/7615328.js', {'x-amz-acl' : 'public-read'}, function(err, res){
+	console.log(res);
+});

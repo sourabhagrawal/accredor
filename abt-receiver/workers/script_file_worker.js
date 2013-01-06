@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var CONFIG = require('config');
 var fs = require('fs');
+var knox = require('knox');
 
 var logger = require(LIB_DIR + 'log_factory').create("script_file_worker");
 var generator = require(LIB_DIR + 'generator');
@@ -14,6 +15,12 @@ var client = require(CLIENTS_DIR + 'script_details_client');
 var ScriptFileWorker = function(){
 	
 	var ref = this;
+	
+	var awsClient = knox.createClient({
+	    key: CONFIG.aws.key
+	  , secret: CONFIG.aws.secret
+	  , bucket: CONFIG.aws.bucket
+	});
 	
 	CONFIG.scriptGeneration = CONFIG.scriptGeneration || {};
 	var interval = CONFIG.scriptGeneration.interval || 10 * 1000; //10 Secs
@@ -38,7 +45,8 @@ var ScriptFileWorker = function(){
 											else{
 												var code = generator.run(scriptDetail['data']);
 												var fileName = scriptDetail['fileName'] + '.js';
-												fs.writeFile('public/scripts/' + fileName, code, function(err){
+												var fileLoc = 'public/scripts/' + fileName; 
+												fs.writeFile(fileLoc, code, function(err){
 													if(err){
 														logger.error(err);
 													}else{
@@ -52,6 +60,17 @@ var ScriptFileWorker = function(){
 																		logger.info('script details updated as scripted');
 																	}
 																});
+														
+														if(process.env.NODE_ENV == 'production'){
+															awsClient.putFile(fileLoc, '/' + fileName, {'x-amz-acl' : 'public-read'}, function(err, res){
+																if(res.statusCode == 200){
+																	logger.info("Script file : " + fileName + " uploaded to S3");
+																}else{
+																	logger.error("Script file : " + fileName + " couldn't be uploaded. Status : " + res.statusCode);
+																}
+															});
+														}
+														
 													}
 												});
 											}
