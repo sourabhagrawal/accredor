@@ -3,8 +3,6 @@
 	
 	var d = accredor.data;
 	
-	var receiverURL = accredor.receiverURL || 'http://localhost:10002/';
-	
 	var applyUrlAdjustments = function(url){
 		if(!url) // If null
 			return;
@@ -34,6 +32,9 @@
 		return url;
 	};
 	
+	var trackCookie = "acc.track";
+	var pendingCookie = 'acc.pending';
+	var receiverURL = accredor.receiverURL || 'http://localhost:10002/';
 	var currentURL = applyUrlAdjustments(window.location.href);
 	
 	var matchLinks = function(ls){
@@ -49,98 +50,122 @@
 		return false;
 	};
 	
-	var setCookie = function(value){
-		$.cookie("acc.track", value, {expires : 1, path: '/'});
+	var setCookie = function(name, value){
+		$.cookie(name, value, {expires : 1, path: '/'});
 	};
 	
-	var chooseVariation = function(vs){
-		var num = Math.floor((Math.random()*100)+1);
+	var queue = function(url){
+		var value = $.cookie(pendingCookie);
+		if(value != '')
+			value += '|||';
+		setCookie(pendingCookie, value + url);
+	};
+	
+	var send = function(){
+		var value = $.cookie(pendingCookie);
+		if(value && value.trim() != ''){
+			var tokens = value.split('|||');
+			if(tokens.length > 0){
+				var url = receiverURL + tokens[0];
+				
+				new Image().src = url;
+				
+				tokens.splice(0, 1);
+				value = tokens.join('|||');
+				setCookie(pendingCookie, value);
+				
+				send();
+			}
+		}
+	};
+	setInterval(send, 10000);
+	
+	send(); // Send pending beacons from previous page
+	
+	var VariationHandler = function(){
+		this.chooseVariation = function(vs){
+			var num = Math.floor((Math.random()*100)+1);
+			
+			if(vs){
+				var offset = 0.0;
+				for(var i in vs){
+					var v = vs[i];
+					if(v.percent){
+						try{
+							var fPercent = parseFloat(v.percent);
+							if(num >= offset && num < (offset + fPercent)){
+								//Apply variation
+								return v;
+							}else{
+								offset += fPercent;
+							}
+						}catch(e){}
+					}
+				};
+			}
+			return false;
+		};
 		
-		if(vs){
-			var offset = 0.0;
-			for(var i in vs){
-				var v = vs[i];
-				if(v.percent){
-					try{
-						var fPercent = parseFloat(v.percent);
-						if(num >= offset && num < (offset + fPercent)){
-							//Apply variation
+		this.markVariationInCookie = function(v, eid){
+			var value = $.cookie(trackCookie);
+			if(!value) value = {};
+			if(!value.vs) value.vs = {};
+			value.vs[eid] = v.id;
+			
+			setCookie(trackCookie, value);
+		};
+		
+		this.fetchOldVariation = function(eid){
+			var value = $.cookie(trackCookie);
+			if(value && value.vs && value.vs[eid])
+				return value.vs[eid];
+			return null;
+		};
+		
+		this.generateTrackUrl = function(v, eid){
+			return 'variations/?message=' + eid + ":" + v.id;
+		};
+		
+		this.applyVariation = function(v, eid, skipBeacon){
+			if(v && v.script){
+				/**
+				 * Mark that variation is going to be applied.
+				 * 	Mark the cookie
+				 * 	Send a beacon
+				 * and then apply it
+				 */
+				if(skipBeacon != true){ // New variation to be applied
+					//Marking cookie
+					this.markVariationInCookie(v, eid);
+					
+					//Sending beacon
+					var url = this.generateTrackUrl(v, eid);
+					queue(url);
+				}
+				
+				if(v.isControl != 1){
+					//Applying variation
+					window.location.replace(v.script);
+				}
+			}
+		};
+		
+		this.findVariationById = function(vs, vid){
+			if(vs){
+				for(var i in vs){
+					var v = vs[i];
+					if(v.id){
+						if(v.id == vid)
 							return v;
-						}else{
-							offset += fPercent;
-						}
-					}catch(e){}
-				}
-			};
-		}
-		return false;
-	};
-	
-	var sendBeacon = function(url){
-		if($.browser.webkit)
-			$.getJSON(url + "&callback=?");
-		else
-			new Image().src = url;
-	};
-	
-	var markVariationInCookie = function(v, eid){
-		var value = $.cookie("acc.track");
-		if(!value) value = {};
-		if(!value.vs) value.vs = {};
-		value.vs[eid] = v.id;
-		
-		setCookie(value);
-	};
-	
-	var fetchOldVariation = function(eid){
-		var value = $.cookie("acc.track");
-		if(value && value.vs && value.vs[eid])
-			return value.vs[eid];
-		return null;
-	};
-	
-	var generateVariationTrackUrl = function(v, eid){
-		return receiverURL + 'variations/?message=' + eid + ":" + v.id;
-	};
-	
-	var applyVariation = function(v, eid, skipBeacon){
-		if(v && v.script){
-			/**
-			 * Mark that variation is going to be applied.
-			 * 	Mark the cookie
-			 * 	Send a beacon
-			 * and then apply it
-			 */
-			
-			//Marking cookie
-			markVariationInCookie(v, eid);
-			
-			if(skipBeacon != true){
-				//Sending beacon
-				var url = generateVariationTrackUrl(v, eid);
-				sendBeacon(url);
+					}
+				};
 			}
 			
-			if(v.isControl != 1){
-				//Applying variation
-				window.location.replace(v.script);
-			}
-		}
+			return false;
+		};
 	};
 	
-	var findVariationById = function(vs, vid){
-		if(vs){
-			for(var i in vs){
-				var v = vs[i];
-				if(v.id){
-					if(v.id == vid)
-						return v;
-				}
-			};
-		}
-		
-		return false;
-	};
+	var variationHandler = new VariationHandler();
 	
 	/**
 	 * iterate over experiments to see if variations have to be applied.
@@ -158,19 +183,19 @@
 					 */
 					var isNew = true;
 					
-					var oldVId = fetchOldVariation(ex.id);
+					var oldVId = variationHandler.fetchOldVariation(ex.id);
 					if(oldVId){
-						var v = findVariationById(ex.vs, oldVId);
+						var v = variationHandler.findVariationById(ex.vs, oldVId);
 						if(v){
 							isNew = false;
-							applyVariation(v, ex.id, true); //Applying an old variation
+							variationHandler.applyVariation(v, ex.id, true); //Applying an old variation
 						}
 					}
 					
 					if(isNew){
-						var v = chooseVariation(ex.vs);
+						var v = variationHandler.chooseVariation(ex.vs);
 						if(v){ // A variation has been choosen
-							applyVariation(v, ex.id);
+							variationHandler.applyVariation(v, ex.id);
 						}
 					}
 				}
@@ -178,88 +203,92 @@
 		});
 	}
 	
-	var matchGoalUrl = function(g){
-		var url = applyUrlAdjustments(g.url);
-		if(url == currentURL){
-			return true;
-		}
-		return false;
-	};
-	
-	var markGoalInCookie = function(g){
-		var value = $.cookie("acc.track");
-		if(!value) value = {};
-		if(!value.gs) value.gs = [];
-		value.gs.push(g.id);
-		
-		setCookie(value);
-	};
-	
-	var isGoalMarked = function(g){
-		var value = $.cookie("acc.track");
-		
-		if(value && value.gs && value.gs.length > 0){
-			var index = $.inArray(g.id, value.gs);
-			if(index != -1)
+	var GoalHandler = function(){
+		this.matchGoalUrl = function(g){
+			var url = applyUrlAdjustments(g.url);
+			if(url == currentURL){
 				return true;
-		}
+			}
+			return false;
+		};
 		
-		return false;
-	};
-	
-	var getMarkedVariations = function(){
-		var value = $.cookie("acc.track");
-		if(value && value.vs){
-			return value.vs;
-		}
-		return null;
-	};
-	
-	var generateGoalTrackUrl = function(g){
-		var vs  = getMarkedVariations();
-		if(vs){
-			var message = '';
-			jQuery.each(vs, function(eid, vid) {
-				if(message != '')
-					message += '__';
-				message += g.id + ":" + eid + ":" + vid;
-			});
-			return receiverURL + '/goals/?message=' + message;
-		}
-		
-		return false;
-	};
-	
-	var markGoal = function(g){
-		if(g){
-			// Mark the goal in cookie
-			markGoalInCookie(g);
+		this.markGoalInCookie = function(g){
+			var value = $.cookie(trackCookie);
+			if(!value) value = {};
+			if(!value.gs) value.gs = [];
+			value.gs.push(g.id);
 			
-			//Send beacon
-			var url = generateGoalTrackUrl(g);
-			if(url)
-				sendBeacon(url);
-		}
+			setCookie(trackCookie, value);
+		};
+		
+		this.isGoalMarked = function(g){
+			var value = $.cookie(trackCookie);
+			
+			if(value && value.gs && value.gs.length > 0){
+				var index = $.inArray(g.id, value.gs);
+				if(index != -1)
+					return true;
+			}
+			
+			return false;
+		};
+		
+		this.getMarkedVariations = function(){
+			var value = $.cookie(trackCookie);
+			if(value && value.vs){
+				return value.vs;
+			}
+			return null;
+		};
+		
+		this.generateTrackUrl = function(g){
+			var vs  = this.getMarkedVariations();
+			if(vs){
+				var message = '';
+				jQuery.each(vs, function(eid, vid) {
+					if(message != '')
+						message += '__';
+					message += g.id + ":" + eid + ":" + vid;
+				});
+				return 'goals/?message=' + message;
+			}
+			
+			return false;
+		};
+		
+		this.markGoal = function(g){
+			if(g){
+				// Mark the goal in cookie
+				this.markGoalInCookie(g);
+				
+				//Send beacon
+				var url = this.generateTrackUrl(g);
+				if(url)
+					queue(url);
+			}
+		};
 	};
+	
+	var goalHandler = new GoalHandler();
 	
 	/**
 	 * iterate over goals to see if we have to listen for any
 	 */
 	if(d && d.gs && d.gs.length){
 		d.gs.forEach(function(g){
-			var matched = matchGoalUrl(g);
+			var matched = goalHandler.matchGoalUrl(g);
 			if(matched){
 				/**
 				 * The goal url has matched. Handle the goal according to goal type
 				 * If this user has already been marked for this goal, skip
 				 */
-				if(!isGoalMarked(g)){
+				if(!goalHandler.isGoalMarked(g)){
 					if(g.type && g.type == 'visit'){
 						//Mark the goal and Send a beacon
-						markGoal(g);
+						goalHandler.markGoal(g);
 					}else if(g.type && g.type == 'engagement'){
 						function onClick(){
-							markGoal(g);
+							goalHandler.markGoal(g);
 							$(document).off('click', onClick);
 						}
 						//Add a listener to listen to a global click

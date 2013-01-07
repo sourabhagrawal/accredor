@@ -37,6 +37,7 @@ var baseRoute = require('./routes/w3/index');
 app.get('/', baseRoute.index);
 app.get('/index', baseRoute.index);
 app.get('/index2', baseRoute.index2);
+app.get('/goal1', baseRoute.goal1);
 
 /**
  * Initialize the Server
