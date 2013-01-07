@@ -28,14 +28,16 @@ var ExperimentsRoute = function(app){
 		});
 	});
 	
-	app.get('/experiments/:id', function(req, res){
-		routeUtils.getById(req, res, experimentsImpl);
-	});
-	
-	app.post('/experiments', function(req, res){
-		req.body = req.body || {};
-		req.body.userId = req.body.userId || req.user.id;
-		routeUtils.create(req, res, experimentsImpl);
+	app.get('/experiments/split_experiment/', function(req, res){
+		req.query.q = req.query.q || '';
+		req.query.q = req.query.q + '___userId:eq:' + req.user.id;
+		experimentsImpl.searchSplitExperiments(function(err, data){
+			if(err == undefined){
+				routeUtils.respond(req, res, data);
+			}else{
+				routeUtils.respond(req, res, err);
+			}
+		}, req.query.q, req.query.start, req.query.fetchSize, req.query.sortBy, req.query.sortDir);
 	});
 	
 	app.put('/experiments/split_experiment/:id', function(req, res){
@@ -51,10 +53,24 @@ var ExperimentsRoute = function(app){
 		});
 	});
 	
+	app['delete']('/experiments/split_experiment/:id', function(req, res){
+		routeUtils.deleteById(req, res, experimentsImpl);
+	});
+	
+	app.get('/experiments/:id', function(req, res){
+		routeUtils.getById(req, res, experimentsImpl);
+	});
+	
+	app.post('/experiments', function(req, res){
+		req.body = req.body || {};
+		req.body.userId = req.body.userId || req.user.id;
+		routeUtils.create(req, res, experimentsImpl);
+	});
+	
 	app.put('/experiments/:id', function(req, res){
 		routeUtils.update(req, res, experimentsImpl);
 	});
-		
+	
 	app.get('/experiments', function(req, res){
 		req.query.q = req.query.q || '';
 		req.query.q = req.query.q + '___userId:eq:' + req.user.id;

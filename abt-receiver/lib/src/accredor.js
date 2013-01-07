@@ -3,6 +3,8 @@
 	
 	var d = accredor.data;
 	
+	var receiverURL = accredor.receiverURL || 'http://localhost:10002/';
+	
 	var matchLinks = function(ls){
 		for(var i in ls){
 			var l = ls[i];
@@ -62,7 +64,7 @@
 	};
 	
 	var generateVariationTrackUrl = function(v, eid){
-		return 'http://localhost:10002/variations/?message=' + eid + ":" + v.id;
+		return receiverURL + 'variations/?message=' + eid + ":" + v.id;
 	};
 	
 	var applyVariation = function(v, eid, skipBeacon){
@@ -185,7 +187,7 @@
 					message += '__';
 				message += g.id + ":" + eid + ":" + vid;
 			});
-			return 'http://localhost:10002/goals/?message=' + message;
+			return receiverURL + '/goals/?message=' + message;
 		}
 		
 		return false;

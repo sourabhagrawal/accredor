@@ -261,27 +261,27 @@ var ExperimentsImpl = comb.define(impl,{
 			});
 			
 			bus.on('experiment_updated', function(id, params, experiment){
-					linksImpl.search(function(err, data){
-						if(err){
-							callback(err);
-						}else{
-							if(params['url']){ // If URL is getting updated
-								if(data.totalCount > 0){
-									var link = data.data[0];
-									bus.fire('link_fetched', link.id, params, experiment);
-								}else{
-									bus.fire('create_link', params, experiment);
-								}
+				linksImpl.search(function(err, data){
+					if(err){
+						callback(err);
+					}else{
+						if(params['url']){ // If URL is getting updated
+							if(data.totalCount > 0){
+								var link = data.data[0];
+								bus.fire('link_fetched', link.id, params, experiment);
 							}else{
-								if(data.totalCount > 0){
-									var link = data.data[0];
-									experiment.links = [link];
-									callback(null,response.success(experiment, 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
-								}
+								bus.fire('create_link', params, experiment);
 							}
-							
+						}else{
+							if(data.totalCount > 0){
+								var link = data.data[0];
+								experiment.links = [link];
+								callback(null,response.success(experiment, 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
+							}
 						}
-					}, 'experimentId:eq:' + id + "___isDisabled:eq:0");
+						
+					}
+				}, 'experimentId:eq:' + id + "___isDisabled:eq:0");
 			});
 			
 			bus.on('create_link', function(params, experiment){
@@ -348,6 +348,48 @@ var ExperimentsImpl = comb.define(impl,{
 						callback(null,response.success(experiment, 1, codes.success.RECORD_FETCHED([ref.displayName, id])));
 					}
 				}, 'experimentId:eq:' + experiment.id + "___isDisabled:eq:0");
+			});
+			
+			bus.fire('start');
+		},
+		
+		searchSplitExperiments : function(callback, query, start, fetchSize, sortBy, sortDir){
+			var ref = this;
+			
+			var bus = new Bus();
+			
+			bus.on('start', function(){
+				ref.search(function(err, data){
+					if(err){
+						callback(err, null);// Respond back with error
+					}else{
+						//Get Links
+						var experiment = data.data;
+						bus.fire('experiments_fetched', experiment);
+					}
+				}, query, start, fetchSize, sortBy, sortDir);
+			});
+			
+			bus.on('experiments_fetched', function(experiments){
+				if(experiments.length > 0){
+					var count = 0;
+					_.each(experiments, function(experiment){
+						linksImpl.search(function(err, data){
+							if(err){
+								callback(err);
+							}else{
+								var links = data.data;
+								experiment.links = links;
+								
+								if(++count == experiments.length){
+									callback(null,response.success(experiments, experiments.length, codes.success.RECORDS_SEARCHED([ref.displayName])));
+								};
+							};
+						}, 'experimentId:eq:' + experiment.id + "___isDisabled:eq:0");
+					});
+				}else{
+					callback(null,response.success(experiments, experiments.length, codes.success.RECORDS_SEARCHED([ref.displayName])));
+				}
 			});
 			
 			bus.fire('start');
