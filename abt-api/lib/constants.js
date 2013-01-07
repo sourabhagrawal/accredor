@@ -25,3 +25,9 @@ DOMAIN_SUPPORT_ID = CONFIG.domain.support_id;
  * Global events
  */
 EVENT_MARK_SCRIPT_OLD = 'mark_script_old';
+
+/**
+ * Environment related
+ */
+ENVIRONMENT = process.env.NODE_ENV;
+IS_PROD = ENVIRONMENT == 'production';

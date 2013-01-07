@@ -4,7 +4,7 @@ var customAssetHandler = require(LIB_DIR + 'asset_handler');
 var assetGroups = function(){
 	var roots = [__dirname + '/../public/lib/bootstrap/img/',
 	            __dirname + '/../public/lib/ericka/img/'];
-	var debug = true;
+	var debug = (!IS_PROD);
 	var config = {
 	    /**
 	     * CSS Groups

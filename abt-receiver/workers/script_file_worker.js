@@ -61,7 +61,7 @@ var ScriptFileWorker = function(){
 																	}
 																});
 														
-														if(app.settings.env == 'production'){
+														if(IS_PROD){
 															awsClient.putFile(fileLoc, '/' + fileName, {'x-amz-acl' : 'public-read'}, function(err, res){
 																if(res.statusCode == 200){
 																	logger.info("Script file : " + fileName + " uploaded to S3");

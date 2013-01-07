@@ -18,3 +18,9 @@ CLIENTS_DIR = CONFIG.dirs.clients;
  */
 CHANNEL_VARIATIONS = 'variations';
 CHANNEL_GOALS = 'goals';
+
+/**
+ * Environment related
+ */
+ENVIRONMENT = process.env.NODE_ENV;
+IS_PROD = ENVIRONMENT == 'production';
