@@ -46,6 +46,20 @@ app.locals.domain = DOMAIN_HOST;
 app.locals.domain_name = DOMAIN_NAME;
 app.locals.support_id = DOMAIN_SUPPORT_ID;
 
+var sessionParams = {};
+if(IS_PROD){
+	var RedisStore = require('connect-redis')(express);
+	sessionParams = {
+		secret : 'sutta',
+		store: new RedisStore,
+		cookie: {secure: false, maxAge: 7 * 24 * 60 * 60 * 1000}
+	};
+}else{
+	sessionParams = {
+		secret : 'sutta'
+	};
+}
+
 app.configure(function(){
   app.set('port', port);
   app.set('views', __dirname + '/views');
@@ -55,7 +69,7 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({secret : 'sutta'}));
+  app.use(express.session(sessionParams));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(auth.filter());
