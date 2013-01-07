@@ -51,6 +51,12 @@ app.configure(function(){
 	  res.send();
   });
   
+  //To access in JADE
+  app.use(function(req, res, next) {
+	  res.locals.app = app;
+	  next();
+  });
+  
   app.use(app.router);
 //  app.use(log4js.connectLogger(logger));
   app.use(function(err, req, res, next) {
@@ -73,6 +79,8 @@ require('./routes')(app);
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
+
+logger.info("Started with settings : " + JSON.stringify(app.settings));
 
 require('./workers/email_job');
 require('./workers/script_job');

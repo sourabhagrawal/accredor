@@ -63,6 +63,12 @@ app.configure(function(){
   app.use(express.static(path.join(__dirname, 'public')));
   app.use('/api/', apiProxy);
   app.use(express.bodyParser());
+  
+  //To access in JADE
+  app.use(function(req, res, next) {
+	  res.locals.app = app;
+	  next();
+  });
   app.use(app.router);
   app.use(function(req, res, next){
 	  request(req.session.url + req.url, function (error, response, body) {
@@ -121,3 +127,5 @@ app.post('/subscribe', function(req, res){
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
+
+logger.info("Started with settings : " + JSON.stringify(app.settings));

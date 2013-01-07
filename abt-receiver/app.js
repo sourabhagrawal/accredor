@@ -29,8 +29,13 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(path.join(__dirname, 'public')));
+  
+  // To access in JADE
+  app.use(function(req, res, next) {
+	  res.locals.app = app;
+	  next();
+  });
   app.use(app.router);
-//  app.use(log4js.connectLogger(logger));
   app.use(function(err, req, res, next) {
 	  // only handle `next(err)` calls
 	  console.log("Error occurred");
@@ -54,6 +59,8 @@ require('./subscribers/subscriber').init();
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
+
+logger.info("Started with settings : " + JSON.stringify(app.settings));
 
 require('./workers/script_file_job');
 require('./workers/data_push_job');
