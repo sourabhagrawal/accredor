@@ -60,8 +60,12 @@ div(id='forgot-box-container')
 								a(href='/faqs') Support
 					.span3
 						ul.nav.nav-pills
-							li.pull-right
-								a(href='/logout') LOGOUT
+							li.dropdown.pull-right
+								a.dropdown-toggle(data-toggle="dropdown", href="#") #{locals.user.email}
+									b.caret
+								ul.dropdown-menu
+									li
+										a(href='/logout') LOGOUT
 	#installation-modal.modal.hide.fade(tabindex='-1', role='dialog', aria-hidden='true')
 		.modal-header
 			button.close(type='button', data-dismiss='modal', aria-hidden='true') x

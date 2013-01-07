@@ -53,8 +53,16 @@ li [class^="icon-"], .btn [class*=" icon-"] {
     height: 20px;
 }
 
+.nav-pills .dropdown-toggle {
+    height: auto;
+}
+
 .dropdown-menu a {
     color: #333333;
+}
+
+.nav-pills .dropdown-menu{
+	margin: 2px 0 0;
 }
 
 .table-bordered th, .table-bordered td {
