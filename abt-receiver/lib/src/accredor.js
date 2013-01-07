@@ -5,16 +5,52 @@
 	
 	var receiverURL = accredor.receiverURL || 'http://localhost:10002/';
 	
+	var applyUrlAdjustments = function(url){
+		if(!url) // If null
+			return;
+		
+		// trim it.
+		url = $.trim(url);
+		
+		// Remove hash.
+		var hashIndex = url.indexOf('#');
+		if (hashIndex > 0) {
+			url = url.substring(0, hashIndex);
+		}
+		
+		// Remove trailing /'s
+		url = url.replace(/\/+$/, "");
+		
+		//Remove http or https
+		if(url.indexOf('http') != -1){ // ohh duh!!
+			url = url.replace(/(http:\/\/|https:\/\/)/, '');
+		}
+		
+		// Remove dubdubdub
+		url = url.replace('www\.', '');
+		
+		// Remove query params ?? TODO
+		
+		return url;
+	};
+	
+	var currentURL = applyUrlAdjustments(window.location.href);
+	
 	var matchLinks = function(ls){
 		for(var i in ls){
 			var l = ls[i];
 			if(l.url){
-				if(window.location.href == l.url){
+				var url = applyUrlAdjustments(l.url);
+				if(currentURL == url){
 					return true;
 				}
 			}
 		};
 		return false;
+	};
+	
+	var setCookie = function(value){
+		$.cookie("acc.track", value, {expires : 1, path: '/'});
 	};
 	
 	var chooseVariation = function(vs){
@@ -53,7 +89,7 @@
 		if(!value.vs) value.vs = {};
 		value.vs[eid] = v.id;
 		
-		$.cookie("acc.track", value, {expires : 1});
+		setCookie(value);
 	};
 	
 	var fetchOldVariation = function(eid){
@@ -143,7 +179,8 @@
 	}
 	
 	var matchGoalUrl = function(g){
-		if(g.url == window.location.href){
+		var url = applyUrlAdjustments(g.url);
+		if(url == currentURL){
 			return true;
 		}
 		return false;
@@ -155,7 +192,7 @@
 		if(!value.gs) value.gs = [];
 		value.gs.push(g.id);
 		
-		$.cookie("acc.track", value, {expires : 1});
+		setCookie(value);
 	};
 	
 	var isGoalMarked = function(g){
