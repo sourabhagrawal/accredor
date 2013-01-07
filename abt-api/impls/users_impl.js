@@ -195,9 +195,9 @@ var UsersImpl = comb.define(impl,{
 					}
 					
 					if(data && data.totalCount == 1){ // User found
-						var user = data.data[0];
+						var text = email + "|" + Date.now();
+						logger.info('encrypting : ' + text);
 						
-						var text = email + "|" + (new Date());
 						var cipher = crypto.createCipher(algorithm, key);  
 						var encrypted = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
 						logger.debug("encrypted token : " + encrypted);
@@ -225,6 +225,8 @@ var UsersImpl = comb.define(impl,{
 		
 		sendVerificationEmail : function(email, callback){
 			var text = email + "|" + Date.now();
+			logger.info('encrypting : ' + text);
+			
 			var cipher = crypto.createCipher(algorithm, key);  
 			var encrypted = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
 			logger.debug("encrypted token : " + encrypted);
@@ -249,6 +251,7 @@ var UsersImpl = comb.define(impl,{
 				var decipher = crypto.createDecipher(algorithm, key);
 				var decrypted = decipher.update(token, 'hex', 'utf8') + decipher.final('utf8');
 				
+				logger.info("Decrypted token  : " + decrypted);
 				var tokens = decrypted.split('|');
 				if(tokens.length != 2){
 					callback(response.error(codes.error.TOKEN_INVALID()));
@@ -257,6 +260,8 @@ var UsersImpl = comb.define(impl,{
 						var email = tokens[0];
 						var date = tokens[1];
 						var elapsed = Date.now() - date;
+						
+						logger.info(elapsed + " millisecs elapsed");
 						if(elapsed < 30 * 24 * 60 * 60 * 1000){ // 30 days
 							callback(null,response.success(email, 1, codes.success.TOKEN_VALID()));
 						}else{
