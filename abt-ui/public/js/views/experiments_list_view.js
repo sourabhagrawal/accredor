@@ -33,7 +33,7 @@ var Experiment = Backbone.Model.extend({
 var ExperimentList = Backbone.Collection.extend({
 	model : Experiment,
 	url : function(){
-		return '/api/experiments';
+		return '/api/experiments/split_experiment/';
 	},
 	parse : function(response){
 		if(response.status && response.status.code == 1000){

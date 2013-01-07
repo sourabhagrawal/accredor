@@ -10,7 +10,11 @@ var Generator = function(){
 	this.jqueryCookie = fs.readFileSync(LIB_DIR + 'src/jquery.cookie.js');
 	
 	this.run = function(userData){
-		var userCode = "var accredor = {}; accredor.data = " + userData;
+		var receiverURL = "http://localhost:8082/";
+		if(IS_PROD){
+			receiverURL = "http://accredor.com:8082/";
+		}
+		var userCode = "var accredor = {}; " + " accredor.receiverURL = '" + receiverURL + "'; accredor.data = " + userData;
 		var accCode = fs.readFileSync(LIB_DIR + 'src/accredor.js');
 		var sourceCode = userCode + ';' + this.jquery.toString() + this.jqueryCookie.toString() + accCode.toString();
 		var final_code = UglifyJS.minify(sourceCode, {
