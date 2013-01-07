@@ -4,39 +4,39 @@ div(id='forgot-box-container')
 -if(locals.isAuthenticated == false)
 	.top-bar
 		.container-fluid
-				.row-fluid
-					.offset9.span3
-						ul.nav.nav-pills
-							li.pull-right
-								a#login-btn(href='#') LOGIN
-							li.pull-right
-								a#signup-btn(href='#') SIGNUP
-		header
+			.row-fluid
+				.offset9.span3
+					ul.nav.nav-pills
+						li.pull-right
+							a#login-btn(href='#') LOGIN
+						li.pull-right
+							a#signup-btn(href='#') SIGNUP
+	header
+		.container-fluid
+			.row-fluid
+				.span4
+					.logo
+						h1
+							a(href='/') #{domain_name}
+				.span3.offset5
+					.list
+						.email
+							i.icon-envelope-alt
+							| Email: #{support_id}
+	.navbar
+		.navbar-inner
 			.container-fluid
-				.row-fluid
-					.span4
-						.logo
-							h1
-								a(href='/') #{domain_name}
-					.span3.offset5
-						.list
-							.email
-								i.icon-envelope-alt
-								| Email: #{support_id}
-		.navbar
-			.navbar-inner
-				.container-fluid
-					a.btn.btn-navbar(data-target='.nav-collapse', data-toggle='collapse') Menu
-					.nav-collapse
-						ul.nav
-							li
-								a(href='/') Home
-							li
-								a(href='#') Features
-							li
-								a(href='/getting-started') Getting Started
-							li
-								a(href='/faqs') Support
+				a.btn.btn-navbar(data-target='.nav-collapse', data-toggle='collapse') Menu
+				.nav-collapse
+					ul.nav
+						li
+							a(href='/') Home
+						li
+							a(href='#') Features
+						li
+							a(href='/getting-started') Getting Started
+						li
+							a(href='/faqs') Support
 								
 -if(locals.isAuthenticated == true)
 	.top-bar.top-bar-margin
