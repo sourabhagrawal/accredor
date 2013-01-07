@@ -78,8 +78,6 @@ var assetGroups = function(){
 				'/js/views/signup_view.js',
 				'/js/views/forgot_view.js',
 				'/js/views/header_view.js',
-				'/js/views/global_header_view.js',
-				'/js/views/dashboard_header_view.js',
 				'/js/views/split_experiment_view.js',
 				'/js/views/create_goal_view.js',
 				'/js/views/experiments_list_view.js',

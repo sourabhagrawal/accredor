@@ -80,7 +80,13 @@ app.configure(function(){
   
   //To access in JADE
   app.use(function(req, res, next) {
+	  var isAuthenticated = req.user != undefined;
+	 
 	  res.locals.app = app;
+	  res.locals.isAuthenticated = isAuthenticated;
+	  if(isAuthenticated)
+		  res.locals.user = req.user;
+	  
 	  next();
   });
   app.use(app.router);

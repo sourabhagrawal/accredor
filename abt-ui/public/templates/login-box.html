@@ -3,24 +3,24 @@
 			<h4>LOGIN</h4>
 		</div>
 		<div class="form">
-			<form class="form-horizontal" id='login-form'>
+			<form class="form-horizontal" id='login-form' action='/' onSubmit="return false;">
 				<div class="p-modal-body">
 					<div class="alert alert-error" id='login-alert' style='display:none;'></div>
 					<div class="control-group">
 						<label class="control-label" for="email-field">Email Id</label>
 						<div class="controls">
-							<input type="text" id="email-field" placeholder="Email Id" />
+							<input type="text" name="username" id="email-field" placeholder="Email Id" required/>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="password-field">Password</label>
 						<div class="controls">
-							<input type='password' id='password-field' placeholder="Password" />
+							<input type='password' name="password" id='password-field' placeholder="Password" required/>
 						</div>
 					</div>
 				</div>
 				<div class="form-actions">
-					<a class="btn btn-primary" id='login-form-submit-btn'>LOGIN</a>
+					<button type="submit" class="btn btn-primary" id='login-form-submit-btn'>LOGIN</button>
 					<a type="button" data-dismiss="modal" class="btn btn-danger">CANCEL</a>
 				</div>
 				<div><a class="btn btn-link" id='forgot-link' style='margin-left:5px;'>Forgot Password?</a></div>

@@ -88,13 +88,4 @@ $(function($){
 			}
 		}
 	});
-	
-	/**
-	 * Initialize header
-	 */
-	if(Utils.isAuthenticated()){
-		new Views.DashboardHeaderView();
-	}else{
-		new Views.GlobalHeaderView();
-	}
 });
