@@ -2,27 +2,19 @@
 <table class='table table-centered' style='border-collapse:collapse;'>
 	<thead>
 		<tr>
-			<th colspan='2' class='td-label'>Variations</th>
+			<th class='td-label'>Goals</th>
+			<th class='td-label'>Variations</th>
 			<% _.each(variations, function(variation){ %>
 				<th><%= variation.name  %></th>
 			<% }) %>
 		</tr>
 	</thead>
 	<tbody id='experiment-report-table-body'>
-		<tr class='striped'>
-			<td><b>Goals</b></td>
-			<td class='td-label'>Total Visits</td>
-			<% _.each(variations, function(variation){ 
-					
-			%>
-			<td><%= variation.total %></td>
-			<% }) %>
-		</tr>
 		<% _.each(goals, function(goal, index){ 
-			striped = index % 2 ? 'striped' : '';
+			striped = index % 2 ? '' : 'striped';
 		%>
 		<tr class='tr-separator <%= striped %>'>
-			<td rowspan = "3"><%= goal.name %></td>
+			<td rowspan = "4"><%= goal.name %></td>
 			<td class='td-label'>Conversions</td>
 			<% _.each(variations, function(variation){ %>
 			<td><%= variation.goals[goal.id] ? variation.goals[goal.id].conversion : 0 %>%</td>
@@ -31,7 +23,13 @@
 		<tr class='<%= striped %>'>
 			<td class='td-label'>Visits</td>
 			<% _.each(variations, function(variation){ %>
-			<td><%= variation.goals[goal.id] ? variation.goals[goal.id].visits : 0 %></td>
+			<td><%= variation.goals[goal.id] && variation.goals[goal.id].visits? variation.goals[goal.id].visits : 0 %></td>
+			<% }) %>
+		</tr>
+		<tr class='<%= striped %>'>
+			<td class='td-label'>Hits</td>
+			<% _.each(variations, function(variation){ %>
+			<td><%= variation.goals[goal.id] && variation.goals[goal.id].hits ? variation.goals[goal.id].hits : 0 %></td>
 			<% }) %>
 		</tr>
 		<tr class='<%= striped %>'>
@@ -39,7 +37,7 @@
 			<% _.each(variations, function(variation){ 
 					if(variation.isControl != 1){
 			%>
-			<td><%= variation.goals[goal.id] ? variation.goals[goal.id].improvement : 0 %>%</td>
+			<td><%= variation.goals[goal.id] && variation.goals[goal.id].improvement ? variation.goals[goal.id].improvement : 0 %>%</td>
 			<% 		}
 				}) 
 			%>

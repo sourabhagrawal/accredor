@@ -51,7 +51,10 @@
 	};
 	
 	var setCookie = function(name, value){
-		$.cookie(name, value, {expires : 1, path: '/'});
+		var date = new Date();
+		var minutes = 30;
+		date.setTime(date.getTime() + (minutes * 60 * 1000));
+		$.cookie(name, value, {expires : date, path: '/'});
 	};
 	
 	var queue = function(url){
@@ -123,7 +126,18 @@
 		};
 		
 		this.generateTrackUrl = function(v, eid){
-			return 'variations/?message=' + eid + ":" + v.id;
+			goalIds = [];
+			if(d && d.gs && d.gs.length){
+				d.gs.forEach(function(g){
+					goalIds.push(g.id);
+				});
+			}
+			var url = 'variations/?message=' + eid + ":" + v.id;
+			if(goalIds.length > 0){
+				url += ":" + goalIds.join(":");
+			}
+			
+			return url;
 		};
 		
 		this.applyVariation = function(v, eid, skipBeacon){
@@ -177,9 +191,9 @@
 				if(matched){
 					/**
 					 * The link has matched. This means a variation can be applied here. 
-					 * Now we have to see if the user has already been applies with a variation from this experiment.
-					 * If yes, Apply the same variation.
-					 * else, it is a new user. Figure out which variation to apply based on variation percentages.
+					 * Now we have to see if the user has already been applied with a variation from this experiment.
+					 * If yes, Apply the same variation, else it is a new user. 
+					 * Figure out which variation to apply based on variation percentages.
 					 */
 					var isNew = true;
 					

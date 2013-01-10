@@ -11,5 +11,6 @@ module.exports = function(app){
 	require('./script_details_route')(app);
 	require('./contact_leads_route')(app);
 	require('./reports_data_route')(app);
-	require('./variation_visits_route')(app);
+	require('./experiment_visits_route')(app);
+	require('./goal_visits_route')(app);
 };

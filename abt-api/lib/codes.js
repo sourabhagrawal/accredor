@@ -217,8 +217,11 @@ var ErrorCodes = new function(){
 	/**
 	 * Variation Visits related
 	 */
-	this.VARIATION_ID_NULL = status({code : 2001, message : "Variation Id can not be empty"});
-	this.VISITS_NULL = status({code : 2001, message : "Visits can not be empty"});
+	this.EXPERIMENT_ID_NULL = status({code : 2001, message : "Experiment Id can not be empty"});
+	this.VARIATION_ID_NULL = status({code : 2002, message : "Variation Id can not be empty"});
+	this.GOAL_ID_NULL = status({code : 2003, message : "Goal Id can not be empty"});
+	this.VISITS_NULL = status({code : 2004, message : "Visits can not be empty"});
+	this.HITS_NULL = status({code : 2005, message : "Hits can not be empty"});
 	
 };
 

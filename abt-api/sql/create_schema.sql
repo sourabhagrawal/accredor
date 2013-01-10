@@ -168,3 +168,30 @@ CREATE TABLE `variation_visits` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS experiment_visits;
+CREATE TABLE `experiment_visits` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `experiment_id` BIGINT NOT NULL,
+  `variation_id` BIGINT NOT NULL DEFAULT 0,
+  `visits` BIGINT NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS goal_visits;
+CREATE TABLE `goal_visits` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `goal_id` BIGINT NOT NULL,
+  `experiment_id` BIGINT NOT NULL DEFAULT 0,
+  `variation_id` BIGINT NOT NULL DEFAULT 0,
+  `hits` BIGINT NOT NULL,
+  `visits` BIGINT NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

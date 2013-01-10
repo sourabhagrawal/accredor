@@ -6,7 +6,7 @@ var experimentsImpl = require('./experiments_impl');
 var variationsImpl = require('./variations_impl');
 var goalsImpl = require('./goals_impl');
 var linksImpl = require('./links_impl');
-var variationVisitsImpl = require('./variation_visits_impl');
+var goalVisitsImpl = require('./goal_visits_impl');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
 var emitter = require(LIB_DIR + 'emitter');
@@ -24,10 +24,11 @@ var ReportsDataImpl = comb.define(impl,{
 			var variationData = {};
 			
 			var isControl = variation.isControl;
+			variationData.id = variation.id;
 			variationData.name = variation.name;
-			variationData.isControl = variation.isControl;
+			variationData.isControl = isControl;
 			
-			variationVisitsImpl.search(function(err, data){
+			goalVisitsImpl.search(function(err, data){
 				if(err){
 					callback(err);
 				}else{
@@ -36,31 +37,36 @@ var ReportsDataImpl = comb.define(impl,{
 					_.each(rows, function(row){
 						var goalId = row['goalId'];
 						var visits = row['visits'];
+						var hits = row['hits'];
 						
-						visitsMap[goalId] = visitsMap[goalId] || 0;
-						visitsMap[goalId] += parseInt(visits);
+						visitsMap[goalId] = visitsMap[goalId] || {};
+						visitsMap[goalId]['visits'] = visitsMap[goalId]['visits'] || 0;
+						visitsMap[goalId]['hits'] = visitsMap[goalId]['hits'] || 0;
+						
+						visitsMap[goalId]['visits'] += parseInt(visits);
+						visitsMap[goalId]['hits'] += parseInt(hits);
 					});
-					
-					console.log(visitsMap);
-					
-					variationData.total = visitsMap["0"] || 0;
 					
 					//TODO Fetch hits for all goals
 					variationData.goals = {};
 					_.each(goals, function(goal){
-						var goalVisits =  visitsMap[goal.id] || 0;
-						var total = variationData.total;
-						var conversion = total == 0 ? 0 : Math.round((goalVisits * 100.0 / total) * 100)/100;
+						var goalVisitsMap =  visitsMap[goal.id] || 0;
+						
+						var visits = goalVisitsMap['visits'];
+						var hits = goalVisitsMap['hits'];
+						var conversion = visits == 0 ? 0 : Math.round((hits * 100.0 / visits) * 100)/100;
+						
 						var improvement = 0;
 						if(!isControl){
 							controlConversion = controlConversions[goal.id];
-							improvement = controlConversion == 0 ? 0 : Math.round((((conversion - controlConversion) * 100) / controlConversion)*100) / 100; 
+							improvement = controlConversion == 0 ? '--' : Math.round((((conversion - controlConversion) * 100) / controlConversion)*100) / 100; 
 						}else{
 							controlConversions[goal.id] = conversion;
 						}
 						
 						variationData.goals[goal.id] = {
-							visits : goalVisits,
+							visits : visits,
+							hits : hits,
 							conversion : conversion,
 							improvement : improvement
 						};
@@ -84,7 +90,7 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('start');
 					}
-				}, 'userId:eq: ' + ex.userId + 'isDisabled:eq:0___status:eq:' + GOAL.CREATED, 0 , -1);
+				}, 'userId:eq: ' + ex.userId + 'isDisabled:eq:0', 0 , -1);
 			}
 			
 			var responseData = {
@@ -108,7 +114,7 @@ var ReportsDataImpl = comb.define(impl,{
 				
 				if(variations.length > 0){
 					_.each(variations, function(variation){
-						if(variation.isControl){
+						if(variation.isControl == 1){
 							ref.getVariationData(variation, goals, controlConversions, function(err, data){
 								if(err){
 									callback(err);
@@ -130,7 +136,7 @@ var ReportsDataImpl = comb.define(impl,{
 				var count = 0;
 				if(variations.length > 0){
 					_.each(variations, function(variation){
-						if(!variation.isControl){
+						if(variation.isControl == 0){
 							ref.getVariationData(variation, goals, controlConversions, function(err, data){
 								if(err){
 									callback(err);
@@ -202,7 +208,7 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('goals_fetched', goals);
 					}
-				}, 'userId:eq: ' + userId + 'isDisabled:eq:0___status:eq:' + GOAL.CREATED, 0 , -1);
+				}, 'userId:eq: ' + userId + 'isDisabled:eq:0', 0 , -1);
 			});
 			
 			bus.on('goals_fetched', function(goals){
@@ -216,7 +222,7 @@ var ReportsDataImpl = comb.define(impl,{
 							var experiments = data.data;
 							bus.fire('experiments_fetched', experiments, goals);
 						}
-					}, 'userId:eq: ' + userId + 'isDisabled:eq:0___status:eq:' + EXPERIMENT.STARTED, 0 , -1);
+					}, 'userId:eq: ' + userId + 'isDisabled:eq:0', 0 , -1);
 				}
 			});
 			

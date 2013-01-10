@@ -16,26 +16,13 @@ var ExperimentsBucket = comb.define(Bucket, {
 			if(values){
 				if(channel == CHANNEL_VARIATIONS){ // mark the total field
 					_.each(values, function(value){
-						var key = "ex:" + value.experimentId;
-						ref.client.hincrby(key, 'total', 1, function(err, reply){
-							if(err){
-								logger.error(err);
-							}else
-								logger.info("ex:" + value.experimentId + " total : " + reply);
-						});
+						var key = "e:" + value.experimentId;
+						ref.locknIncrement(key, 'visits');
 					});
 				}else if(channel == CHANNEL_GOALS){ // mark the goal hit
-					console.log(values);
 					_.each(values, function(value){
-						var key = "ex:" + value.experimentId;
-						var field = "g:" + value.goalId;
-						
-						ref.client.hincrby(key, field, 1, function(err, reply){
-							if(err){
-								logger.error(err);
-							}else
-								logger.info("ex:" + value.experimentId + " g:" + value.goalId + " : " + reply);
-						});
+						var key = "g:" + value.goalId + "__e:" + value.experimentId;
+						ref.locknIncrement(key, 'hits');
 					});
 				}
 			}
