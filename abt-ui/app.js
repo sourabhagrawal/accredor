@@ -30,15 +30,22 @@ var app = express();
 
 auth.init();
 
-var port = process.env.PORT || 8080;
+var port = CONFIG.nodes.ui.port || 8080;
 
 var apiProxy = httpProxy.createServer(function (req, res, proxy) {
 	var user = req.user || {};
 	var userId = user.id || 'dummy_login';
 	req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
 	proxy.proxyRequest(req, res, {
-		host: 'localhost',
-		port: 8081
+		host: CONFIG.nodes.api.host,
+		port: CONFIG.nodes.api.port
+	});
+});
+
+var receiverProxy = httpProxy.createServer(function (req, res, proxy) {
+	proxy.proxyRequest(req, res, {
+		host: CONFIG.nodes.receiver.host,
+		port: CONFIG.nodes.receiver.port
 	});
 });
 
@@ -75,7 +82,15 @@ app.configure(function(){
   app.use(auth.filter());
   app.use(assetsManagerMiddleware);
   app.use(express.static(path.join(__dirname, 'public')));
+  
+  app.use(function(req, res, next) {
+	  if (req.url.match(/^\/scripts\//g)) {
+		  req.url = '/scripts' + req.url;
+	  }
+	  next();
+  });
   app.use('/api/', apiProxy);
+  app.use('/scripts/', receiverProxy);
   app.use(express.bodyParser());
   
   //To access in JADE

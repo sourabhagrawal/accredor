@@ -17,7 +17,7 @@ var logger = require(LIB_DIR + 'log_factory').create("app");
  */
 var app = express();
 
-var port = process.env.PORT || 8082;
+var port = CONFIG.nodes.receiver.port || 8082;
 
 app.configure(function(){
   app.set('port', port);
@@ -28,6 +28,13 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  
+  app.use(function(req, res, next) {
+	  if (req.url.match(/^\/scripts\//g)) {
+		  res.setHeader("Cache-Control","max-age=60");
+	  }
+	  next();
+  });
   app.use(express.static(path.join(__dirname, 'public')));
   
   // To access in JADE
