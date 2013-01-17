@@ -90,7 +90,7 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('start');
 					}
-				}, 'userId:eq: ' + ex.userId + 'isDisabled:eq:0', 0 , -1);
+				}, 'userId:eq: ' + ex.userId + '___isDisabled:eq:0', 0 , -1);
 			}
 			
 			var responseData = {
@@ -208,7 +208,7 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('goals_fetched', goals);
 					}
-				}, 'userId:eq: ' + userId + 'isDisabled:eq:0', 0 , -1);
+				}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , -1);
 			});
 			
 			bus.on('goals_fetched', function(goals){
@@ -222,7 +222,7 @@ var ReportsDataImpl = comb.define(impl,{
 							var experiments = data.data;
 							bus.fire('experiments_fetched', experiments, goals);
 						}
-					}, 'userId:eq: ' + userId + 'isDisabled:eq:0', 0 , -1);
+					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , -1);
 				}
 			});
 			
