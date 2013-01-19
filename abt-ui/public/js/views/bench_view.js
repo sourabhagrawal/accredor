@@ -98,7 +98,7 @@ var VariationView = Views.BaseView.extend({
 	tagName : "div",
 	
 	events : {
-		"click .delete" : "destroy",
+		"click #delete" : "destroy",
 		"click #undo" : "undo",
 		"click #redo" : "redo",
 		"click #save" : "save",
@@ -152,7 +152,6 @@ var VariationView = Views.BaseView.extend({
 		this.$("#content-frame").ready(function(){  
 			ref.$("#content-frame").load(function () {                        
 //				ref.frame.contentWindow.location.href = ref.frame.src; // Some hack for Mozilla. needs to be tested
-				
 				ref.frame.contentWindow.applyCode(json.script);
             });
 		});
@@ -200,21 +199,21 @@ var VariationView = Views.BaseView.extend({
 
 Views.ABExperimentView = Views.BaseView.extend({
 	events : {
-		"click .add" : 'add',
+		"click .add" : 'create',
 	},
 	
 	initialize : function(){
 		this.$el = $("#ab-experiment-bench");
 		this._super('initialize');
+		
 		this.loadTemplate('ab-experiment');
 		
-		this.id = 1;
-
+		this.id = $.urlParam("experiment_id");;
+		
+		_.bindAll(this, 'add', 'addAll');
 		variations.bind('add', this.add, this);
 		variations.bind('reset', this.addAll, this);
 //		variations.bind('all', this.render, this);
-		
-		eventBus.on( 'close_view', this.close, this );
 	},
 	
 	init : function(){
@@ -224,24 +223,39 @@ Views.ABExperimentView = Views.BaseView.extend({
 	},
 	
 	render : function(){
-		this.$el.html(this.template(this.experiment));
+		var experimentId = this.id;
 		
-		if(this.id){
-			variations.fetch({
-				data : {
-					q : 'experimentId:eq:' + this.id + '___isDisabled:eq:0',
-					sortBy : 'id',
-					sortDir : 'ASC'
+		if(experimentId){
+			var ref = this;
+			$.ajax({
+				url : '/api/experiments/' + experimentId,
+				type : 'GET',
+				success : function(data, textStatus, jqXHR){
+					ref.experiment = data.data;
+					if(ref.experiment['type'] == 'abtest'){
+						ref.$el.html(ref.template(ref.experiment));
+						
+						variations.fetch({
+							data : {
+								q : 'experimentId:eq:' + experimentId + '___isDisabled:eq:0',
+								sortBy : 'id',
+								sortDir : 'ASC'
+							}
+						});
+					}else{
+						ref.$el.html("Invalid Experiment Id");
+					}
+				},
+				error : function(res, textStatus, errorThrown){
+					if(res.status == 500){
+						var data = $.parseJSON(res.responseText);
+						ref.$el.html(data.message);
+					}
 				}
 			});
+		}else{
+			this.$el.html('No Experiment Id');
 		}
-	},
-	
-	close : function(){
-		this._super('close');
-		
-		variations.off();
-		variations.reset();
 	},
 	
 	showError : function(msg){
@@ -255,17 +269,17 @@ Views.ABExperimentView = Views.BaseView.extend({
 	},
 	
 	create : function(){
-		variations.create({type : 'url', script : "", experimentId : this.id});
+		variations.create({type : 'script', script : "", experimentId : this.id});
 	},
 	
 	add : function(variation){
+		console.log(variation);
 		var view = new VariationView({model : variation});
-		
 		var json = variation.toJSON();
 		
 		var id = json.experimentId + "-" + json.id;
 		var klass = json.isControl == 1 ? "first-tab active" : '';
-		this.$("#ab-experiment-bench ul").append("<li class='" + klass + "'><a href='#" + id + "' data-toggle='tab'>" + json.name + "</a></li>");
+		this.$("ul").append("<li class='" + klass + "'><a href='#" + id + "' data-toggle='tab'>" + json.name + "</a></li>");
 		
 		this.$('#variations-tabs').append(view.render().el);
 	},

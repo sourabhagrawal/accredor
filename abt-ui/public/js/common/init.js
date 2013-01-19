@@ -88,4 +88,10 @@ $(function($){
 			}
 		}
 	});
+	
+	
+	$.urlParam = function(name){
+		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(top.window.location.href); 
+		return (results !== null) ? results[1] : 0;
+	};
 });

@@ -16,7 +16,8 @@ EXPERIMENT = {
 	STOPPED : 'stopped',
 	
 	types : {
-		SPLITTER : 'splitter'
+		SPLITTER : 'splitter',
+		ABTEST : 'abtest'
 	}
 };
 
