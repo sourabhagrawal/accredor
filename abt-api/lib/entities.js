@@ -27,7 +27,8 @@ VARIATION = {
 	name : 'variation',
 	
 	types : {
-		URL : 'url'
+		URL : 'url',
+		AB : 'ab'
 	}
 };
 

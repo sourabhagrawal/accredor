@@ -3,12 +3,13 @@ var request = require('request');
 var jsdom = require("jsdom");
 
 exports.index = function(req, res){
-	req.session.url = req.query['url'];
-	res.render('bench', {url : req.query['url']});
+	res.render('bench');
 };
 
 var includeJs = function(url, window){
 	var head = window.document.head;
+	if(head == null)
+		head = window.document.body;
 	var script = window.document.createElement("script");
 	script.type = 'text/javascript';
 	script.src = url;
@@ -17,6 +18,9 @@ var includeJs = function(url, window){
 
 var includeCss = function(url, window){
 	var head = window.document.head;
+	if(head == null)
+		head = window.document.body;
+	
 	var style = window.document.createElement("link");
 	style.type = 'text/css';
 	style.href = '/css/frame.css';
@@ -28,18 +32,21 @@ exports.fetch = function(req, res){
 	var url = req.query.url;
 	jsdom.env(url, function(errors, window){
 		if(window != undefined){
-			includeCss('/css/frame.css', window);
-			
 			var overlay = window.document.createElement("div");
 			overlay.id = "selected";
-			overlay.style = "position:absolute";
 			window.document.body.appendChild(overlay);
+			
+			overlay = window.document.createElement("div");
+			overlay.id = "over";
+			window.document.body.appendChild(overlay);
+			
+			includeCss('/css/frame.css', window);
 			
 			includeJs('/lib/jquery-ui/js/jquery-1.8.2.js', window);
 			includeJs('/lib/jquery-ui/js/jquery-ui-1.9.0.custom.js', window);
-			includeJs('/javascripts/stack.js', window);
-			includeJs('/javascripts/movement.js', window);
-			includeJs('/javascripts/frame.js', window);
+			includeJs('/js/bench/stack.js', window);
+			includeJs('/js/bench/movement.js', window);
+			includeJs('/js/bench/frame.js', window);
 			
 			//console.log(window.document.head.innerHTML);
 			

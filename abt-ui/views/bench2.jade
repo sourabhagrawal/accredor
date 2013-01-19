@@ -1,0 +1,19 @@
+html(lang='en')
+	include common/head
+		link(href='lib/codemirror/codemirror.css', rel='stylesheet')
+		script(src="lib/codemirror/codemirror.js")
+		script(src="lib/codemirror/mode/javascript/javascript.js")
+	body
+		include common/global-header
+		div.container
+			div.btn-group
+				button.btn(id="undo") Undo
+				button.btn(id="redo") Redo
+				button.btn(id="script-btn") To Code
+			div.btn-group
+				button.btn(id="save") Save
+		div(id="code-container")
+			div(id="code-box")
+		iframe(id="content-frame", style="width:100%; height:100%", src='http://localhost:10010')
+	include common/global-footer 
+	script(src="/js/bench.js")

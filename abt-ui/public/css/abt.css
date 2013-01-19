@@ -84,3 +84,30 @@ li [class^="icon-"], .btn [class*=" icon-"] {
 .tr-separator{
 	border-top: 3px solid #EEEEEE;
 }
+
+.first-tab{
+	margin-left : 15px;
+}
+
+.code-container{
+	position:absolute; 
+	bottom:0; 
+	left:0; 
+	right:0; 
+	background : none repeat scroll 0 0 #444; 
+	padding : 20px; 
+	z-index : 1000;
+}
+
+.nav-tabs{
+	margin-bottom : 5px;
+}
+
+.frame-container{
+	bottom: 0;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 95px;
+}

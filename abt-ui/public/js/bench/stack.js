@@ -1,4 +1,6 @@
-var Stack = new function(){
+var Stack = function(){
+	this.initialCode = undefined;
+	
 	var array = [];
 	
 	var iter = -1;
@@ -37,12 +39,21 @@ var Stack = new function(){
 	
 	this.toScript = function(){
 		var instructions = [];
+		if(this.initialCode){
+			instructions.push(this.initialCode);
+		}
+		
 		for(var i = 0; i <= iter; i++){
 			var obj = array[i];
-			var instruction = obj['fn'] + ";\n";
+			var instruction = obj['fn'];
 			instructions.push(instruction);
 		}
 		
 		return instructions.join("\n");
+	};
+	
+	this.setInitialCode = function(fn){
+		this.initialCode = fn;
+		eval(fn);
 	};
 };

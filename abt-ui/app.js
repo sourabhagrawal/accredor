@@ -11,6 +11,8 @@ var CONFIG = require('config');
 var log4js = require('log4js');
 var passport = require('passport');
 var assetManager = require('connect-assetmanager');
+var urlParser = require('url');
+var _ = require('underscore');
 
 require('./lib/constants');
 var logger = require(LIB_DIR + 'log_factory').create("app");
@@ -93,6 +95,41 @@ app.configure(function(){
   app.use('/scripts/', receiverProxy);
   app.use(express.bodyParser());
   
+  app.use(function(req, res, next){
+	  var referer = req.headers.referer;
+	  
+	  if(referer){
+		  parsedReferer = urlParser.parse(referer, true);
+		  if(parsedReferer.pathname && parsedReferer.pathname == '/fetch'){
+			  // Fetch from the site
+			  logger.info("fetching " + req.url + " from site");
+			  var siteUrl = parsedReferer.query.url;
+			  var siteUrlParts = urlParser.parse(siteUrl, true);
+			  var siteBaseUrl = siteUrlParts.protocol + "//" + siteUrlParts.host;
+			  
+			  // TODO This might not be sufficient. Process the siteUrl more.
+			  var requestUrl = urlParser.format(urlParser.parse(siteBaseUrl + req.url));
+			  if(req.url.indexOf("/") != 0){
+				  requestUrl = urlParser.format(urlParser.parse(siteUrl + req.url));
+			  }
+			  request(requestUrl, function (error, response, body) {
+				  if (!error && response.statusCode == 200) {
+					  _.each(response.headers, function(value, key){
+						  res.setHeader(key, value);
+					  });
+					  res.send(body);
+				  }else{
+					  next();
+				  };
+			  });
+		  }else{
+			  next();
+		  }
+	  }else{
+		  next();
+	  }
+  });
+  
   //To access in JADE
   app.use(function(req, res, next) {
 	  var isAuthenticated = req.user != undefined;
@@ -105,17 +142,6 @@ app.configure(function(){
 	  next();
   });
   app.use(app.router);
-  app.use(function(req, res, next){
-	  request(req.session.url + req.url, function (error, response, body) {
-		  if (!error && response.statusCode == 200) {
-			  var type = require('mime').lookup(req.session.url + req.url);
-			  res.header("Content-Type", type);
-			  res.send(body);
-		  }else{
-			  next();
-		  };
-	  });
-	});
   app.use(function(err, req, res, next) {
 	  // only handle `next(err)` calls
 	  logger.error(err);

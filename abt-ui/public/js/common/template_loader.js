@@ -5,10 +5,14 @@
       loadRemoteTemplate: function(templateName, filename, callback) {
         if (!this.templates[templateName]) {
           var self = this;
+          $("body").spin({
+        	  top : '200px'
+          });
           jQuery.get(filename, function(data) {
-            self.addTemplate(templateName, data);
-            self.saveLocalTemplates();
-            if(callback) callback(data);
+        	  $("body").spin(false);
+        	  self.addTemplate(templateName, data);
+        	  self.saveLocalTemplates();
+        	  if(callback) callback(data);
           });
         }
         else {
