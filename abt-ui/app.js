@@ -173,15 +173,6 @@ app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);
 app.get('/dashboard', require('./routes/w3/dashboard').index);
 
-app.get('/soon', function(req, res){
-	res.render('soon');
-});
-
-app.post('/subscribe', function(req, res){
-	logger.info("email : " + req.body.email);
-	res.send();
-});
-
 /**
  * Initialize the Server
  */
