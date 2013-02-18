@@ -67,10 +67,17 @@ var assetGroups = function(){
 				'/lib/ericka/js/jquery.tweet.js',
 				'/lib/ericka/js/custom.js',
 				
+				'/lib/flot/jquery.flot.js',
+				'/lib/flot/jquery.flot.time.js',
+				
 				'/js/lang/en.js',
+				'/js/common/constants.js',
 				'/js/common/template_loader.js',
 				'/js/common/utils.js',
 				'/js/common/init.js',
+				
+				'/js/models/experiment_report_model.js',
+				'/js/models/experiment_report_chart_model.js',
 				
 				'/js/views/base_view.js',
 				'/js/views/base_login_view.js',
@@ -82,7 +89,8 @@ var assetGroups = function(){
 				'/js/views/create_goal_view.js',
 				'/js/views/experiments_list_view.js',
 				'/js/views/goals_list_view.js',
-				'/js/views/list_reports_view.js'
+				'/js/views/list_reports_view.js',
+				'js/views/detail_experiment_report_view.js'
 	        ],
 	        debug : debug
 	    }

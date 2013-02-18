@@ -107,7 +107,7 @@ var SplitVariationView = Views.BaseView.extend({
 	
 	initialize : function(){
 		this._super('initialize');
-		this.loadTemplate('split-variation');
+		this.loadTemplate('experiments/split-variation');
 		
 		this.model.bind('destroy', this.remove, this);
 //		this.model.bind('change', this.change, this);
@@ -167,7 +167,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	initialize : function(){
 		this.$el = $("#dashboard-content");
 		this._super('initialize');
-		this.loadTemplate('split-experiment');
+		this.loadTemplate('experiments/split-experiment');
 		
 		this.experimentUrl = '/api/experiments/split_experiment/';
 		

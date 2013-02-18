@@ -20,7 +20,7 @@ var ReportsDataImpl = comb.define(impl,{
             this._super([options]);
 		},
 		
-		getVariationData : function(variation, goals, controlConversions, callback){
+		getCummulativeVariationData : function(variation, goals, controlConversions, callback){
 			var variationData = {};
 			
 			var isControl = variation.isControl;
@@ -77,7 +77,56 @@ var ReportsDataImpl = comb.define(impl,{
 			}, 'variationId:eq:' + variation.id, 0, -1);
 		},
 		
-		getReportDataforExperiment : function(ex, goals, callback){
+		getTimeSeriesVariationData : function(variation, goals, controlConversions, callback){
+			var variationData = {};
+			
+			var isControl = variation.isControl;
+			variationData.id = variation.id;
+			variationData.name = variation.name;
+			variationData.isControl = isControl;
+			
+			goalVisitsImpl.search(function(err, data){
+				if(err){
+					callback(err);
+				}else{
+					var rows = data.data;
+					var visitsMap = {};
+					_.each(rows, function(row){
+						var goalId = row['goalId'];
+						var visits = parseInt(row['visits']);
+						var hits = parseInt(row['hits']);
+						var createdAt = row['createdAt'];
+						
+//						var conversion = visits == 0 ? 0 : Math.round((hits * 100.0 / visits) * 100)/100;
+						
+						visitsMap[goalId] = visitsMap[goalId] || [];
+						visitsMap[goalId].push([new Date(createdAt).getTime(), hits]);
+					});
+					
+					variationData.goals = {};
+					_.each(goals, function(goal){
+						var goalVisits =  visitsMap[goal.id] || [];
+						
+						variationData.goals[goal.id] = goalVisits;
+					});
+					
+					callback(null, variationData);
+				}
+			}, 'variationId:eq:' + variation.id, 0, -1);
+		},
+		
+		searchVariationsForExperiment : function(exId, bus){
+			variationsImpl.search(function(err, data){
+				if(err){
+					callback(err);
+				}else{
+					variations = data.data;
+					bus.fire('variations_fetched', variations);
+				}
+			}, 'experimentId:eq:' + exId + '___isDisabled:eq:0', 0, -1, 'isControl', 'DESC');
+		},
+		
+		getCummulativeReportDataforExperiment : function(ex, goals, callback){
 			var ref = this;
 			var bus = new Bus();
 			
@@ -94,18 +143,12 @@ var ReportsDataImpl = comb.define(impl,{
 			}
 			
 			var responseData = {
+				experiment_id : ex.id,
 				name : ex.name,
 			};
 			
 			bus.on('start', function(){
-				variationsImpl.search(function(err, data){
-					if(err){
-						callback(err);
-					}else{
-						variations = data.data;
-						bus.fire('variations_fetched', variations);
-					}
-				}, 'experimentId:eq:' + ex.id + '___isDisabled:eq:0', 0, -1, 'isControl', 'DESC');
+				ref.searchVariationsForExperiment(ex.id, bus);
 			});
 			
 			bus.on('variations_fetched', function(variations){
@@ -115,7 +158,7 @@ var ReportsDataImpl = comb.define(impl,{
 				if(variations.length > 0){
 					_.each(variations, function(variation){
 						if(variation.isControl == 1){
-							ref.getVariationData(variation, goals, controlConversions, function(err, data){
+							ref.getCummulativeVariationData(variation, goals, controlConversions, function(err, data){
 								if(err){
 									callback(err);
 									return;
@@ -137,7 +180,7 @@ var ReportsDataImpl = comb.define(impl,{
 				if(variations.length > 0){
 					_.each(variations, function(variation){
 						if(variation.isControl == 0){
-							ref.getVariationData(variation, goals, controlConversions, function(err, data){
+							ref.getCummulativeVariationData(variation, goals, controlConversions, function(err, data){
 								if(err){
 									callback(err);
 									return;
@@ -171,30 +214,179 @@ var ReportsDataImpl = comb.define(impl,{
 			bus.fire('start');
 		},
 		
-		getById : function(id, callback){
+		getTimeSeriesReportDataforExperiment : function(ex, goals, callback){
 			var ref = this;
-			if(id == null){
-				callback(response.error(codes.error.ID_NULL));
-			}else{
-				var exId = id;
-				
-				experimentsImpl.getById(exId, function(err, data){
+			var bus = new Bus();
+			
+			//Fetch goals if not sent
+			if(goals == undefined){
+				goalsImpl.search(function(err, data){
 					if(err){
 						callback(err);
 					}else{
-						ref.getReportDataforExperiment(data.data, function(err, data){
+						goals = data.data;
+						bus.fire('start');
+					}
+				}, 'userId:eq: ' + ex.userId + '___isDisabled:eq:0', 0 , -1);
+			}
+			
+			var responseData = {
+				experiment_id : ex.id,
+				name : ex.name,
+			};
+			
+			bus.on('start', function(){
+				ref.searchVariationsForExperiment(ex.id, bus);
+			});
+			
+			bus.on('variations_fetched', function(variations){
+				responseData.variations = [];
+				var controlConversions = {};
+				
+				if(variations.length > 0){
+					_.each(variations, function(variation){
+						if(variation.isControl == 1){
+							ref.getTimeSeriesVariationData(variation, goals, controlConversions, function(err, data){
+								if(err){
+									callback(err);
+									return;
+								}else{
+									responseData.variations.push(data);
+									
+									bus.fire('control_conversions_fetched', variations, controlConversions);
+								}
+							});
+						}
+					});
+				}else{
+					bus.fire('variations_data_added');
+				}
+			});
+			
+			bus.on('control_conversions_fetched', function(variations, controlConversions){
+				var count = 0;
+				if(variations.length > 0){
+					_.each(variations, function(variation){
+						if(variation.isControl == 0){
+							ref.getTimeSeriesVariationData(variation, goals, controlConversions, function(err, data){
+								if(err){
+									callback(err);
+									return;
+								}else{
+									responseData.variations.push(data);
+									
+									if(++count == variations.length - 1){
+										bus.fire('variations_data_added');
+									}
+								}
+							});
+						}
+					});
+				}else{
+					bus.fire('variations_data_added');
+				}
+			});
+			
+			bus.on('variations_data_added', function(variations){
+				responseData.goals = [];
+				_.each(goals, function(goal){
+					responseData.goals.push({
+						id : goal.id,
+						name : goal.name
+					});
+				});
+				
+				callback(null, responseData);
+			});
+			
+			bus.fire('start');
+		},
+		
+		getCummulativeReportsDataByExperimentId : function(exId, userId, callback){
+			var ref = this;
+			var bus = new Bus();
+			
+			if(exId == null){
+				callback(response.error(codes.error.ID_NULL));
+			}else{
+				bus.on('start', function(){
+					goalsImpl.search(function(err, data){
+						if(err){
+							callback(err);
+						}else{
+							goals = data.data;
+							bus.fire('goals_fetched', goals);
+						}
+					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , -1);
+				});
+				
+				bus.on('goals_fetched', function(goals){
+					if(goals.length == 0){
+						callback(null, response.success([], 0, codes.success.RECORDS_SEARCHED([ref.displayName])));
+					}else{
+						experimentsImpl.getById(exId, function(err, data){
 							if(err){
 								callback(err);
 							}else{
-								callback(null,response.success(data, 1, codes.success.RECORD_FETCHED([ref.displayName, id])));
+								ref.getCummulativeReportDataforExperiment(data.data, goals, function(err, data){
+									if(err){
+										callback(err);
+									}else{
+										callback(null,response.success(data, 1, codes.success.RECORD_FETCHED([ref.displayName, exId])));
+									}
+								});
 							}
 						});
 					}
 				});
+				
+				bus.fire('start');
 			}
 		},
 		
-		getReportsDataForUser : function(userId, callback){
+		getTimeSeriesReportsDataByExperimentId : function(exId, userId, callback){
+			var ref = this;
+			var bus = new Bus();
+			
+			if(exId == null){
+				callback(response.error(codes.error.ID_NULL));
+			}else{
+				bus.on('start', function(){
+					goalsImpl.search(function(err, data){
+						if(err){
+							callback(err);
+						}else{
+							goals = data.data;
+							bus.fire('goals_fetched', goals);
+						}
+					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , -1);
+				});
+				
+				bus.on('goals_fetched', function(goals){
+					if(goals.length == 0){
+						callback(null, response.success([], 0, codes.success.RECORDS_SEARCHED([ref.displayName])));
+					}else{
+						experimentsImpl.getById(exId, function(err, data){
+							if(err){
+								callback(err);
+							}else{
+								ref.getTimeSeriesReportDataforExperiment(data.data, goals, function(err, data){
+									if(err){
+										callback(err);
+									}else{
+										callback(null,response.success(data, 1, codes.success.RECORD_FETCHED([ref.displayName, exId])));
+									}
+								});
+							}
+						});
+					}
+				});
+				
+				bus.fire('start');
+			}
+		},
+		
+		getCummulativeReportsDataForUser : function(userId, callback){
 			var ref = this;
 			var bus = new Bus();
 			
@@ -232,7 +424,7 @@ var ReportsDataImpl = comb.define(impl,{
 					callback(null, response.success([], 0, codes.success.RECORDS_SEARCHED([ref.displayName])));
 				}else{
 					_.each(experiments, function(experiment){
-						ref.getReportDataforExperiment(experiment, goals, function(err, data){
+						ref.getCummulativeReportDataforExperiment(experiment, goals, function(err, data){
 							if(err){
 								callback(err);
 							}else{

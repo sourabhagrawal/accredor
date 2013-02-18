@@ -1,0 +1,36 @@
+!!! 5
+html(lang='en')
+	include ../common/head
+	body
+		include ../common/global-header
+		header
+			.container
+				.row
+					.span4
+						.logo
+							h1
+								a(href='/') Accredor
+					.span3.offset5
+						.list
+							.email
+								i.icon-envelope-alt
+								| Email: sourabh@accredor.com
+		.container
+			.row
+				.span12
+					.csoon
+						.row
+							.span12
+								.csoon-page
+									p.soon-med We are on the way...
+									p.soon-big
+										| Coming Soon
+										span.color !!!
+									p.soon-small
+										| We are trying very hard to bring you a product that is going to bring a lot of value to your business. Leave us your email id and we will let you know when we are ready
+									.soon-subscribe(id='subscribe-box')
+										form.form-search
+											input(type='text', placeholder='Enter your email', id='subscribe-email')
+											&nbsp;&nbsp;
+											button.btn.btn-large(type='button', id='subscribe-btn') Subscribe
+script(src="/js/soon.js")

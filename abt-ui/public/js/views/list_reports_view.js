@@ -1,35 +1,7 @@
-var ExperimentReport = Backbone.Model.extend({
-	defaults : function(){},
-	
-	initialize : function(){},
-	
-	parse : function(response){
-		if(response.status && response.status.code == 1000){
-			return response.data;
-		}
-		return response;
-	},
-	
-	error : function(model, error){
-		if(error.status == 500){
-			var data = $.parseJSON(error.responseText);
-			this.set('status', {isError : true, message : data.message}, {silent : true});
-		}else if(error.statusText != undefined){
-			this.set('status', {isError : true, message : error.statusText}, {silent : true});
-		}else{
-			this.set('status', {isError : true, message : error}, {silent : true});
-		}
-	},
-	
-	synced : function(model, error){
-		this.set('status', {isError : false});
-	}
-});
-
 var ExperimentReportList = Backbone.Collection.extend({
-	model : ExperimentReport,
+	model : Models.ExperimentReport,
 	url : function(){
-		return '/api/reports_data';
+		return '/api/reports_data/cummulative';
 	},
 	parse : function(response){
 		if(response.status && response.status.code == 1000){
@@ -41,13 +13,13 @@ var ExperimentReportList = Backbone.Collection.extend({
 
 var reportsList = new ExperimentReportList();
 
-var ExperimentReportView = Views.BaseView.extend({
+Views.ExperimentReportView = Views.BaseView.extend({
 	tagName : "div",
 	
 	initialize : function(){
 		this._super('initialize');
 		
-		this.loadTemplate('experiment-report');
+		this.loadTemplate('reports/experiment-report');
 		
 		this.model.bind('sync', this.render, this);
 	},
@@ -63,7 +35,7 @@ Views.ListReportsView = Views.BaseView.extend({
 		this.$el = $("#dashboard-content");
 		this._super('initialize');
 		
-		this.loadTemplate('experiment-report-list');
+		this.loadTemplate('reports/experiment-report-list');
 		
 		reportsList.bind('reset', this.addAll, this);
 		
@@ -83,15 +55,15 @@ Views.ListReportsView = Views.BaseView.extend({
 	},
 	
 	add : function(reportData){
-		var view = new ExperimentReportView({model : reportData});
+		var view = new Views.ExperimentReportView({model : reportData});
 		this.$('#experiment-report-list').append(view.render().el);
 	},
 	
 	addAll : function(){
 		if(reportsList.length == 0)
 			this.$el.html("<h3>You do not have any active Experiments or Goals. " +
-					"Create a new <a id='create-experiment-btn' href='#'>Experiment</a> " +
-					"or <a id='create-goal-btn' href='#'>Goal</a></h3>");
+					"Create a new <a href='" + ACC.CREATE_EXPERIMENT_URL + "'>Experiment</a> " +
+					"or <a href='" + ACC.CREATE_GOAL_URL + "'>Goal</a></h3>");
 		else
 			reportsList.each(this.add);
 	},

@@ -1,111 +1,115 @@
 $(function($){
 	
-	/**
-	 * Highlight the right list item
-	 */
-	$('#dashboard-nav li').click(function(e){
-		$('#dashboard-nav li.active i').removeClass('icon-white');
-		$('#dashboard-nav li.active').removeClass('active');
-		$(this).addClass('active');
-		$(this).children('i').addClass('icon-white');
-	});
-	
-	$('#dashboard-nav li ul li').click(function(e){
-		$('#dashboard-nav li.active i').removeClass('icon-white');
-		$('#dashboard-nav .active').removeClass('active');
-		$(this).addClass('active');
-		$(this).children('i').addClass('icon-white');
-		e.stopPropagation();
-	});
+	templateLoader.loadRemoteTemplate("reports/experiment-report", "/templates/reports/experiment-report.html");
 	
 	// Create Experiment
 	Utils.openReports = function(){
 		eventBus.trigger('close_view');
-		templateLoader.loadRemoteTemplate("experiment-report", "/templates/experiment-report.html", function(data){
+		templateLoader.loadRemoteTemplate("reports/experiment-report", "/templates/reports/experiment-report.html", function(data){
 			new Views.ListReportsView();
 		});
 	};
 	
-	$('#reports').click(function(){
-		Utils.openReports();
-	});
-	
-	Utils.openReports();
+	Utils.openExperimentReport = function(experimentId){
+		eventBus.trigger('close_view');
+		templateLoader.loadRemoteTemplate("reports/experiment-report", "/templates/reports/experiment-report.html", function(data){
+			new Views.DetailExperimentReportView({experimentId : experimentId});
+		});
+	};
 	
 	// Create Experiment
 	Utils.openSplitExperimentForm = function(id){
 		eventBus.trigger('close_view');
-		templateLoader.loadRemoteTemplate("split-variation", "/templates/split-variation.html", function(data){
+		templateLoader.loadRemoteTemplate("experiments/split-variation", "/templates/experiments/split-variation.html", function(data){
 			new Views.SplitExperimentView({id : id});
 		});
 	};
 	
-	$('#create-experiment').click(function(){
-		Utils.openSplitExperimentForm();
-	});
-	
-	$('#dashboard-content').on('click', '#create-experiment-btn', function(){
-		$('#create-experiment').click();
-	});
-	
 	// Create Goal
 	Utils.openGoalForm = function(id){
 		eventBus.trigger('close_view');
-		templateLoader.loadRemoteTemplate("goal-create", "/templates/goal-create.html", function(data){
+		templateLoader.loadRemoteTemplate("goals/goal-create", "/templates/goals/goal-create.html", function(data){
 			new Views.CreateGoalView();
 		});
 	};
 	
-	$('#create-goal').click(function(){
-		Utils.openGoalForm();
-	});
-	
-	$('#dashboard-content').on('click', '#create-goal-btn', function(){
-		$('#create-goal').click();
-	});
-	
 	// List experiments
 	Utils.openExperimentsListView = function(filter){
 		eventBus.trigger('close_view');
-		templateLoader.loadRemoteTemplate("experiment-row", "/templates/experiment-row.html", function(data){
+		templateLoader.loadRemoteTemplate("experiments/experiment-row", "/templates/experiments/experiment-row.html", function(data){
 			new Views.ExperimentsListView({filter : filter});
 		});
 	};
 	
-	
-	$('#nav-experiments').click(function(){
-		Utils.openExperimentsListView();
-	});
-	
-	$('#nav-ready-experiments').click(function(){
-		Utils.openExperimentsListView({status : 'created'});
-	});
-	
-	$('#nav-running-experiments').click(function(){
-		Utils.openExperimentsListView({status : 'started'});
-	});
-	
-	$('#nav-stopped-experiments').click(function(){
-		Utils.openExperimentsListView({status : 'stopped'});
-	});
-	
 	// List Goals
 	Utils.openGoalsListView = function(filter){
 		eventBus.trigger('close_view');
-		templateLoader.loadRemoteTemplate("goal-row", "/templates/goal-row.html", function(data){
+		templateLoader.loadRemoteTemplate("goals/goal-row", "/templates/goals/goal-row.html", function(data){
 			new Views.GoalsListView({filter : filter});
 		});
 	};
 	
-	$('#nav-goals').click(function(){
-		Utils.openGoalsListView();
+	var markLinks = function(){
+		var link = $('#dashboard-nav li a[data-href="' + Backbone.history.fragment + '"]');
+		$('#dashboard-nav li.active i').removeClass('icon-white');
+		$('#dashboard-nav .active').removeClass('active');
+		link.parent('li').addClass('active');
+		link.parent('li').children('i').addClass('icon-white');
+//		e.stopPropagation();
+	};
+	
+	var DashboardRouter = Backbone.Router.extend({
+		routes: {
+			"dashboard/experiments/create" : "openSplitExperimentForm",
+			"dashboard/experiments" : "openExperimentsListView",
+			"dashboard/experiments/:status" : "openExperimentsListView",
+			"dashboard/goals/create" : "openGoalForm",
+			"dashboard/goals" : "openGoalsListView",
+			"dashboard/goals/:status" : "openGoalsListView",
+			"dashboard/reports" : "openReports",
+			"dashboard/reports/:experimentId" : "openExperimentReport"
+		},
+
+		openSplitExperimentForm: function() {
+			markLinks();
+			Utils.openSplitExperimentForm();
+		},
+
+		openExperimentsListView: function(status) {
+			markLinks();
+			Utils.openExperimentsListView({status : status});
+		},
+		
+		openGoalForm: function() {
+			markLinks();
+			Utils.openGoalForm();
+		},
+
+		openGoalsListView: function(status) {
+			markLinks();
+			Utils.openGoalsListView({status : status});
+		},
+		
+		openReports : function(){
+			markLinks();
+			Utils.openReports();
+		},
+		
+		openExperimentReport : function(experimentId){
+			markLinks();
+			Utils.openExperimentReport(experimentId);
+		}
+
 	});
 	
-	$('#nav-active-goals').click(function(){
-		Utils.openGoalsListView({status : 'created'});
-	});
+	var router = new DashboardRouter();
 	
-	$('#nav-disabled-goals').click(function(){
-		Utils.openGoalsListView({status : 'stopped'});
+	Backbone.history.start({pushState: true});
+	
+	$('#dashboard-nav li a').click(function(e){
+		e.stopPropagation();
+		
+		var href = $(this).data('href');
+		router.navigate(href);
 	});
 });

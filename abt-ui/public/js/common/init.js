@@ -1,5 +1,3 @@
-window.Views = {};
-
 ;(function(Backbone) {
   // The super method takes two parameters: a method name
   // and an array of arguments to pass to the overridden method.

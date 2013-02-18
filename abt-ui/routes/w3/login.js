@@ -2,7 +2,7 @@ var passport = require('passport');
 var logger = require(LIB_DIR + 'log_factory').create("login");
 
 exports.index = function(req, res){
-	res.render('login');
+	res.render('login/login');
 };
 
 exports.authenticate = function(req, res, next) {
@@ -31,9 +31,9 @@ exports.logout = function(req, res){
 };
 
 exports.verify = function(req, res){
-	res.render('verify');
+	res.render('login/verify');
 };
 
 exports.recover = function(req, res){
-	res.render('recover');
+	res.render('login/recover');
 };

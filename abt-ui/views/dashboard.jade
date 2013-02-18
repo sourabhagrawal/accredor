@@ -7,49 +7,49 @@ html(lang='en')
 				.span2.well
 					ul.nav.nav-list(id='dashboard-nav')
 						li.active
-							a(href='#', id='reports') 
+							a(data-href='dashboard/reports', href='#', id='reports') 
 								i.icon-list
 								|  Reports
 						li.divider
 						li.nav-header Actions
 						li
-							a(href='#', id='create-experiment') 
+							a(data-href='dashboard/experiments/create', href='#', id='create-experiment') 
 								i.icon-wrench
 								|  Create Experiment
 						li
-							a(href='#', id='create-goal') 
+							a(data-href='dashboard/goals/create', href='#', id='create-goal') 
 								i.icon-file
 								|  Create Goal
 						li.divider
 						li.nav-header Resources
 						li
-							a(href='#', id='nav-experiments') 
+							a(data-href='dashboard/experiments', href='#', id='nav-experiments') 
 								i.icon-random
 								|  Experiments
 							ul.nav.nav-list
 								li
-									a(href='#', id='nav-ready-experiments') 
+									a(data-href='dashboard/experiments/created', href='#', id='nav-ready-experiments') 
 										i.icon-thumbs-up
 										|  Ready
 								li
-									a(href='#', id='nav-running-experiments') 
+									a(data-href='dashboard/experiments/started', href='#', id='nav-running-experiments') 
 										i.icon-play
 										|  Running
 								li
-									a(href='#', id='nav-stopped-experiments') 
+									a(data-href='dashboard/experiments/stopped', href='#', id='nav-stopped-experiments') 
 										i.icon-stop
 										|  Stopped
 						li
-							a(href='#', id='nav-goals') 
+							a(data-href='dashboard/goals', href='#', id='nav-goals') 
 								i.icon-road
 								|  Goals
 							ul.nav.nav-list
 								li
-									a(href='#', id='nav-active-goals') 
+									a(data-href='dashboard/goals/created', href='#', id='nav-active-goals') 
 										i.icon-ok
 										|  Active
 								li
-									a(href='#', id='nav-disabled-goals') 
+									a(data-href='dashboard/goals/stopped', href='#', id='nav-disabled-goals') 
 										i.icon-ban-circle
 										|  Disabled
 				.span10

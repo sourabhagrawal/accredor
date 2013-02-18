@@ -44,7 +44,7 @@ var GoalView = Views.BaseView.extend({
 	
 	initialize : function(){
 		this._super('initialize');
-		this.loadTemplate('goal-row');
+		this.loadTemplate('goals/goal-row');
 		
 		this.model.bind('sync', this.render, this);
 		this.model.bind('error', this.markError, this);
@@ -112,7 +112,7 @@ Views.GoalsListView = Views.BaseView.extend({
 	initialize : function(){
 		this.$el = $("#dashboard-content");
 		this._super('initialize');
-		this.loadTemplate('goals-list');
+		this.loadTemplate('goals/goals-list');
 		
 //		goals.bind('add', this.add, this);
 		goals.bind('reset', this.addAll, this);
@@ -132,8 +132,10 @@ Views.GoalsListView = Views.BaseView.extend({
 		if(this.options.filter){
 			var q = '';
 			_.each(this.options.filter, function(value, key, list){
-				if(q != '') q += '___';
-				q += key + ":eq:" + value;
+				if(value != null){
+					if(q != '') q += '___';
+					q += key + ":eq:" + value;
+				}
 			});
 			data.q = q;
 		}
@@ -166,7 +168,7 @@ Views.GoalsListView = Views.BaseView.extend({
 	
 	addAll : function(){
 		if(goals.length == 0)
-			this.$el.html("<h3>No Goals found. <a id='create-goal-btn' href='#'>Click Here</a> to create one.</h3>");
+			this.$el.html("<h3>No Goals found. <a href='" + ACC.CREATE_GOAL_URL + "'>Click Here</a> to create one.</h3>");
 		else
 			goals.each(this.add);
 	},

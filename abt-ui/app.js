@@ -171,7 +171,8 @@ app.get('/getting-started', baseRoute.gettingStarted);
 
 app.get('/bench', benchRoute.index);
 app.get('/fetch', benchRoute.fetch);
-app.get('/dashboard', require('./routes/w3/dashboard').index);
+
+app.get('/dashboard*', require('./routes/w3/dashboard').index);
 
 /**
  * Initialize the Server

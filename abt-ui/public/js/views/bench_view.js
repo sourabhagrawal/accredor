@@ -107,7 +107,7 @@ var VariationView = Views.BaseView.extend({
 	
 	initialize : function(){
 		this._super('initialize');
-		this.loadTemplate('ab-variation');
+		this.loadTemplate('experiments/ab-variation');
 		
 		this.model.bind('destroy', this.remove, this);
 //		this.model.bind('change', this.change, this);
@@ -206,7 +206,7 @@ Views.ABExperimentView = Views.BaseView.extend({
 		this.$el = $("#ab-experiment-bench");
 		this._super('initialize');
 		
-		this.loadTemplate('ab-experiment');
+		this.loadTemplate('experiments/ab-experiment');
 		
 		this.id = $.urlParam("experiment_id");;
 		

@@ -3,21 +3,21 @@ exports.index = function(req, res){
 };
 
 exports.terms = function(req, res){
-	res.render('terms');
+	res.render('static/terms');
 };
 
 exports.privacyPolicy = function(req, res){
-	res.render('privacy-policy');
+	res.render('static/privacy-policy');
 };
 
 exports.faqs = function(req, res){
-	res.render('faqs');
+	res.render('static/faqs');
 };
 
 exports.abtesting = function(req, res){
-	res.render('abtesting');
+	res.render('static/abtesting');
 };
 
 exports.gettingStarted = function(req, res){
-	res.render('getting-started');
+	res.render('static/getting-started');
 };

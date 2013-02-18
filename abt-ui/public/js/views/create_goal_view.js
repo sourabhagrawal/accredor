@@ -29,7 +29,7 @@ Views.CreateGoalView = Views.BaseView.extend({
 		this.model = new CreateGoal();
 		
 		this._super('initialize');
-		this.loadTemplate('goal-create');
+		this.loadTemplate('goals/goal-create');
 		
 		this.model.bind('error', this.error, this);
 		this.model.bind('sync', this.synced, this);
