@@ -1,4 +1,4 @@
-var Utils = Utils || {};
+Utils = window.Utils || {};
 
 $(function($){
 	Utils.isAuthenticated = function(){
