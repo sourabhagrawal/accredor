@@ -1,7 +1,5 @@
 $(function($){
 	
-	templateLoader.loadRemoteTemplate("reports/experiment-report", "/templates/reports/experiment-report.html");
-	
 	// Create Experiment
 	Utils.openReports = function(){
 		eventBus.trigger('close_view');
@@ -50,7 +48,14 @@ $(function($){
 	};
 	
 	var markLinks = function(){
-		var link = $('#dashboard-nav li a[data-href="' + Backbone.history.fragment + '"]');
+		var historyToken = Backbone.history.fragment;
+		
+		// Default page will be reports
+		if(historyToken == 'dashboard'){
+			historyToken = 'dashboard/reports';
+		}
+		
+		var link = $('#dashboard-nav li a[data-href="' + historyToken + '"]');
 		$('#dashboard-nav li.active i').removeClass('icon-white');
 		$('#dashboard-nav .active').removeClass('active');
 		link.parent('li').addClass('active');
@@ -59,23 +64,40 @@ $(function($){
 	};
 	
 	var DashboardRouter = Backbone.Router.extend({
-		routes: {
-			"dashboard/experiments/create" : "openSplitExperimentForm",
-			"dashboard/experiments" : "openExperimentsListView",
-			"dashboard/experiments/:status" : "openExperimentsListView",
-			"dashboard/goals/create" : "openGoalForm",
-			"dashboard/goals" : "openGoalsListView",
-			"dashboard/goals/:status" : "openGoalsListView",
-			"dashboard/reports" : "openReports",
-			"dashboard/reports/:experimentId" : "openExperimentReport"
+		
+		initialize : function(options){
+			/**
+			 * (\/)? to ignore trailing slash
+			 */
+			
+			// Reports 
+			this.route(/^dashboard(\/)?$/, "openReports");
+			this.route(/^dashboard\/reports(\/)?$/, "openReports");
+			this.route(/^dashboard\/reports\/([0-9]+)(\/)?$/, "openExperimentReport");
+			
+			// Experiments
+			this.route(/^dashboard\/experiments(\/)?$/, "listExperiments");
+			this.route(/^dashboard\/experiments\/([a-z]+)(\/)?$/, "listFilteredExperiments");
+			this.route(/^dashboard\/experiments\/create(\/)?$/, "openSplitExperimentForm");
+			this.route(/^dashboard\/experiments\/([0-9]+)\/edit(\/)?$/, "openSplitExperimentForm");
+			
+			// Goals
+			this.route(/^dashboard\/goals(\/)?$/, "listGoals");
+			this.route(/^dashboard\/goals\/([a-z]+)(\/)?$/, "listFilteredGoals");
+			this.route(/^dashboard\/goals\/create(\/)?$/, "openGoalForm");
 		},
-
-		openSplitExperimentForm: function() {
+		
+		openSplitExperimentForm: function(experimentId) {
 			markLinks();
-			Utils.openSplitExperimentForm();
+			Utils.openSplitExperimentForm(experimentId);
 		},
 
-		openExperimentsListView: function(status) {
+		listExperiments: function() {
+			markLinks();
+			Utils.openExperimentsListView();
+		},
+		
+		listFilteredExperiments: function(status) {
 			markLinks();
 			Utils.openExperimentsListView({status : status});
 		},
@@ -85,7 +107,12 @@ $(function($){
 			Utils.openGoalForm();
 		},
 
-		openGoalsListView: function(status) {
+		listGoals: function() {
+			markLinks();
+			Utils.openGoalsListView();
+		},
+		
+		listFilteredGoals: function(status) {
 			markLinks();
 			Utils.openGoalsListView({status : status});
 		},
