@@ -129,7 +129,7 @@ $(function($){
 
 	});
 	
-	var router = new DashboardRouter();
+	Comp.router = new DashboardRouter();
 	
 	Backbone.history.start({pushState: true});
 	
@@ -137,6 +137,6 @@ $(function($){
 		e.stopPropagation();
 		
 		var href = $(this).data('href');
-		router.navigate(href);
+		Comp.router.navigate(href);
 	});
 });

@@ -18,4 +18,12 @@ $(function($){
 		var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 		return regex.test(email);
 	};
+	
+	Utils.replaceUrlParams = function(url, params){
+		_.each(params, function(param){
+			url =  url.replace(/:[a-zA-Z]+/, param);
+		});
+		
+		return url;
+	};
 });

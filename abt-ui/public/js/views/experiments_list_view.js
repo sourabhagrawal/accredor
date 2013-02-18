@@ -87,7 +87,7 @@ var ExperimentView = Views.BaseView.extend({
 	},
 	
 	edit : function(){
-		Utils.openSplitExperimentForm(this.model.get('id'));
+		Comp.router.navigate(Utils.replaceUrlParams(ACC.EDIT_EXPERIMENT_URL, [this.model.get('id')]));
 	}
 });
 
