@@ -7,8 +7,6 @@ var CONFIG = require('config');
 /**
  * A worker thread that will pick emails periodically and try to send them
  */
-
-
 var EmailWorker = function(){
 	/*
 	 * 1. Pick 5 queued emails in a batch
@@ -30,68 +28,80 @@ var EmailWorker = function(){
 	    AWSAccessKeyID: CONFIG.aws.key,
 	    AWSSecretKey: CONFIG.aws.secret
 	});
-	
-	this.run = function(){
-		if(CONFIG.email.enabled && (CONFIG.email.enabled == true || CONFIG.email.enabled == 'true')){
-			emailsImpl.updateBatchToProcessing(batchSize, function(err, data){
-				if(err != null){
-					logger.error(err);
-					setTimeout(ref.run, interval);
-				}else{
-					if(data && data.status && data.status.code == 1000){
-						if(data.totalCount > 0){
-							logger.debug("Emails fetched for sending");
-							var emails = data.data;
-							_.each(emails, function(email){
-								var mailOptions = {
-									generateTextFromHTML: true,
-								    from: email.from,
-								    to: email.to,
-								    cc: email.cc,
-								    bcc: email.bcc,
-								    subject: email.subject,
-								    html: email.body
-								};
-	
-								transport.sendMail(mailOptions, function(err, data){
-									if(err != null){
-										// Failed to send email.
-										logger.error(err);
-										
-										//Requeue the mail.
-										emailsImpl.markQueued(email.id, function(error, mail){
-											if(error != null){
-												logger.error(error);
-												
-												emailsImpl.markFailed(email.id, function(e, m){
-													logger.error(e);
-												});
-											};
-										});
-									}else{
-										logger.info("Sent an email to " + email.to + " with subject : " + email.subject);
-										emailsImpl.markSent(email.id, function(error, mail){
-											if(error != null){
-												logger.error(error);
-											}
-										});
-									};
-								});
-							});
-							
-							setTimeout(ref.run, interval);
-						}else{
-							setTimeout(ref.run, interval);
-							logger.info("No queued emails found. Will try again after " + interval + " millisecs. Now : " + new Date());
-						}
-					}else{
-						setTimeout(ref.run, interval);
-						logger.error("Unusual error in fetching emails for sending");
-					}
-				}
-			});
-		}
-	};
+
+  this.run = function(){
+		if(CONFIG.email && (CONFIG.email.enabled === 'true')){
+      ref.updateBatch(batchSize);
+    }
+  };
+
+  /**
+   * Runs an async periodic task to pick and send emails in specified 
+   * batch size
+   */
+  this.updateBatch = function(batchSize){
+	  emailsImpl.updateBatchToProcessing(batchSize, function(err, data){
+      if(err){
+        logger.error(err);
+        setTimeout(ref.run, interval);
+      }else{
+				if(data && data.status && data.status.code === 1000){
+          if(data.totalCount > 0){
+            logger.debug("Emails fetched for sending. Count : " + data.totalCount);
+            var emails = data.data;
+            _.each(emails, function(email){
+              var mailOptions = {
+                generateTextFromHTML: true,
+                  from: email.from,
+                  to: email.to,
+                  cc: email.cc,
+                  bcc: email.bcc,
+                  subject: email.subject,
+                  html: email.body
+              };
+              ref.sendMail(mailOptions, email.id);
+            });
+          }else{
+            setTimeout(ref.run, interval);
+            logger.info("No queued emails found. Will try again after " + interval + " millisecs. Now : " + new Date());
+          }
+        }else{
+          setTimeout(ref.run, interval);
+          logger.error("Unusual error in fetching emails for sending");
+        }
+      }
+    });
+  };
+
+  /**
+   * Send a mail with specified options
+   */
+  this.sendMail = function(mailOpts, emailId){
+    transport.sendMail(mailOpts, function(err, data){
+      if(err !== null){
+        // Failed to send email.
+        logger.error(err);
+        
+        //Requeue the mail.
+        emailsImpl.markQueued(email.id, function(error, mail){
+          if(error != null){
+            logger.error(error);
+            
+            emailsImpl.markFailed(email.id, function(e, m){
+              logger.error(e);
+            });
+          };
+        });
+      }else{
+        logger.info("Sent an email to " + mailOpts.to + " with subject : " + mailOpts.subject);
+        emailsImpl.markSent(emailId, function(error, mail){
+          if(error != null){
+            logger.error(error);
+          }
+        });
+      };
+    });
+  };
 };
 
 module.exports = EmailWorker;
