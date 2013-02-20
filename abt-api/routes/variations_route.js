@@ -20,6 +20,8 @@ var VariationsRoute = function(app){
 	});
 	
 	app['delete']('/variations/:id', function(req, res){
+		req.body = req.body || {};
+		req.body.userId = req.body.userId || req.user.id;
 		routeUtils.deleteById(req, res, variationsImpl);
 	});
 		

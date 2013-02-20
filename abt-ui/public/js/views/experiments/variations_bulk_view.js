@@ -13,8 +13,8 @@ var SplitVariation = Backbone.Model.extend({
 	},
 	
 	initialize : function(){
-//		this.bind('error', this.error, this);
-//		this.bind('sync', this.synced, this);
+		this.bind('error', this.error, this);
+		this.bind('sync', this.synced, this);
 	},
 	
 	parse : function(response){
@@ -95,7 +95,7 @@ var SplitVariationList = Backbone.Collection.extend({
 
 var variations = new SplitVariationList();
 
-var SplitVariationView = Views.BaseView.extend({
+Views.SplitVariationView = Views.BaseView.extend({
 	tagName : "div",
 	
 	events : {
@@ -155,75 +155,58 @@ var SplitVariationView = Views.BaseView.extend({
 	}
 });
 
-Views.SplitExperimentView = Views.BaseView.extend({
+
+Views.SplitVariationListView = Views.BaseView.extend({
 	events : {
 		"click #delete-all" : "deleteAll",
-		"click #ok-btn" : "createOrUpdateExperiment",
 		"click .add" : 'create',
-		"click #primary-action" : "primaryAction",
-		"click #delete-experiment-btn" : "deleteExperiment"
 	},
 	
 	initialize : function(){
-		this.$el = $("#dashboard-content");
+		this.$el = $("#variations-container");
 		this._super('initialize');
-		this.loadTemplate('experiments/split-experiment');
 		
-		this.experimentUrl = '/api/experiments/split_experiment/';
+		this.loadTemplate('experiments/variations-list');
+		
+		variations.off();
+		variations.reset();
 		
 		variations.bind('add', this.add, this);
 		variations.bind('reset', this.addAll, this);
 //		variations.bind('all', this.render, this);
 		
-		eventBus.on( 'close_view', this.close, this );
+		eventBus.on('close_view', this.close, this );
 	},
 	
 	init : function(){
 		this._super('init');
 		
-		if(this.options.id){
-			this.id = this.options.id;
+		if(this.options.experiment){
+			this.experiment = this.options.experiment;
+			
+			var ref = this;
+			if(this.options.create === true){
+				this.create(function(model){
+					ref.render();
+				});
+			}else{
+				this.render();
+			}
 		}
-		
-		var ref = this;
-		if(this.id){
-			$.ajax({
-				url : '/api/experiments/split_experiment/' + this.id,
-				type : 'GET',
-				success : function(data, textStatus, jqXHR){
-					ref.experiment = data.data;
-					ref.onGet();
-				},
-				error : function(res, textStatus, errorThrown){
-					if(res.status == 500){
-						var data = $.parseJSON(res.responseText);
-						ref.showError(data.message);
-					}
-				}
-			});
-		}else{
-			this.onGet();
-		}
-	},
-	
-	onGet : function(){
-		this.render();
 	},
 	
 	render : function(){
-		this.$el.html(this.template(this.experiment));
+		this.$el.html(this.template());
 		
 		this.name = this.$('#name');
 		this.url = this.$('#url');
 		this.alert = this.$('#split-variation-alert');
 		this.okBtn = this.$('#ok-btn');
 		
-		if(this.id){
-			this.$('#variations-container').show();
-			
+		if(this.experiment){
 			variations.fetch({
 				data : {
-					q : 'experimentId:eq:' + this.id + '___isDisabled:eq:0',
+					q : 'experimentId:eq:' + this.experiment.id + '___isDisabled:eq:0',
 					sortBy : 'id',
 					sortDir : 'ASC'
 				}
@@ -238,106 +221,31 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		variations.reset();
 	},
 	
-	showError : function(msg){
-		this.enable();
+	updateExperiment : function(experiment){
+		this.experiment = experiment;
 		
-		this.alert.find('.alert').addClass('alert-error');
-		this.alert.find('.alert').html(msg);
-		this.alert.show();
-	},
-	
-	disable : function(){
-		this.$el.find('input').prop('disabled' , true);
-		this.$el.find('a').prop('disabled' , true);
-	},
-	
-	enable : function(){
-		this.$el.find('input').prop('disabled' , false);
-		this.$el.find('a').prop('disabled' , false);
-	},
-	
-	primaryAction : function(){
-		var status = this.experiment['status'];
-		var data = {};
-		if(status == 'created')
-			data.status = 'started';
-		else if(status == 'started')
-			data.status = 'stopped';
-		else if(status == 'stopped')
-			data.status = 'started';
-		
-		this.persistExperiment(this.experimentUrl + this.id, 'put', data, true);
-	},
-	
-	deleteExperiment : function(){
-		if(confirm("Are you sure you want to delete this Experiment?")){
-			this.persistExperiment(this.experimentUrl + this.id, 'put', {isDisabled : 1}, true);
-		}
-	},
-	
-	createOrUpdateExperiment : function(){
-		var data = {
-			name : this.name.val(),
-			url : this.url.val(),
-			type : 'splitter'
-		};
-		if(this.id){
-			this.persistExperiment(this.experimentUrl + this.id, 'put', data, true);
-		}else{
-			this.persistExperiment(this.experimentUrl, 'post', data, false);
-		}
-		
-	},
-	
-	persistExperiment : function(url, method, data, isUpdate){
-		this.disable();
-		
-		var ref = this;
-		$.ajax({
-			url : url,
-			type : method,
-			data : data,
-			success : function(data, textStatus, jqXHR){
-				ref.id = data.data.id;
-				ref.experiment = data.data;
-				
-				if(!isUpdate)
-					ref.create();
-				else{
-					if(ref.experiment['isDisabled'] == 1){
-						$('#nav-experiments').click();
-						return;
-					}else
-						ref.updateControl();
-				}
-				
-				ref.render();
-			},
-			error : function(res, textStatus, errorThrown){
-				if(res.status == 500){
-					var data = $.parseJSON(res.responseText);
-					ref.showError(data.message);
-				}
-			}
-		});
+		this.updateControl();
 	},
 	
 	updateControl : function(){
-		var url = this.url.val();
+		var url = this.experiment.links[0].url;
 		var control = variations.control();
 		if(control.length > 0)
-			control[0].set({script : url});
+			control[0].save({script : url});
 	},
 	
-	create : function(){
-		if(this.id){
-			var url = this.url.val();
-			variations.create({type : 'url', script : url, experimentId : this.id});
+	create : function(callback){
+		if(this.experiment){
+			var url = this.experiment.links[0].url;
+			
+			var options = {};
+			if(callback && typeof callback == 'function') options.success = callback;
+			variations.create({type : 'url', script : url, experimentId : this.experiment.id}, options);
 		}
 	},
 	
 	add : function(variation){
-		var view = new SplitVariationView({model : variation});
+		var view = new Views.SplitVariationView({model : variation});
 		this.$('#variations-list').append(view.render().el);
 	},
 	

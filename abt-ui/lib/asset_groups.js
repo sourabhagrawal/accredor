@@ -80,17 +80,18 @@ var assetGroups = function(){
 				'/js/models/experiment_report_chart_model.js',
 				
 				'/js/views/base_view.js',
-				'/js/views/base_login_view.js',
-				'/js/views/login_box_view.js',
-				'/js/views/signup_view.js',
-				'/js/views/forgot_view.js',
+				'/js/views/login/base_login_view.js',
+				'/js/views/login/login_box_view.js',
+				'/js/views/login/signup_view.js',
+				'/js/views/login/forgot_view.js',
 				'/js/views/header_view.js',
-				'/js/views/split_experiment_view.js',
-				'/js/views/create_goal_view.js',
-				'/js/views/experiments_list_view.js',
-				'/js/views/goals_list_view.js',
-				'/js/views/list_reports_view.js',
-				'js/views/detail_experiment_report_view.js'
+				'/js/views/experiments/variations_bulk_view.js',
+				'/js/views/experiments/split_experiment_view.js',
+				'/js/views/experiments/experiments_list_view.js',
+				'/js/views/goals/create_goal_view.js',
+				'/js/views/goals/goals_list_view.js',
+				'/js/views/reports/list_reports_view.js',
+				'/js/views/reports/detail_experiment_report_view.js'
 	        ],
 	        debug : debug
 	    }

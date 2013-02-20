@@ -54,7 +54,10 @@ var RouteUtils = new function(){
 	
 	this.deleteById = function(req, res, impl){
 		logger.debug("Entering deleteById");
-		impl.deleteById(req.params.id, {updatedBy : req.user.id}, function(err, data){
+		if(req.body && req.user){
+			req.body.updatedBy = req.user.id;
+		}
+		impl.deleteById(req.params.id, req.body, function(err, data){
 			if(err == undefined){
 				ref.respond(req, res, data);
 			}else{

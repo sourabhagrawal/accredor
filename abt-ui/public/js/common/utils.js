@@ -19,6 +19,12 @@ $(function($){
 		return regex.test(email);
 	};
 	
+	/**
+	 * Substitutues params in url. 
+	 * e.g. url = '/foo/:bar/hex/:pie';
+	 * 		Utils.replaceUrlParams(url, ['1', '2']); 
+	 * 		will return /foo/1/hex/2 
+	 */
 	Utils.replaceUrlParams = function(url, params){
 		_.each(params, function(param){
 			url =  url.replace(/:[a-zA-Z]+/, param);
