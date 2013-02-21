@@ -89,6 +89,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		
 		this.name = this.$('#name');
 		this.url = this.$('#url');
+		this.linkType = this.$('#link-type');
 		this.alert = this.$('#split-variation-alert');
 		this.okBtn = this.$('#ok-btn');
 		
@@ -148,8 +149,11 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	createOrUpdateExperiment : function(){
 		var data = {
 			name : this.name.val(),
-			url : this.url.val(),
-			type : 'splitter'
+			type : 'splitter',
+			links : [{
+				url : this.url.val(),
+				type : this.linkType.val()
+			}],
 		};
 		if(this.id){
 			this.model.save(data, {

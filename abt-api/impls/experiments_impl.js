@@ -181,8 +181,17 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			var ref = this;
 			
+			// A link has to be provided
+			var links = params['links'];
+			try{
+				check(links).notNull();
+			}catch(e){
+				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+				return;
+			}
+			
 			// URL should not be blank
-			var url = params['url'];
+			var url = links[0]['url'];
 			try{
 				check(url).notNull().notEmpty();
 			}catch(e){
@@ -192,9 +201,18 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			// URL should be valid
 			try{
-				check(params['url']).isUrl();
+				check(url).isUrl();
 			}catch(e){
 				callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
+				return;
+			}
+			
+			// Link type should not be blank
+			var linkType = links[0]['type'];
+			try{
+				check(linkType).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.EXPERIMENT_URL_TYPE_EMPTY()));
 				return;
 			}
 			
@@ -215,7 +233,8 @@ var ExperimentsImpl = comb.define(impl,{
 			bus.on('experiment_created', function(params, experiment){
 				var payload = {
 					experimentId : experiment.id,
-					url : params['url'],
+					url : url,
+					type : linkType,
 					createdBy : experiment.createdBy,
 					userId : experiment.userId
 				};
@@ -238,12 +257,39 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			var ref = this;
 			
-			if(params['url']){
+			var links = params['links'];
+			if(links){
+				// A link has to be provided
+				try{
+					check(links).notNull();
+				}catch(e){
+					callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+					return;
+				}
+				
+				// URL should not be blank
+				var url = links[0]['url'];
+				try{
+					check(url).notNull().notEmpty();
+				}catch(e){
+					callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+					return;
+				}
+				
 				// URL should be valid
 				try{
-					check(params['url']).isUrl();
+					check(url).isUrl();
 				}catch(e){
 					callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
+					return;
+				}
+				
+				// Link type should not be blank
+				var linkType = links[0]['type'];
+				try{
+					check(linkType).notNull().notEmpty();
+				}catch(e){
+					callback(response.error(codes.error.EXPERIMENT_URL_TYPE_EMPTY()));
 					return;
 				}
 			}
@@ -265,7 +311,7 @@ var ExperimentsImpl = comb.define(impl,{
 					if(err){
 						callback(err);
 					}else{
-						if(params['url']){ // If URL is getting updated
+						if(links && links.length > 0 && links[0]['url']){ // If URL is getting updated
 							if(data.totalCount > 0){
 								var link = data.data[0];
 								bus.fire('link_fetched', link.id, params, experiment);
@@ -287,7 +333,8 @@ var ExperimentsImpl = comb.define(impl,{
 			bus.on('create_link', function(params, experiment){
 				var payload = {
 					experimentId : experiment.id,
-					url : params['url'],
+					url : links[0]['url'],
+					type : links[0]['type'],
 					createdBy : experiment.createdBy,
 					userId : experiment.userId
 				};
@@ -304,7 +351,8 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			bus.on('link_fetched', function(linkId, params, experiment){
 				var payload = {
-					url : params['url'],
+					url : links[0]['url'],
+					type : links[0]['type'],
 					updatedBy : experiment.createdBy,
 					userId : experiment.userId
 				};

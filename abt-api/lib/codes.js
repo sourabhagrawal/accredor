@@ -148,6 +148,7 @@ var ErrorCodes = new function(){
 	this.EXPERIMENT_TYPE_REQUIRED = status({code : 1205, message : "Experiment Type can not be blank"});
 	this.EXPERIMENT_TYPE_CANT_UPDATE = status({code : 1206, message : "Can't update the type of a Experiment"});
 	this.INVALID_EXPERIMENT_URL = status({code : 1207, message : "Experiment URL is not a valid URL"});
+	this.EXPERIMENT_URL_TYPE_EMPTY = status({code : 1208, message : "Experiment URL Type can not be blank"});
 	
 	/**
 	 * Variations related
