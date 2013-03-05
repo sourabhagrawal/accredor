@@ -207,6 +207,7 @@ var ErrorCodes = new function(){
 	 */
 	this.LINK_URL_REQUIRED = status({code : 1801, message : "Link URL can not be blank"});
 	this.INVALID_LINK_URL = status({code : 1802, message : "Link URL not a valid URL"});
+	this.LINK_TYPE_REQUIRED = status({code : 1803, message : "Link Type can not be blank"});
 	
 	/**
 	 * Script Details related

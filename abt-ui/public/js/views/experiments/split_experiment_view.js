@@ -89,7 +89,6 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		
 		this.name = this.$('#name');
 		this.url = this.$('#url');
-		this.linkType = this.$('#link-type');
 		this.alert = this.$('#split-variation-alert');
 		this.okBtn = this.$('#ok-btn');
 		
@@ -152,7 +151,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 			type : 'splitter',
 			links : [{
 				url : this.url.val(),
-				type : this.linkType.val()
+				type : 'simple'
 			}],
 		};
 		if(this.id){

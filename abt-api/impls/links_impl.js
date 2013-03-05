@@ -37,12 +37,22 @@ var LinksImpl = comb.define(impl,{
 				return;
 			}
 			
-			// URL should be valid
+			// URL should not be blank
 			try{
-				check(params['url']).isUrl();
+				check(params['type']).notNull().notEmpty();
 			}catch(e){
-				callback(response.error(codes.error.INVALID_LINK_URL()));
+				callback(response.error(codes.error.LINK_TYPE_REQUIRED()));
 				return;
+			}
+			
+			if(params['type'] == LINK.types.SIMPLE){
+				// URL should be valid
+				try{
+					check(params['url']).isUrl();
+				}catch(e){
+					callback(response.error(codes.error.INVALID_LINK_URL()));
+					return;
+				}
 			}
 			
 			m.call(this, params, callback);
@@ -61,6 +71,16 @@ var LinksImpl = comb.define(impl,{
 			}catch(e){
 				callback(response.error(codes.error.VALID_USER_REQUIRED()));
 				return;
+			}
+			
+			if(params['type'] && params['url'] && params['type'] == LINK.types.SIMPLE){
+				// URL should be valid
+				try{
+					check(params['url']).isUrl();
+				}catch(e){
+					callback(response.error(codes.error.INVALID_LINK_URL()));
+					return;
+				}
 			}
 			
 			m.call(this, id, params, callback);

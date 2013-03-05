@@ -26,16 +26,16 @@
 				<div class="span3">
 					<span class="pull-right">Experiment URL</span>
 				</div>
-				<div class="span6">
+				<div class="span9">
 					<input id="url" type="text" placeholder="http://" style="width:100%" value="<% if(typeof(links) != 'undefined' && links.length > 0) print(links[0]['url']) %>"  required/>
 				</div>
-				<div class="span3">
+				<!-- <div class="span3">
 					<% link_type = (typeof(links) != 'undefined' && links.length > 0) ? links[0].type : '' %>
 					<select id="link-type" style='width:100%'>
 					  <option value='simple' <%= link_type == 'simple' ? 'selected' : '' %>>Simple Match</option>
 					  <option value='regex' <%= link_type == 'regex' ? 'selected' : '' %>>Regex Match</option>
 					</select>
-				</div>
+				</div> -->
 			</div>
 		</div>
 		<div class="row-fluid">
