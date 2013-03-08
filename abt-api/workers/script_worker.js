@@ -115,7 +115,8 @@ var ScriptWorker = function(){
 														_.each(links, function(link){
 															experimentData.ls.push({
 																id : link.id,
-																url : link.url
+																url : link.url,
+																type : link.type
 															});
 														});
 													}
