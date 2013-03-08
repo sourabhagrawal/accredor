@@ -1,0 +1,14 @@
+<div class="row-fluid">
+	<div class="span6">
+		<input id="url" type="text" placeholder="http://" style="width:100%" value="<% if(typeof(url) != 'undefined') print(url) %>"  required/>
+	</div>
+	<div class="span4">
+		<select id="type" style='width:100%'>
+		  <option value='simple' <% (typeof(type) != 'undefined' && type == 'simple') ? print('selected') : print('') %>>Simple Match</option>
+		  <option value='regex' <% (typeof(type) != 'undefined' && type == 'regex') ? print('selected') : print('') %>>Regex Match</option>
+		</select>
+	</div>
+	<div class="span1">
+		<a class="btn" id="delete"><i class="icon-trash"></i></a>
+	</div>
+</div>
