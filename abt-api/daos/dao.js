@@ -92,12 +92,11 @@ var DAO = comb.define(null,{
 			var result = this._model.filter(params);
 			
 			if(fetchSize == undefined || (_.isString(fetchSize) && fetchSize.trim() == ''))
-				fetchSize = -1; //Fetch all
+				fetchSize = 9998473289472350000; //Fetch all
 			
-			start = start != undefined && (_.isString(fetchSize) && start.trim() != '') && start >= 0 ? start : 0;
+			start = start != undefined && (_.isString(start) && start.trim() != '') && start >= 0 ? start : 0;
 			
-			if(fetchSize != -1)
-				result = result.limit(fetchSize, start);
+			result = result.limit(fetchSize, start);
 			
 			if(sortBy == undefined || sortBy.trim() == ''){
 				sortBy = 'id';

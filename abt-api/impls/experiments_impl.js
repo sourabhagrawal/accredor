@@ -176,6 +176,17 @@ var ExperimentsImpl = comb.define(impl,{
 			
 		},
 		
+		getLinksForExperiment : function(experimentId, callback){
+			linksImpl.search(function(err, data){
+				if(err){
+					callback(err);
+				}else{
+					var links = data;
+					callback(null, links);
+				}
+			}, 'experimentId:eq:' + experimentId + "___isDisabled:eq:0", null, null, 'id', 'ASC');
+		},
+		
 		createSplitExperiment : function(params, callback){
 			var bus = new Bus();
 			
@@ -307,7 +318,7 @@ var ExperimentsImpl = comb.define(impl,{
 			});
 			
 			bus.on('experiment_updated', function(id, params, experiment){
-				linksImpl.search(function(err, data){
+				ref.getLinksForExperiment(id, function(err, data){
 					if(err){
 						callback(err);
 					}else{
@@ -327,7 +338,7 @@ var ExperimentsImpl = comb.define(impl,{
 						}
 						
 					}
-				}, 'experimentId:eq:' + id + "___isDisabled:eq:0");
+				});
 			});
 			
 			bus.on('create_link', function(params, experiment){
@@ -387,7 +398,7 @@ var ExperimentsImpl = comb.define(impl,{
 			});
 			
 			bus.on('experiment_fetched', function(experiment){
-				linksImpl.search(function(err, data){
+				ref.getLinksForExperiment(experiment.id, function(err, data){
 					if(err){
 						callback(err);
 					}else{
@@ -395,7 +406,7 @@ var ExperimentsImpl = comb.define(impl,{
 						experiment.links = links;
 						callback(null,response.success(experiment, 1, codes.success.RECORD_FETCHED([ref.displayName, id])));
 					}
-				}, 'experimentId:eq:' + experiment.id + "___isDisabled:eq:0");
+				});
 			});
 			
 			bus.fire('start');
@@ -422,7 +433,7 @@ var ExperimentsImpl = comb.define(impl,{
 				if(experiments.length > 0){
 					var count = 0;
 					_.each(experiments, function(experiment){
-						linksImpl.search(function(err, data){
+						ref.getLinksForExperiment(experiment.id, function(err, data){
 							if(err){
 								callback(err);
 							}else{
@@ -433,7 +444,7 @@ var ExperimentsImpl = comb.define(impl,{
 									callback(null,response.success(experiments, experiments.length, codes.success.RECORDS_SEARCHED([ref.displayName])));
 								};
 							};
-						}, 'experimentId:eq:' + experiment.id + "___isDisabled:eq:0");
+						});
 					});
 				}else{
 					callback(null,response.success(experiments, experiments.length, codes.success.RECORDS_SEARCHED([ref.displayName])));

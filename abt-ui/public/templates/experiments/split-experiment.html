@@ -29,15 +29,33 @@
 				<div class="span9">
 					<input id="url" type="text" placeholder="http://" style="width:100%" value="<% if(typeof(links) != 'undefined' && links.length > 0) print(links[0]['url']) %>"  required/>
 				</div>
-				<!-- <div class="span3">
-					<% link_type = (typeof(links) != 'undefined' && links.length > 0) ? links[0].type : '' %>
-					<select id="link-type" style='width:100%'>
-					  <option value='simple' <%= link_type == 'simple' ? 'selected' : '' %>>Simple Match</option>
-					  <option value='regex' <%= link_type == 'regex' ? 'selected' : '' %>>Regex Match</option>
-					</select>
-				</div> -->
 			</div>
 		</div>
+		<% if(typeof(id) != 'undefined'){ %>
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="span3">
+					</div>
+					<div class="span9 faq">
+						<div id="advanced_accordian" class="accordion trim-accordion">
+							<div class="accordion-group trim-accordion">
+								<div class="accordion-heading">
+									<a id="advanced-btn" class="accordion-toggle" href="#collapseOne" data-parent="#accordion" data-toggle="collapse">
+										+ Advanced Options
+									</a>
+								</div>
+								<div id="collapseOne" class="accordion-body collapse" style="height: 0px;">
+									<div class="accordion-inner">
+										<div id='links-container'>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
+		<% } %>
 		<div class="row-fluid">
 			<div class="span12">
 				<div class="span3">
@@ -65,7 +83,7 @@
 							}
 						%>
 					</a>
-					<a class='btn' id="delete-experiment-btn">Delete</a>
+					<a class='btn' id="delete-experiment-btn"><i class="icon-trash"></i> Delete</a>
 					<% } %>
 				</div>
 			</div>

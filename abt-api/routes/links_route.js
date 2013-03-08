@@ -18,6 +18,12 @@ var LinksRoute = function(app){
 		req.body.userId = req.body.userId || req.user.id;
 		routeUtils.update(req, res, linksImpl);
 	});
+	
+	app['delete']('/links/:id', function(req, res){
+		req.body = req.body || {};
+		req.body.userId = req.body.userId || req.user.id;
+		routeUtils.deleteById(req, res, linksImpl);
+	});
 		
 	app.get('/links', function(req, res){
 		routeUtils.search(req, res, linksImpl);

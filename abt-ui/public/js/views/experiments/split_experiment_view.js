@@ -94,6 +94,11 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		
 		if(this.id){
 			this.variationsView = new Views.SplitVariationListView({experiment : this.model.toJSON(), create : create});
+			
+			var ref = this;
+			templateLoader.loadRemoteTemplate("experiments/link", "/templates/experiments/link.html", function(data){
+				ref.linksView = new Views.LinkListView({experiment : ref.model.toJSON()});
+			});
 		}
 	},
 	
