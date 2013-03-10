@@ -38,23 +38,29 @@
 	var currentURL = applyUrlAdjustments(window.location.href);
 	
 	var matchLinks = function(ls){
+		var matched = false;
 		for(var i in ls){
+			if(matched == true) break;
+			
 			var l = ls[i];
+			console.log(l);
 			if(l.url && l.type == 'simple'){
 				var url = applyUrlAdjustments(l.url);
+				console.log(currentURL);
+				console.log(url);
 				if(currentURL == url){
-					return true;
+					matched = true;
 				}
 			}else if(l.url && l.type == 'regex'){
 				try{
 					var patt = new RegExp(l.url, 'gi');
-					return patt.test(currentURL);
+					matched = patt.test(currentURL);
 				}catch(e){
 					console.log('error while checking for regex : ' + l.url);
 				}
 			}
 		};
-		return false;
+		return matched;
 	};
 	
 	var setCookie = function(name, value){
@@ -195,6 +201,7 @@
 		d.exs.forEach(function(ex){
 			if(ex.ls && ex.ls.length > 0){
 				var matched = matchLinks(ex.ls);
+				console.log("matched : " + matched);
 				if(matched){
 					/**
 					 * The link has matched. This means a variation can be applied here. 

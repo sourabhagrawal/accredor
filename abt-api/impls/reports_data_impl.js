@@ -74,7 +74,7 @@ var ReportsDataImpl = comb.define(impl,{
 					
 					callback(null, variationData);
 				}
-			}, 'variationId:eq:' + variation.id, 0, -1);
+			}, 'variationId:eq:' + variation.id, 0, null);
 		},
 		
 		getTimeSeriesVariationData : function(variation, goals, controlConversions, callback){
@@ -112,7 +112,7 @@ var ReportsDataImpl = comb.define(impl,{
 					
 					callback(null, variationData);
 				}
-			}, 'variationId:eq:' + variation.id, 0, -1);
+			}, 'variationId:eq:' + variation.id, 0, null);
 		},
 		
 		searchVariationsForExperiment : function(exId, bus){
@@ -123,7 +123,7 @@ var ReportsDataImpl = comb.define(impl,{
 					variations = data.data;
 					bus.fire('variations_fetched', variations);
 				}
-			}, 'experimentId:eq:' + exId + '___isDisabled:eq:0', 0, -1, 'isControl', 'DESC');
+			}, 'experimentId:eq:' + exId + '___isDisabled:eq:0', 0, null, 'isControl', 'DESC');
 		},
 		
 		getCummulativeReportDataforExperiment : function(ex, goals, callback){
@@ -139,7 +139,7 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('start');
 					}
-				}, 'userId:eq: ' + ex.userId + '___isDisabled:eq:0', 0 , -1);
+				}, 'userId:eq: ' + ex.userId + '___isDisabled:eq:0', 0 , null);
 			}
 			
 			var responseData = {
@@ -230,7 +230,7 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('start');
 					}
-				}, 'userId:eq: ' + ex.userId + '___isDisabled:eq:0', 0 , -1);
+				}, 'userId:eq: ' + ex.userId + '___isDisabled:eq:0', 0 , null);
 			}
 			
 			var responseData = {
@@ -320,7 +320,7 @@ var ReportsDataImpl = comb.define(impl,{
 							goals = data.data;
 							bus.fire('goals_fetched', goals);
 						}
-					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , -1);
+					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , null);
 				});
 				
 				bus.on('goals_fetched', function(goals){
@@ -362,7 +362,7 @@ var ReportsDataImpl = comb.define(impl,{
 							goals = data.data;
 							bus.fire('goals_fetched', goals);
 						}
-					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , -1);
+					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , null);
 				});
 				
 				bus.on('goals_fetched', function(goals){
@@ -403,7 +403,7 @@ var ReportsDataImpl = comb.define(impl,{
 						goals = data.data;
 						bus.fire('goals_fetched', goals);
 					}
-				}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , -1);
+				}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , null);
 			});
 			
 			bus.on('goals_fetched', function(goals){
@@ -417,7 +417,7 @@ var ReportsDataImpl = comb.define(impl,{
 							var experiments = data.data;
 							bus.fire('experiments_fetched', experiments, goals);
 						}
-					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , -1);
+					}, 'userId:eq: ' + userId + '___isDisabled:eq:0', 0 , null);
 				}
 			});
 			
