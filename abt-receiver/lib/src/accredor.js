@@ -1,6 +1,15 @@
 (function($){
 	$.cookie.json = true;
 	
+	var detectOS = function(){
+		if (navigator.platform.toUpperCase().indexOf('MAC') !== -1) return 'MAC';
+		if (navigator.platform.toUpperCase().indexOf('WIN') !== -1) return 'WINDOWS';
+		if (navigator.platform.toUpperCase().indexOf('LINUX') !== -1) return 'LINUX';
+	};
+	
+	var os = detectOS();
+	console.log(os);
+	
 	var d = accredor.data;
 	
 	var applyUrlAdjustments = function(url){

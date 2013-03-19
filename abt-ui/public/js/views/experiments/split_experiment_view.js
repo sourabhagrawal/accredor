@@ -99,6 +99,10 @@ Views.SplitExperimentView = Views.BaseView.extend({
 			templateLoader.loadRemoteTemplate("experiments/link", "/templates/experiments/link.html", function(data){
 				ref.linksView = new Views.LinkListView({experiment : ref.model.toJSON()});
 			});
+			
+			templateLoader.loadRemoteTemplate("experiments/filter", "/templates/experiments/filter.html", function(data){
+				ref.filtersView = new Views.FilterListView({experiment : ref.model.toJSON()});
+			});
 		}
 	},
 	

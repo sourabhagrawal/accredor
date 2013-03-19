@@ -1,0 +1,27 @@
+<div class="row-fluid">
+	<div class="span4">
+		<select id="name" style='width:100%'>
+		  <option value='os' <% (typeof(name) != 'undefined' && name == 'os') ? print('selected') : print('') %>>OS</option>
+		</select>
+	</div>
+	<div class="span3">
+		<select id="type" style='width:100%'>
+		  <option value='is' <% (typeof(type) != 'undefined' && type == 'is') ? print('selected') : print('') %>>IS</option>
+		  <option value='is_not' <% (typeof(type) != 'undefined' && type == 'is_not') ? print('selected') : print('') %>>IS_NOT</option>
+		</select>
+	</div>
+	<div class="span3">
+		<select id="value" style='width:100%'>
+		  <option value='win' <% (typeof(value) != 'undefined' && value == 'win') ? print('selected') : print('') %>>Windows</option>
+		  <option value='mac' <% (typeof(value) != 'undefined' && value == 'mac') ? print('selected') : print('') %>>Mac</option>
+		  <option value='linux' <% (typeof(value) != 'undefined' && value == 'linux') ? print('selected') : print('') %>>Linux</option>
+		</select>
+	</div>
+	<div class="span1">
+		<% if(typeof(id) == 'undefined'){ %>
+		<a class="btn" id="save" title = 'Save Filter'><i class="icon-save"></i></a>
+		<% }else{ %>
+		<a class="btn" id="delete" title = 'Delete Filter'><i class="icon-trash"></i></a>
+		<% } %>
+	</div>
+</div>

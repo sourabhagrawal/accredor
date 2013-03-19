@@ -1,4 +1,4 @@
-var Link = Backbone.Model.extend({
+var Filter = Backbone.Model.extend({
 	defaults : function(){
 	},
 	
@@ -15,11 +15,14 @@ var Link = Backbone.Model.extend({
 	},
 	
 	validate: function(attrs) {
-		if(!attrs.url || attrs.url.trim() == ''){
-			return 'Link URL can not be blank';
-		}
 		if(!attrs.type || attrs.type.trim() == ''){
-			return 'Link Type can not be blank';
+			return 'Filter Type can not be blank';
+		}
+		if(!attrs.name || attrs.name.trim() == ''){
+			return 'Filter Name can not be blank';
+		}
+		if(!attrs.value || attrs.value.trim() == ''){
+			return 'Filter Value can not be blank';
 		}
 	},
 	
@@ -30,10 +33,10 @@ var Link = Backbone.Model.extend({
 	}
 });
 
-var LinkList = Backbone.Collection.extend({
-	model : Link,
+var FilterList = Backbone.Collection.extend({
+	model : Filter,
 	url : function(){
-		return '/api/links';
+		return '/api/filters';
 	},
 	parse : function(response){
 		if(response.status && response.status.code == 1000){
@@ -43,32 +46,38 @@ var LinkList = Backbone.Collection.extend({
 	}
 });
 
-var links = new LinkList();
+var filters = new FilterList();
 
-Views.LinkView = Views.BaseView.extend({
+Views.FilterView = Views.BaseView.extend({
 	tagName : "div",
 	
 	events : {
 		"click #delete" : "destroy",
-		"blur #url" : "save",
-		"blur #type" : "save",
+		"click #save" : "save",
+		"blur select" : "save",
+		"blur input" : "save",
 	},
 	
 	initialize : function(){
 		this._super('initialize');
 		
-		this.loadTemplate('experiments/link');
+		this.loadTemplate('experiments/filter');
 		
 		this.model.bind('destroy', this.remove, this);
 		this.model.bind('change', this.change, this);
 		this.model.bind('error', this.error, this);
 		this.model.bind('sync', this.render, this);
 		
-		this.alert = $('#link-alert');
+		this.alert = $('#filter-alert');
 	},
 	
 	render : function(){
 		this.$el.html(this.template(this.model.toJSON()));
+		
+		this.name = this.$('#name');
+		this.type = this.$('#type');
+		this.value = this.$('#value');
+		
 		return this;
 	},
 	
@@ -93,18 +102,26 @@ Views.LinkView = Views.BaseView.extend({
 	},
 	
 	save : function(e){
-		this.disable();
-		
-		var attr = e.target.id;
-		var value = $(e.target).val();
-		var params = {};
-		params[attr] = value;
-	    this.model.save(params);
+		if(this.model.id){
+			this.disable();
+			
+			var attr = e.target.id;
+			var value = $(e.target).val();
+			var params = {};
+			params[attr] = value;
+		    this.model.save(params);
+		}else{
+			var params = {
+				name : this.name.val(),
+				type : this.type.val(),
+				value : this.value.val()
+			};
+			this.model.save(params);
+		}
 	},
 	
 	error : function(model, response){
 		var resObj = JSON.parse(response.responseText);
-		console.log(resObj);
 		var msg = resObj.message;
 		
 		this.enable();
@@ -115,24 +132,24 @@ Views.LinkView = Views.BaseView.extend({
 	}
 });
 
-Views.LinkListView = Views.BaseView.extend({
+Views.FilterListView = Views.BaseView.extend({
 	events : {
 		"click #add-url-btn" : 'create',
 	},
 	
 	initialize : function(){
-		this.$el = $("#links-container");
+		this.$el = $("#filters-container");
 		this._super('initialize');
 		
 		this.experiment = this.options.experiment;
 		
-		this.loadTemplate('experiments/link-list');
+		this.loadTemplate('experiments/filter-list');
 		
-		links.off();
-		links.reset();
+		filters.off();
+		filters.reset();
 		
-		links.bind('add', this.add, this);
-		links.bind('reset', this.addAll, this);
+		filters.bind('add', this.add, this);
+		filters.bind('reset', this.addAll, this);
 		
 		eventBus.on('close_view', this.close, this );
 	},
@@ -151,12 +168,11 @@ Views.LinkListView = Views.BaseView.extend({
 		this.type = this.$('#type');
 		
 		if(this.experiment){
-			links.fetch({
+			filters.fetch({
 				data : {
 					q : 'experimentId:eq:' + this.experiment.id + '___isDisabled:eq:0',
 					sortBy : 'id',
-					sortDir : 'ASC',
-					start : 1
+					sortDir : 'ASC'
 				}
 			});
 		}
@@ -165,32 +181,32 @@ Views.LinkListView = Views.BaseView.extend({
 	close : function(){
 		this._super('close');
 		
-		links.off();
-		links.reset();
+		filters.off();
+		filters.reset();
 	},
 	
 	create : function(callback){
 		if(this.experiment){
-			var url = this.experiment.links[0].url;
-			
-			var options = {};
-			links.create({type : 'simple', url : url, experimentId : this.experiment.id}, options);
+			var filter = new Filter({experimentId : this.experiment.id}, {collection : filters});
+			this.add(filter);
+//			var options = {};
+//			filters.create({type : 'simple', url : url, experimentId : this.experiment.id}, options);
 		}
 	},
 	
-	add : function(link){
-		var view = new Views.LinkView({model : link});
-		$("#link-list-container").append(view.render().el);
+	add : function(filter){
+		var view = new Views.FilterView({model : filter});
+		$("#filter-list-container").append(view.render().el);
 	},
 	
 	addAll : function(){
-		links.each(this.add);
+		filters.each(this.add);
 	},
 	
 	deleteAll : function(){
-		if(confirm("Are you sure you want to delete all links?")){
-			_.each(links, function(link){
-				link.destroy();
+		if(confirm("Are you sure you want to delete all filters?")){
+			_.each(filters, function(filter){
+				filter.destroy();
 			});
 		}
 	}
