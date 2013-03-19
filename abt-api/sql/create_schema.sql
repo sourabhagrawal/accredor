@@ -54,6 +54,7 @@ CREATE TABLE `links` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `experiment_id` BIGINT NOT NULL,
   `url` varchar(1024) NOT NULL,
+  `type` char(32) NOT NULL, -- SIMPLE, REGEX
   `is_disabled` TINYINT NOT NULL DEFAULT 0,
   `created_by` varchar(255) NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,

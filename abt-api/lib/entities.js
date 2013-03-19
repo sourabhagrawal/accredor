@@ -21,6 +21,14 @@ EXPERIMENT = {
 	}
 };
 
+LINK = {
+	name : 'link',
+	types : {
+		SIMPLE : 'simple',
+		REGEX : 'regex'
+	}
+};
+
 /**
  * Variation entity
  */

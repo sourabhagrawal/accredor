@@ -47,7 +47,7 @@ var ModelsFactory = comb.define(null,{
             	pre:pre,
             	"static" : staticConf
             }).manyToOne("Experiments",{key : "experiment_id"});
-			this.Links.validate("url").isUrl();
+//			this.Links.validate("url").isUrl();
 			
 			this.Goals = patio.addModel("Goals",{
             	pre:pre,

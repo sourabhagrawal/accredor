@@ -94,6 +94,11 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		
 		if(this.id){
 			this.variationsView = new Views.SplitVariationListView({experiment : this.model.toJSON(), create : create});
+			
+			var ref = this;
+			templateLoader.loadRemoteTemplate("experiments/link", "/templates/experiments/link.html", function(data){
+				ref.linksView = new Views.LinkListView({experiment : ref.model.toJSON()});
+			});
 		}
 	},
 	
@@ -148,8 +153,11 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	createOrUpdateExperiment : function(){
 		var data = {
 			name : this.name.val(),
-			url : this.url.val(),
-			type : 'splitter'
+			type : 'splitter',
+			links : [{
+				url : this.url.val(),
+				type : 'simple'
+			}],
 		};
 		if(this.id){
 			this.model.save(data, {

@@ -111,3 +111,7 @@ li [class^="icon-"], .btn [class*=" icon-"] {
     right: 0;
     top: 95px;
 }
+
+.trim-accordion{
+	margin : 0!important
+}

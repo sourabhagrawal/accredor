@@ -200,8 +200,6 @@ Views.SplitVariationListView = Views.BaseView.extend({
 		
 		this.name = this.$('#name');
 		this.url = this.$('#url');
-		this.alert = this.$('#split-variation-alert');
-		this.okBtn = this.$('#ok-btn');
 		
 		if(this.experiment){
 			variations.fetch({

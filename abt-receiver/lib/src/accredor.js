@@ -40,10 +40,17 @@
 	var matchLinks = function(ls){
 		for(var i in ls){
 			var l = ls[i];
-			if(l.url){
+			if(l.url && l.type == 'simple'){
 				var url = applyUrlAdjustments(l.url);
 				if(currentURL == url){
 					return true;
+				}
+			}else if(l.url && l.type == 'regex'){
+				try{
+					var patt = new RegExp(l.url, 'gi');
+					return patt.test(currentURL);
+				}catch(e){
+					console.log('error while checking for regex : ' + l.url);
 				}
 			}
 		};

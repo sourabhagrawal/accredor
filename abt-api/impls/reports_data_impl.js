@@ -50,7 +50,7 @@ var ReportsDataImpl = comb.define(impl,{
 					//TODO Fetch hits for all goals
 					variationData.goals = {};
 					_.each(goals, function(goal){
-						var goalVisitsMap =  visitsMap[goal.id] || 0;
+						var goalVisitsMap =  visitsMap[goal.id] || {visits : 0, hits : 0};
 						
 						var visits = goalVisitsMap['visits'];
 						var hits = goalVisitsMap['hits'];
@@ -171,7 +171,7 @@ var ReportsDataImpl = comb.define(impl,{
 						}
 					});
 				}else{
-					bus.fire('variations_data_added');
+					bus.fire('variations_data_added', goals);
 				}
 			});
 			
@@ -186,12 +186,15 @@ var ReportsDataImpl = comb.define(impl,{
 									return;
 								}else{
 									responseData.variations.push(data);
-									
-									if(++count == variations.length - 1){
-										bus.fire('variations_data_added');
+									if(++count == variations.length){
+										bus.fire('variations_data_added', goals);
 									}
 								}
 							});
+						}else{
+							if(++count == variations.length){
+								bus.fire('variations_data_added', goals);
+							}
 						}
 					});
 				}else{
@@ -199,7 +202,7 @@ var ReportsDataImpl = comb.define(impl,{
 				}
 			});
 			
-			bus.on('variations_data_added', function(variations){
+			bus.on('variations_data_added', function(goals){
 				responseData.goals = [];
 				_.each(goals, function(goal){
 					responseData.goals.push({
