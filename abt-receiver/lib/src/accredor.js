@@ -2,9 +2,9 @@
 	$.cookie.json = true;
 	
 	var detectOS = function(){
-		if (navigator.platform.toUpperCase().indexOf('MAC') !== -1) return 'MAC';
-		if (navigator.platform.toUpperCase().indexOf('WIN') !== -1) return 'WINDOWS';
-		if (navigator.platform.toUpperCase().indexOf('LINUX') !== -1) return 'LINUX';
+		if (navigator.platform.toUpperCase().indexOf('MAC') !== -1) return 'mac';
+		if (navigator.platform.toUpperCase().indexOf('WIN') !== -1) return 'win';
+		if (navigator.platform.toUpperCase().indexOf('LINUX') !== -1) return 'linux';
 	};
 	
 	var os = detectOS();
@@ -52,11 +52,8 @@
 			if(matched == true) break;
 			
 			var l = ls[i];
-			console.log(l);
 			if(l.url && l.type == 'simple'){
 				var url = applyUrlAdjustments(l.url);
-				console.log(currentURL);
-				console.log(url);
 				if(currentURL == url){
 					matched = true;
 				}
@@ -203,14 +200,45 @@
 	
 	var variationHandler = new VariationHandler();
 	
+	var FilterHandler = function(){
+		this.passesOSFilter = function(f){
+			type = f.type;
+			value = f.value;
+			
+			if(type == 'is'){
+				return os == value;
+			}else if(type == 'is_not'){
+				return os != value;
+			}
+		};
+	};
+	
+	var filterHandler = new FilterHandler();
+	
 	/**
 	 * iterate over experiments to see if variations have to be applied.
 	 */
 	if(d && d.exs && d.exs.length > 0){
 		d.exs.forEach(function(ex){
-			if(ex.ls && ex.ls.length > 0){
+			/**
+			 * Apply filters first
+			 */
+			var filtersPassed = true;
+			if(ex.fs && ex.fs.length > 0){
+				osPassed = 0;
+				ex.fs.forEach(function(f){
+					if(f.name == 'os'){
+						osPassed = filterHandler.passesOSFilter(f) == false && osPassed != 1 ? -1 : 1;
+					}
+				});
+				
+				if(osPassed == -1){ // Filters didn't pass
+					filtersPassed = false;
+				}
+			}
+			
+			if(filtersPassed === true && ex.ls && ex.ls.length > 0){
 				var matched = matchLinks(ex.ls);
-				console.log("matched : " + matched);
 				if(matched){
 					/**
 					 * The link has matched. This means a variation can be applied here. 
