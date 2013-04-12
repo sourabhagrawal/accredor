@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS `script_details`;
 DROP TABLE IF EXISTS `variations`;
 DROP TABLE IF EXISTS `links`;
+DROP TABLE IF EXISTS `filters`;
 DROP TABLE IF EXISTS `experiments`;
 DROP TABLE IF EXISTS `goals`;
 DROP TABLE IF EXISTS `users`;
@@ -29,8 +30,8 @@ CREATE TABLE `experiments` (
   `updated_by` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
+  `cookie_refresh_time` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT fk_experiments_users_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `variations` (
@@ -47,7 +48,6 @@ CREATE TABLE `variations` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT fk_variations_experiments_experiment_id FOREIGN KEY (experiment_id) REFERENCES experiments(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `links` (
@@ -61,7 +61,6 @@ CREATE TABLE `links` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT fk_links_experiments_experiment_id FOREIGN KEY (experiment_id) REFERENCES experiments(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `goals` (
@@ -78,7 +77,6 @@ CREATE TABLE `goals` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT fk_goals_users_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `script_details` (
@@ -93,7 +91,6 @@ CREATE TABLE `script_details` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT fk_script_details_users_user_id FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS transitions;
@@ -121,8 +118,6 @@ CREATE TABLE `transitions` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT fk_transitions_states_from_state_id FOREIGN KEY (from_state_id) REFERENCES states(id),
-  CONSTRAINT fk_transitions_states_to_state_id FOREIGN KEY (to_state_id) REFERENCES states(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS emails;

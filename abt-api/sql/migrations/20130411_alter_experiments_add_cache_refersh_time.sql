@@ -1,0 +1,1 @@
+ALTER TABLE `experiments` ADD COLUMN `cookie_refresh_time` int(11) NOT NULL;
