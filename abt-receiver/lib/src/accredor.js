@@ -8,7 +8,6 @@
 	};
 	
 	var os = detectOS();
-	console.log(os);
 	
 	var d = accredor.data;
 	

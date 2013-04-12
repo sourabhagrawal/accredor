@@ -12,7 +12,8 @@ vows.describe("The links API")
 		topic : function(){
 			client.create({
 				experimentId : 1,
-				url : 'http://google.com'
+				url : 'http://google.com',
+				type : 'simple'
 			},this.callback);
 		},
 		'should create an Link' : testUtils.assertSuccess,

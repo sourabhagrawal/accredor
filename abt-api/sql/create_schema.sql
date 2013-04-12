@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS `script_details`;
 DROP TABLE IF EXISTS `variations`;
 DROP TABLE IF EXISTS `links`;
+DROP TABLE IF EXISTS `filters`;
 DROP TABLE IF EXISTS `experiments`;
 DROP TABLE IF EXISTS `goals`;
 DROP TABLE IF EXISTS `users`;
@@ -205,6 +206,21 @@ CREATE TABLE `goal_visits` (
   `variation_id` BIGINT NOT NULL DEFAULT 0,
   `hits` BIGINT NOT NULL,
   `visits` BIGINT NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS audits;
+CREATE TABLE `audits` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `entity_name` varchar(256) NOT NULL,
+  `action` varchar(32) NOT NULL,
+  `from_value` varchar(1024),
+  `to_value` varchar(1024),
+  `comments` varchar(1024),
   `created_by` varchar(255) NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
