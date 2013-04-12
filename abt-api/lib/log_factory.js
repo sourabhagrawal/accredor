@@ -20,5 +20,5 @@ var Logger = function(path){
 };
 
 exports.create = function(path){
-	return new Logger();
+	return new Logger(path);
 };
