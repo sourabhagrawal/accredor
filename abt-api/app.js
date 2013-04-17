@@ -11,7 +11,8 @@ var log4js = require('log4js');
 var _ = require('underscore');
 var expressValidator = require('express-validator');
 
-var constants = require('./lib/constants');
+require('./lib/constants');
+
 var logger = require(LIB_DIR + 'log_factory').create("app");
 
 /**

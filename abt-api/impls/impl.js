@@ -3,6 +3,9 @@ var _ = require('underscore');
 var logger = require(LIB_DIR + 'log_factory').create("impl");
 var response = require(LIB_DIR + 'response');
 var codes = require(LIB_DIR + 'codes');
+var Utils = require(LIB_DIR + 'utils');
+
+var client = require(CLIENTS_DIR + 'audits_client');
 
 /**
  * An Implementation to be extended by all entities to provide their implementations
@@ -19,6 +22,15 @@ var Impl = comb.define(null,{
 			 * Bind it with a DAO
 			 */
             this._dao = options.dao;
+            
+            this.auditable = true;
+            if(options.auditable != undefined)
+            	this.auditable = options.auditable;
+            	
+            if(this.auditable == true){
+            	var auditableFields = ['createdAt', 'updatedAt'];
+            	this.auditableFields = Utils.arrayUnique(auditableFields.concat(options.auditableFields || []));
+            }
 		},
 
 		/**
@@ -51,7 +63,12 @@ var Impl = comb.define(null,{
 		create : function(params, callback){
 			var ref = this;
 			this._dao.create(params).then(function(model){
-				callback(null,response.success(model.toJSON(), 1, codes.success.RECORD_CREATED([ref.displayName])));
+				var json = model.toJSON();
+				
+				//Audit it.
+				ref.audit(AUDITS.CREATED, json['id'], null, json);
+				
+				callback(null,response.success(json, 1, codes.success.RECORD_CREATED([ref.displayName])));
 			}, function(error){
 				logger.error(error);
 				callback(response.error(codes.error.CREATION_FAILED([ref.displayName])));
@@ -74,7 +91,13 @@ var Impl = comb.define(null,{
 						callback(response.error(codes.error.RECORD_WITH_ID_NOT_EXISTS([ref.displayName, id])));
 					}else{
 						delete params.id;
+						var oldJson = model.toJSON();
 						ref._dao.update(model, params).then(function(m){
+							var newJson = m.toJSON();
+							
+							//Audit it.
+							ref.audit(AUDITS.UPDATED, id, oldJson, newJson);
+							
 							callback(null,response.success(m.toJSON(), 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
 						}, function(error){
 							logger.error(error);
@@ -148,6 +171,24 @@ var Impl = comb.define(null,{
 				logger.error(error);
 				callback(response.error(codes.error.SEARCH_FAILED([ref.displayName])));
 			});
+		},
+		
+		audit : function(action, entityId, from, to){
+			var ref = this;
+			if(ref.auditable == true){
+				_.each(ref.auditableFields, function(field){
+					if(from == undefined || from[field] != to[field]){
+						client.create({
+							entityName : ref.displayName,
+							action : action,
+							entityId : entityId,
+							fieldName : field,
+							fromValue : from ? from[field] : null,
+							toValue : to[field]
+						});
+					}
+				});
+			}
 		}
 	}
 });

@@ -14,4 +14,5 @@ module.exports = function(app){
 	require('./reports_data_route')(app);
 	require('./experiment_visits_route')(app);
 	require('./goal_visits_route')(app);
+	require('./audits_route')(app);
 };

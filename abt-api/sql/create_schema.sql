@@ -218,6 +218,8 @@ CREATE TABLE `audits` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `entity_name` varchar(256) NOT NULL,
   `action` varchar(32) NOT NULL,
+  `entity_id` BIGINT NOT NULL,
+  `field_name` varchar(512) NOT NULL,
   `from_value` varchar(1024),
   `to_value` varchar(1024),
   `comments` varchar(1024),

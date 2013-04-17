@@ -17,7 +17,9 @@ var ExperimentsImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = experimentsDao;
-            this._super([options]);
+			options.auditableFields = ['name'];
+
+			this._super([options]);
 		},
 		create : function(params, callback){
 			var bus = new Bus();

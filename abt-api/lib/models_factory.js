@@ -106,6 +106,11 @@ var ModelsFactory = comb.define(null,{
             	"static" : staticConf
             });
 			
+			this.Audits = patio.addModel("Audits", {
+				pre:pre,
+            	"static" : staticConf
+			});
+			
             patio.syncModels().then(function(){
             	logger.debug("synced");
             	emitter.emit("modelsSynced");

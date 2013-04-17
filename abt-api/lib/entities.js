@@ -81,3 +81,11 @@ SCRIPT_DETAILS = {
 	PROCESSING : 'processing',
 	SCRIPTED : 'scripted'
 };
+
+AUDITS = {
+	name : 'audits',
+	
+	//Actions
+	CREATED : 'created',
+	UPDATED : 'updated'
+};
