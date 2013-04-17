@@ -14,6 +14,8 @@ var LinksImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = linksDao;
+			options.auditableFields = ['url', 'type', 'isDisabled'];
+			
             this._super([options]);
 		},
 		

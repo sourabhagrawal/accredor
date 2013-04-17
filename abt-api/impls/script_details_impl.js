@@ -16,6 +16,8 @@ var ScriptDetailsImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = scriptDetailsDao;
+			options.auditableFields = ['file_name', 'status', 'isOld'];
+			
             this._super([options]);
             
             var ref = this;

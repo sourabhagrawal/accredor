@@ -21,6 +21,8 @@ var UsersImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = usersDao;
+			options.auditableFields = ['email', 'password', 'isVerified', 'isDisabled'];
+			
             this._super([options]);
 		},
 		

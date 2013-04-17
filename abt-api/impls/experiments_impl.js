@@ -17,7 +17,7 @@ var ExperimentsImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = experimentsDao;
-			options.auditableFields = ['name'];
+			options.auditableFields = ['name', 'status', 'type', 'isDisabled'];
 
 			this._super([options]);
 		},

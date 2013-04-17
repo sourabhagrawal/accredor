@@ -14,6 +14,8 @@ var FiltersImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = filtersDao;
+			options.auditableFields = ['name', 'value', 'type', 'isDisabled'];
+			
             this._super([options]);
 		},
 		
