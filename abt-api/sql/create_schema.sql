@@ -63,6 +63,21 @@ CREATE TABLE `links` (
   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `filters` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `experiment_id` BIGINT NOT NULL,
+  `type` char(32) NOT NULL, -- IS_OR_IS_NOT, MATCH_TEXT
+  `name` char(32) NOT NULL,
+  `value` varchar(2048) NOT NULL,
+  `is_disabled` TINYINT NOT NULL DEFAULT 0,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_filters_experiments_experiment_id FOREIGN KEY (experiment_id) REFERENCES experiments(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `goals` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `user_id` BIGINT NOT NULL,
@@ -185,6 +200,23 @@ CREATE TABLE `goal_visits` (
   `variation_id` BIGINT NOT NULL DEFAULT 0,
   `hits` BIGINT NOT NULL,
   `visits` BIGINT NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS audits;
+CREATE TABLE `audits` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `entity_name` varchar(256) NOT NULL,
+  `action` varchar(32) NOT NULL,
+  `entity_id` BIGINT NOT NULL,
+  `field_name` varchar(512) NOT NULL,
+  `from_value` varchar(1024),
+  `to_value` varchar(1024),
+  `comments` varchar(1024),
   `created_by` varchar(255) NOT NULL,
   `updated_by` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,

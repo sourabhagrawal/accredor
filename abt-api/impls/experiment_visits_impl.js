@@ -13,6 +13,8 @@ var ExperimentVisitsImpl = comb.define(impl, {
 		constructor : function(options){
 			options = options || {};
 			options.dao = dao;
+			options.auditable = false;
+			
             this._super([options]);
 		},
 	},

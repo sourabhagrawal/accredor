@@ -16,6 +16,8 @@ var GoalsImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = goalsDao;
+			options.auditableFields = ['name', 'url', 'status', 'type', 'prop', 'isDisabled'];
+			
             this._super([options]);
 		},
 		create : function(params, callback){

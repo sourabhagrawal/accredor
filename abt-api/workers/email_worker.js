@@ -30,9 +30,9 @@ var EmailWorker = function(){
 	});
 
   this.run = function(){
-		if(CONFIG.email && (CONFIG.email.enabled === 'true')){
-      ref.updateBatch(batchSize);
-    }
+	  if(CONFIG.email && (CONFIG.email.enabled === 'true')){
+		  ref.updateBatch(batchSize);
+	  }
   };
 
   /**
@@ -45,30 +45,31 @@ var EmailWorker = function(){
         logger.error(err);
         setTimeout(ref.run, interval);
       }else{
-				if(data && data.status && data.status.code === 1000){
-          if(data.totalCount > 0){
-            logger.debug("Emails fetched for sending. Count : " + data.totalCount);
-            var emails = data.data;
-            _.each(emails, function(email){
-              var mailOptions = {
-                generateTextFromHTML: true,
-                  from: email.from,
-                  to: email.to,
-                  cc: email.cc,
-                  bcc: email.bcc,
-                  subject: email.subject,
-                  html: email.body
-              };
-              ref.sendMail(mailOptions, email.id);
-            });
-          }else{
-            setTimeout(ref.run, interval);
-            logger.info("No queued emails found. Will try again after " + interval + " millisecs. Now : " + new Date());
-          }
-        }else{
-          setTimeout(ref.run, interval);
-          logger.error("Unusual error in fetching emails for sending");
-        }
+    	  if(data && data.status && data.status.code === 1000){
+    		  if(data.totalCount > 0){
+	            logger.debug("Emails fetched for sending. Count : " + data.totalCount);
+	            var emails = data.data;
+	            _.each(emails, function(email){
+	              var mailOptions = {
+	                generateTextFromHTML: true,
+	                  from: email.from,
+	                  to: email.to,
+	                  cc: email.cc,
+	                  bcc: email.bcc,
+	                  subject: email.subject,
+	                  html: email.body
+	              };
+	              ref.sendMail(mailOptions, email.id);
+	            });
+	            setTimeout(ref.run, interval);
+	          }else{
+	            setTimeout(ref.run, interval);
+	            logger.info("No queued emails found. Will try again after " + interval + " millisecs. Now : " + new Date());
+	          }
+		}else{
+		  setTimeout(ref.run, interval);
+		  logger.error("Unusual error in fetching emails for sending");
+		}
       }
     });
   };

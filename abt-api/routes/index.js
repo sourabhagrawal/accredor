@@ -5,6 +5,7 @@ module.exports = function(app){
 	require('./experiments_route')(app);
 	require('./variations_route')(app);
 	require('./links_route')(app);
+	require('./filters_route')(app);
 	require('./goals_route')(app);
 	require('./users_route')(app);
 	require('./emails_route')(app);
@@ -13,4 +14,5 @@ module.exports = function(app){
 	require('./reports_data_route')(app);
 	require('./experiment_visits_route')(app);
 	require('./goal_visits_route')(app);
+	require('./audits_route')(app);
 };

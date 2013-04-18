@@ -21,6 +21,8 @@ var UsersImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = usersDao;
+			options.auditableFields = ['email', 'password', 'isVerified', 'isDisabled'];
+			
             this._super([options]);
 		},
 		
@@ -141,7 +143,7 @@ var UsersImpl = comb.define(impl,{
 								var hash = md5sum.update(password).digest("hex");
 								params.password = hash;
 							}
-							
+							console.log(params);
 							m.call(ref, id, params, callback);
 						}else{
 							callback(response.error(codes.error.USER_EMAIL_CANT_BE_CHANGED()));

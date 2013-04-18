@@ -48,6 +48,12 @@ var ModelsFactory = comb.define(null,{
             	"static" : staticConf
             }).manyToOne("Experiments",{key : "experiment_id"});
 //			this.Links.validate("url").isUrl();
+            
+            this.Filters = patio.addModel("Filters",{
+				plugins:[patio.plugins.ValidatorPlugin],
+            	pre:pre,
+            	"static" : staticConf
+            }).manyToOne("Experiments",{key : "experiment_id"});
 			
 			this.Goals = patio.addModel("Goals",{
             	pre:pre,
@@ -61,13 +67,7 @@ var ModelsFactory = comb.define(null,{
 			        typecastOnAssignment : false,
 			        typecastEmptyStringToNull : false
 			    },
-				pre:pre,
-                post : {
-                	load : function(next){
-                		this.password = null;
-                		next();
-                	}
-                }
+				pre:pre
             }).oneToMany("Experiments",{key : "experiment_id"});
 			this.Users.validate("email").isEmail();
 			
@@ -105,6 +105,11 @@ var ModelsFactory = comb.define(null,{
             	pre:pre,
             	"static" : staticConf
             });
+			
+			this.Audits = patio.addModel("Audits", {
+				pre:pre,
+            	"static" : staticConf
+			});
 			
             patio.syncModels().then(function(){
             	logger.debug("synced");

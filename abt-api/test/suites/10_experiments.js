@@ -80,7 +80,10 @@ vows.describe("The experiments API")
 		topic : function(){
 			client.createSplitExperiment({
 				name : 'splitter experiment',
-				url : 'http://yahoo.com'
+				links : [{
+					url : 'http://yahoo.com',
+					type : 'simple'
+				}],
 			},this.callback);
 		},
 		'should create an Experiment' : testUtils.assertSuccess,
@@ -106,7 +109,7 @@ vows.describe("The experiments API")
 		topic : function(){
 			client.createSplitExperiment({
 				name : 'splitter experiment',
-				url : 'hdkjqhkd'
+				links : [{url : 'hdkjqhkd'}]
 			},this.callback);
 		},
 		'should fail with an error' : testUtils.assertFailure(codes.error.INVALID_EXPERIMENT_URL)
@@ -216,13 +219,13 @@ vows.describe("The experiments API")
 	},
 	'A PUT on Update Splitter Experiment with Id and invalid url' : {
 		topic : function(){
-			client.updateSplitExperiment(idSplitter, {url : 'http'}, this.callback);
+			client.updateSplitExperiment(idSplitter, {links : [{url : 'http'}]}, this.callback);
 		},
 		'should fail with an error' : testUtils.assertFailure(codes.error.INVALID_EXPERIMENT_URL)
 	},
 	'A PUT on Update Splitter Experiment with Id and valid url' : {
 		topic : function(){
-			client.updateSplitExperiment(idSplitter, {url : 'http://google.com'}, this.callback);
+			client.updateSplitExperiment(idSplitter, {links : [{url : 'http://google.com', type : 'simple'}]}, this.callback);
 		},
 		'should update the experiment' : testUtils.assertSuccess,
 		'should have the same id' : function(err, res){

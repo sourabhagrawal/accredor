@@ -1,6 +1,14 @@
 (function($){
 	$.cookie.json = true;
 	
+	var detectOS = function(){
+		if (navigator.platform.toUpperCase().indexOf('MAC') !== -1) return 'mac';
+		if (navigator.platform.toUpperCase().indexOf('WIN') !== -1) return 'win';
+		if (navigator.platform.toUpperCase().indexOf('LINUX') !== -1) return 'linux';
+	};
+	
+	var os = detectOS();
+	
 	var d = accredor.data;
 	
 	var applyUrlAdjustments = function(url){
@@ -38,23 +46,26 @@
 	var currentURL = applyUrlAdjustments(window.location.href);
 	
 	var matchLinks = function(ls){
+		var matched = false;
 		for(var i in ls){
+			if(matched == true) break;
+			
 			var l = ls[i];
 			if(l.url && l.type == 'simple'){
 				var url = applyUrlAdjustments(l.url);
 				if(currentURL == url){
-					return true;
+					matched = true;
 				}
 			}else if(l.url && l.type == 'regex'){
 				try{
 					var patt = new RegExp(l.url, 'gi');
-					return patt.test(currentURL);
+					matched = patt.test(currentURL);
 				}catch(e){
 					console.log('error while checking for regex : ' + l.url);
 				}
 			}
 		};
-		return false;
+		return matched;
 	};
 	
 	var setCookie = function(name, value){
@@ -188,12 +199,44 @@
 	
 	var variationHandler = new VariationHandler();
 	
+	var FilterHandler = function(){
+		this.passesOSFilter = function(f){
+			type = f.type;
+			value = f.value;
+			
+			if(type == 'is'){
+				return os == value;
+			}else if(type == 'is_not'){
+				return os != value;
+			}
+		};
+	};
+	
+	var filterHandler = new FilterHandler();
+	
 	/**
 	 * iterate over experiments to see if variations have to be applied.
 	 */
 	if(d && d.exs && d.exs.length > 0){
 		d.exs.forEach(function(ex){
-			if(ex.ls && ex.ls.length > 0){
+			/**
+			 * Apply filters first
+			 */
+			var filtersPassed = true;
+			if(ex.fs && ex.fs.length > 0){
+				osPassed = 0;
+				ex.fs.forEach(function(f){
+					if(f.name == 'os'){
+						osPassed = filterHandler.passesOSFilter(f) == false && osPassed != 1 ? -1 : 1;
+					}
+				});
+				
+				if(osPassed == -1){ // Filters didn't pass
+					filtersPassed = false;
+				}
+			}
+			
+			if(filtersPassed === true && ex.ls && ex.ls.length > 0){
 				var matched = matchLinks(ex.ls);
 				if(matched){
 					/**

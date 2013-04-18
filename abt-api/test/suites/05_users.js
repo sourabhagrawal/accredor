@@ -85,9 +85,6 @@ vows.describe("The users API")
 		'should fetch the user' : testUtils.assertSuccess,
 		'should have the same id' : function(err, res){
 			assert.equal(JSON.parse(res.body).data.id, id);
-		},
-		'should not contain the password' : function(err, res){
-			assert.isNull(JSON.parse(res.body).data.password);
 		}
 	},
 	'A GET on User with Non Existent Id' : {

@@ -15,6 +15,8 @@ var VariationsImpl = comb.define(impl,{
 		constructor : function(options){
 			options = options || {};
 			options.dao = variationsDao;
+			options.auditableFields = ['name', 'percent', 'script', 'type', 'isControl', 'isDisabled'];
+			
             this._super([options]);
 		},
 		create : function(params, callback){

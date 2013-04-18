@@ -4,6 +4,7 @@ var scriptDetailsImpl = require(IMPLS_DIR + 'script_details_impl');
 var experimentsImpl = require(IMPLS_DIR + 'experiments_impl');
 var variationsImpl = require(IMPLS_DIR + 'variations_impl');
 var linksImpl = require(IMPLS_DIR + 'links_impl');
+var filtersImpl = require(IMPLS_DIR + 'filters_impl');
 var goalsImpl = require(IMPLS_DIR + 'goals_impl');
 var CONFIG = require('config');
 var eventEmitter = require('events').EventEmitter;
@@ -66,12 +67,14 @@ var ScriptWorker = function(){
 											var experimentData = {
 												id : experimentId,
 												vs : [],
-												ls : []
+												ls : [],
+												fs : []
 											};
 											scriptData.exs.push(experimentData);
 											
 											variationsDone = false;
 											linksDone = false;
+											filtersDone = false;
 											
 											localEmitter.on('check_ex', function(){
 												if(variationsDone && linksDone){
@@ -105,7 +108,7 @@ var ScriptWorker = function(){
 												localEmitter.emit('check_ex');
 											}, 'experimentId:eq:' + experimentId + '___isDisabled:eq:0');
 											
-											// Fetch variations
+											// Fetch links
 											linksImpl.search(function(err, data){
 												if(err){
 													logger.error(err);
@@ -122,6 +125,27 @@ var ScriptWorker = function(){
 													}
 												}
 												linksDone = true;
+												localEmitter.emit('check_ex');
+											}, 'experimentId:eq:' + experimentId + '___isDisabled:eq:0');
+											
+											// Fetch filters
+											filtersImpl.search(function(err, data){
+												if(err){
+													logger.error(err);
+												}else{
+													var filters = data.data;
+													if(filters && filters.length > 0){
+														_.each(filters, function(filter){
+															experimentData.fs.push({
+																id : filter.id,
+																type : filter.type,
+																name : filter.name,
+																value : filter.value
+															});
+														});
+													}
+												}
+												filtersDone = true;
 												localEmitter.emit('check_ex');
 											}, 'experimentId:eq:' + experimentId + '___isDisabled:eq:0');
 										});

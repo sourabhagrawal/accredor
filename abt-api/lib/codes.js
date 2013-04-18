@@ -225,6 +225,13 @@ var ErrorCodes = new function(){
 	this.VISITS_NULL = status({code : 2004, message : "Visits can not be empty"});
 	this.HITS_NULL = status({code : 2005, message : "Hits can not be empty"});
 	
+	/**
+	 * Filters related
+	 */
+	this.FILTER_TYPE_REQUIRED = status({code : 2101, message : "Filter Type can not be blank"});
+	this.FILTER_NAME_REQUIRED = status({code : 2102, message : "Filter Name can not be blank"});
+	this.FILTER_VALUE_REQUIRED = status({code : 2103, message : "Filter Value can not be blank"});
+	
 };
 
 exports.success = SuccessCodes;

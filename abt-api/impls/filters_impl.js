@@ -1,20 +1,20 @@
 var comb = require('comb');
 var _ = require('underscore');
 var check = require('validator').check;
-var logger = require(LIB_DIR + 'log_factory').create("links_impl");
+var logger = require(LIB_DIR + 'log_factory').create("filters_impl");
 var impl = require('./impl.js');
-var linksDao = require(DAOS_DIR + 'links_dao');
+var filtersDao = require(DAOS_DIR + 'filters_dao');
 var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
 var emitter = require(LIB_DIR + 'emitter');
 
-var LinksImpl = comb.define(impl,{
+var FiltersImpl = comb.define(impl,{
 	instance : {
-		displayName : "Link",
+		displayName : "Filter",
 		constructor : function(options){
 			options = options || {};
-			options.dao = linksDao;
-			options.auditableFields = ['url', 'type', 'isDisabled'];
+			options.dao = filtersDao;
+			options.auditableFields = ['name', 'value', 'type', 'isDisabled'];
 			
             this._super([options]);
 		},
@@ -31,30 +31,28 @@ var LinksImpl = comb.define(impl,{
 				return;
 			}
 			
-			// URL should not be blank
-			try{
-				check(params['url']).notNull().notEmpty();
-			}catch(e){
-				callback(response.error(codes.error.LINK_URL_REQUIRED()));
-				return;
-			}
-			
-			// URL should not be blank
+			// Type should not be blank
 			try{
 				check(params['type']).notNull().notEmpty();
 			}catch(e){
-				callback(response.error(codes.error.LINK_TYPE_REQUIRED()));
+				callback(response.error(codes.error.FILTER_TYPE_REQUIRED()));
 				return;
 			}
 			
-			if(params['type'] == LINK.types.SIMPLE){
-				// URL should be valid
-				try{
-					check(params['url']).isUrl();
-				}catch(e){
-					callback(response.error(codes.error.INVALID_LINK_URL()));
-					return;
-				}
+			// Name should not be blank
+			try{
+				check(params['name']).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.FILTER_NAME_REQUIRED()));
+				return;
+			}
+			
+			// Value should not be blank
+			try{
+				check(params['value']).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.FILTER_VALUE_REQUIRED()));
+				return;
 			}
 			
 			m.call(this, params, callback);
@@ -75,12 +73,12 @@ var LinksImpl = comb.define(impl,{
 				return;
 			}
 			
-			if(params['type'] && params['url'] && params['type'] == LINK.types.SIMPLE){
-				// URL should be valid
+			if(params['value']){
+				// Value should not be blank
 				try{
-					check(params['url']).isUrl();
+					check(params['value']).notNull().notEmpty();
 				}catch(e){
-					callback(response.error(codes.error.INVALID_LINK_URL()));
+					callback(response.error(codes.error.FILTER_VALUE_REQUIRED()));
 					return;
 				}
 			}
@@ -93,4 +91,4 @@ var LinksImpl = comb.define(impl,{
 	}
 });
 
-module.exports = new LinksImpl();
+module.exports = new FiltersImpl();
