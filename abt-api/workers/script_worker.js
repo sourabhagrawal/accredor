@@ -14,7 +14,6 @@ var Bus = require(LIB_DIR + 'bus');
  * A worker thread that will pick old scripts and generate fresh user data
  */
 
-
 var ScriptWorker = function() {
 
     var ref = this;
@@ -40,9 +39,11 @@ var ScriptWorker = function() {
                 if (data && data.data && data.data.length > 0) {
                     var scripts = data.data;
                     _.each(scripts, function(script) {
-
                         var scriptId = script.id;
                         var userId = script['userId'];
+
+                        logger.info("Generating script data for script: " + scriptId);
+
                         bus.fire("search_experiments", scriptId, userId);
                         bus.fire("search_goals", scriptId, userId);
                     });
@@ -160,12 +161,13 @@ var ScriptWorker = function() {
         });
 
         bus.on('check_ex', function(scriptId) {
+            experimentsDone = true;
             _.each(experimentIds, function(experimentId) {
-                if (experimentCountMap[experimentId] == 3) {
-                    experimentsDone = true;
-                    bus.fire('check_u', scriptId);
+                if (experimentCountMap[experimentId] != 3) {
+                    experimentsDone = false;
                 }
             })
+            bus.fire('check_u', scriptId);
         });
 
         bus.on('all_data_fetched', function(scriptId) {
@@ -198,8 +200,8 @@ var ScriptWorker = function() {
                             });
                         });
                     }
+                    goalsDone = true;
                 }
-                goalsDone = true;
                 bus.fire('check_u', scriptId);
             }, 'userId:eq:' + userId + '___isDisabled:eq:0___status:eq:' + GOAL.CREATED);
         });
