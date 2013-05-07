@@ -19,6 +19,7 @@
     "vows" : "*",
     "nodemailer" : "*",
     "validator" : "*",
-    "express-validator" : "*"
+    "express-validator" : "*",
+    "redis" : "*"
   }
 }

@@ -13,6 +13,7 @@ LIB_DIR = __dirname + '/';
 DAOS_DIR = __dirname + '/../daos/';
 IMPLS_DIR = __dirname + '/../impls/';
 EMAILS_DIR = __dirname + '/../views/emails/';
+ACL_DIR = __dirname + '/../acl/';
 
 /**
  * Domain related
@@ -31,3 +32,6 @@ EVENT_MARK_SCRIPT_OLD = 'mark_script_old';
  */
 ENVIRONMENT = process.env.NODE_ENV;
 IS_PROD = ENVIRONMENT == 'production';
+
+CACHE_LIMIT = 2
+
