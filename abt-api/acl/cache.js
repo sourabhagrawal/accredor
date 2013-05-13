@@ -14,9 +14,33 @@ var Cache = comb.define(null, {
             client = redis.createClient();
         },
 
+        updateOrAddToCache : function(userId, experimentId) {
+            var ref = this;
+            var userKey = "user:" + userId + ":experiments";
+
+            client.exists(userKey, function(err, reply) {
+                if (err) {
+                    logger.error(err);
+                } else {
+                    if (reply == 0) {
+                        ref.fetchDataFromDb(userId, function(err, experimentIds) {
+                            if (err) {
+                                logger.error(err);
+                            } else {
+                                ref.cacheExperiments(userId, experimentIds);
+                            }
+                        });
+                    }
+                    else
+                        client.sadd(userKey, experimentId);
+                }
+            });
+        },
+
         cacheExperiments : function(userId, experimentIds) {
             var bus = new Bus();
             var userKey = "user:" + userId + ":experiments";
+
             client.llen("experiment_keys", function(err, reply) {
                 if (err) {
                     logger.error(err);
@@ -46,10 +70,28 @@ var Cache = comb.define(null, {
             });
         },
 
+        fetchDataFromDb : function(userId, callback) {
+            var ref = this;
+            experimentsImpl.search(function(err, data) {
+                if (err) {
+                    callback(err, false);
+                } else {
+                    var experiments = data.data;
+                    var experimentIds = [];
+                    _.each(experiments, function(experiment) {
+                        var expId = experiment.id;
+                        experimentIds.push(expId);
+                    });
+                    callback(null, experimentIds);
+                }
+            }, 'userId:eq:' + userId + '__isDisabled:eq:0')
+        },
+
         checkAccessOfExperiments : function(userId, experimentId, callback) {
 
             var bus = new Bus();
             var ref = this;
+            var accessible = false;
             var userKey = "user:" + userId + ":experiments";
             client.sismember(userKey, experimentId, function(err, reply) {
                 if (err) {
@@ -65,23 +107,18 @@ var Cache = comb.define(null, {
 
             bus.on("fetch_from_db", function(userId) {
                 var accessible = false;
-                experimentsImpl.search(function(err, data) {
+                ref.fetchDataFromDb(userId, function(err, experimentIds) {
                     if (err) {
                         logger.error(err);
                     } else {
-                        var experiments = data.data;
-                        var experimentIds = [];
-                        _.each(experiments, function(experiment) {
-                            var expId = experiment.id;
-                            experimentIds.push(expId);
-                            if (experiment.id == experimentId)
+                        _.each(experimentIds, function(expId) {
+                            if (expId == experimentId)
                                 accessible = true;
                         });
                         callback(null, accessible);
                         ref.cacheExperiments(userId, experimentIds);
                     }
-                }, 'userId:eq:' + userId + '__isDisabled:eq:0');
-
+                });
             });
         }
     }

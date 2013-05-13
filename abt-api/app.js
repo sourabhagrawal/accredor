@@ -69,7 +69,7 @@ app.configure(function() {
             res.end = end;
             if(chunk) {
                 if(req.url.indexOf('split_experiment') != -1 && req.method == 'POST') {
-                    cache.cacheExperiments(req.user.id, JSON.parse(chunk)['data']['id'])
+                    cache.updateOrAddToCache(req.user.id, JSON.parse(chunk)['data']['id'])
                 }
 
                 if(req.url.indexOf('experiment') != -1 && req.method == 'GET'){
