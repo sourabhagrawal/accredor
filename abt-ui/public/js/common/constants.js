@@ -9,6 +9,11 @@ Views = {};
 Models = {};
 
 /**
+ * Lists
+ */
+Lists = {};
+
+/**
  * Static strings
  */
 ACC = {};

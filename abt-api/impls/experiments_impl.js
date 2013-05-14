@@ -53,6 +53,41 @@ var ExperimentsImpl = comb.define(impl,{
 				return;
 			}
 			
+			// A link has to be provided
+			var links = params['links'];
+			try{
+				check(links).notNull();
+			}catch(e){
+				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+				return;
+			}
+			
+			// URL should not be blank
+			var url = links[0]['url'];
+			try{
+				check(url).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+				return;
+			}
+			
+			// URL should be valid
+			try{
+				check(url).isUrl();
+			}catch(e){
+				callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
+				return;
+			}
+			
+			// Link type should not be blank
+			var linkType = links[0]['type'];
+			try{
+				check(linkType).notNull().notEmpty();
+			}catch(e){
+				callback(response.error(codes.error.EXPERIMENT_URL_TYPE_EMPTY()));
+				return;
+			}
+			
 			bus.on('start', function(){
 				StateMachine.getStartState(EXPERIMENT.name, function(err, data){
 					if(err != null){
@@ -84,10 +119,37 @@ var ExperimentsImpl = comb.define(impl,{
 			});
 			
 			bus.on('noDuplicates', function(){
-				m.call(ref, params, callback);
-				
-				// Mark script old for the user
-				emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
+				m.call(ref, params, function(err, data){
+					if(err){
+						callback(err, null);// Respond back with error
+					}else{
+						//Create a link
+						var experiment = data.data;
+						bus.fire('experiment_created', params, experiment);
+					}
+				});
+			});
+			
+			bus.on('experiment_created', function(params, experiment){
+				var payload = {
+					experimentId : experiment.id,
+					url : url,
+					type : linkType,
+					createdBy : experiment.createdBy,
+					userId : experiment.userId
+				};
+				linksImpl.create(payload, function(err, data){
+					if(err){
+						callback(err);
+					}else{
+						var link = data.data;
+						experiment.links = [link];
+						callback(null,response.success(experiment, 1, codes.success.RECORD_CREATED([ref.displayName])));
+						
+						// Mark script old for the user
+						emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
+					}
+				});
 			});
 			
 			bus.fire('start');
@@ -104,6 +166,43 @@ var ExperimentsImpl = comb.define(impl,{
 				var m = this._getSuper();
 				
 				var userId = null;
+				
+				var links = params['links'];
+				if(links && links.length > 0){
+					// A link has to be provided
+					try{
+						check(links).notNull();
+					}catch(e){
+						callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+						return;
+					}
+					
+					// URL should not be blank
+					var url = links[0]['url'];
+					try{
+						check(url).notNull().notEmpty();
+					}catch(e){
+						callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
+						return;
+					}
+					
+					// URL should be valid
+					try{
+						check(url).isUrl();
+					}catch(e){
+						callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
+						return;
+					}
+					
+					// Link type should not be blank
+					var linkType = links[0]['type'];
+					try{
+						check(linkType).notNull().notEmpty();
+					}catch(e){
+						callback(response.error(codes.error.EXPERIMENT_URL_TYPE_EMPTY()));
+						return;
+					}
+				}
 				
 				bus.on('start', function(){
 					ref._dao.getById(id).then(function(model){
@@ -167,10 +266,79 @@ var ExperimentsImpl = comb.define(impl,{
 				});
 				
 				bus.on('validOrNoTransitions', function(){
-					m.call(ref, id, params, callback);
+					m.call(ref, id, params, function(err, data){
+						if(err){
+							callback(err, null);// Respond back with error
+						}else{
+							//Create a link
+							var experiment = data.data;
+							bus.fire('experiment_updated', id, params, experiment);
+						}
+					});
 					
 					// Mark script old for the user
 					emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
+				});
+				
+				bus.on('experiment_updated', function(id, params, experiment){
+					ref.getLinksForExperiment(id, function(err, data){
+						if(err){
+							callback(err);
+						}else{
+							if(links && links.length > 0 && links[0]['url']){ // If URL is getting updated
+								if(data.totalCount > 0){
+									var link = data.data[0];
+									bus.fire('link_fetched', link.id, params, experiment);
+								}else{
+									bus.fire('create_link', params, experiment);
+								}
+							}else{
+								if(data.totalCount > 0){
+									var link = data.data[0];
+									experiment.links = [link];
+									callback(null,response.success(experiment, 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
+								}
+							}
+							
+						}
+					});
+				});
+				
+				bus.on('create_link', function(params, experiment){
+					var payload = {
+						experimentId : experiment.id,
+						url : links[0]['url'],
+						type : links[0]['type'],
+						createdBy : experiment.createdBy,
+						userId : experiment.userId
+					};
+					linksImpl.create(payload, function(err, data){
+						if(err){
+							callback(err);
+						}else{
+							var link = data.data;
+							experiment.links = [link];
+							callback(null,response.success(experiment, 1, codes.success.RECORD_CREATED([ref.displayName])));
+						}
+					});
+				});
+				
+				bus.on('link_fetched', function(linkId, params, experiment){
+					var payload = {
+						url : links[0]['url'],
+						type : links[0]['type'],
+						updatedBy : experiment.createdBy,
+						userId : experiment.userId
+					};
+					linksImpl.update(linkId, payload, function(err, data){
+						if(err){
+							callback(err);
+						}else{
+							var link = data.data;
+							experiment.links = [link];
+							callback(null,response.success(experiment, 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
+						}
+					});
 				});
 				
 				bus.fire('start');
@@ -189,206 +357,14 @@ var ExperimentsImpl = comb.define(impl,{
 			}, 'experimentId:eq:' + experimentId + "___isDisabled:eq:0", null, null, 'id', 'ASC');
 		},
 		
-		createSplitExperiment : function(params, callback){
+		getById : function(id, callback){
 			var bus = new Bus();
 			
 			var ref = this;
-			
-			// A link has to be provided
-			var links = params['links'];
-			try{
-				check(links).notNull();
-			}catch(e){
-				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
-				return;
-			}
-			
-			// URL should not be blank
-			var url = links[0]['url'];
-			try{
-				check(url).notNull().notEmpty();
-			}catch(e){
-				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
-				return;
-			}
-			
-			// URL should be valid
-			try{
-				check(url).isUrl();
-			}catch(e){
-				callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
-				return;
-			}
-			
-			// Link type should not be blank
-			var linkType = links[0]['type'];
-			try{
-				check(linkType).notNull().notEmpty();
-			}catch(e){
-				callback(response.error(codes.error.EXPERIMENT_URL_TYPE_EMPTY()));
-				return;
-			}
-			
-			params['type'] = EXPERIMENT.types.SPLITTER;
+			var m = this._getSuper();
 			
 			bus.on('start', function(){
-				ref.create(params, function(err, data){
-					if(err){
-						callback(err, null);// Respond back with error
-					}else{
-						//Create a link
-						var experiment = data.data;
-						bus.fire('experiment_created', params, experiment);
-					}
-				});
-			});
-			
-			bus.on('experiment_created', function(params, experiment){
-				var payload = {
-					experimentId : experiment.id,
-					url : url,
-					type : linkType,
-					createdBy : experiment.createdBy,
-					userId : experiment.userId
-				};
-				linksImpl.create(payload, function(err, data){
-					if(err){
-						callback(err);
-					}else{
-						var link = data.data;
-						experiment.links = [link];
-						callback(null,response.success(experiment, 1, codes.success.RECORD_CREATED([ref.displayName])));
-					}
-				});
-			});
-			
-			bus.fire('start');
-		},
-		
-		updateSplitExperiment : function(id, params, callback){
-			var bus = new Bus();
-			
-			var ref = this;
-			
-			var links = params['links'];
-			if(links){
-				// A link has to be provided
-				try{
-					check(links).notNull();
-				}catch(e){
-					callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
-					return;
-				}
-				
-				// URL should not be blank
-				var url = links[0]['url'];
-				try{
-					check(url).notNull().notEmpty();
-				}catch(e){
-					callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
-					return;
-				}
-				
-				// URL should be valid
-				try{
-					check(url).isUrl();
-				}catch(e){
-					callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
-					return;
-				}
-				
-				// Link type should not be blank
-				var linkType = links[0]['type'];
-				try{
-					check(linkType).notNull().notEmpty();
-				}catch(e){
-					callback(response.error(codes.error.EXPERIMENT_URL_TYPE_EMPTY()));
-					return;
-				}
-			}
-			
-			bus.on('start', function(){
-				ref.update(id, params, function(err, data){
-					if(err){
-						callback(err, null);// Respond back with error
-					}else{
-						//Create a link
-						var experiment = data.data;
-						bus.fire('experiment_updated', id, params, experiment);
-					}
-				});
-			});
-			
-			bus.on('experiment_updated', function(id, params, experiment){
-				ref.getLinksForExperiment(id, function(err, data){
-					if(err){
-						callback(err);
-					}else{
-						if(links && links.length > 0 && links[0]['url']){ // If URL is getting updated
-							if(data.totalCount > 0){
-								var link = data.data[0];
-								bus.fire('link_fetched', link.id, params, experiment);
-							}else{
-								bus.fire('create_link', params, experiment);
-							}
-						}else{
-							if(data.totalCount > 0){
-								var link = data.data[0];
-								experiment.links = [link];
-								callback(null,response.success(experiment, 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
-							}
-						}
-						
-					}
-				});
-			});
-			
-			bus.on('create_link', function(params, experiment){
-				var payload = {
-					experimentId : experiment.id,
-					url : links[0]['url'],
-					type : links[0]['type'],
-					createdBy : experiment.createdBy,
-					userId : experiment.userId
-				};
-				linksImpl.create(payload, function(err, data){
-					if(err){
-						callback(err);
-					}else{
-						var link = data.data;
-						experiment.links = [link];
-						callback(null,response.success(experiment, 1, codes.success.RECORD_CREATED([ref.displayName])));
-					}
-				});
-			});
-			
-			bus.on('link_fetched', function(linkId, params, experiment){
-				var payload = {
-					url : links[0]['url'],
-					type : links[0]['type'],
-					updatedBy : experiment.createdBy,
-					userId : experiment.userId
-				};
-				linksImpl.update(linkId, payload, function(err, data){
-					if(err){
-						callback(err);
-					}else{
-						var link = data.data;
-						experiment.links = [link];
-						callback(null,response.success(experiment, 1, codes.success.RECORD_UPDATED([ref.displayName, id])));
-					}
-				});
-			});
-			
-			bus.fire('start');
-		},
-		
-		getSplitExperimentById : function(id, callback){
-			var bus = new Bus();
-			
-			var ref = this;
-			bus.on('start', function(){
-				ref.getById(id, function(err, data){
+				m.call(ref, id, function(err, data){
 					if(err){
 						callback(err, null);// Respond back with error
 					}else{
@@ -414,13 +390,14 @@ var ExperimentsImpl = comb.define(impl,{
 			bus.fire('start');
 		},
 		
-		searchSplitExperiments : function(callback, query, start, fetchSize, sortBy, sortDir){
+		search : function(callback, query, start, fetchSize, sortBy, sortDir){
 			var ref = this;
 			
 			var bus = new Bus();
+			var m = this._getSuper();
 			
 			bus.on('start', function(){
-				ref.search(function(err, data){
+				m.call(ref, function(err, data){
 					if(err){
 						callback(err, null);// Respond back with error
 					}else{

@@ -1,5 +1,5 @@
 $(function($){
-	templateLoader.loadRemoteTemplate("ab-variation", "/templates/ab-variation.html", function(data){
+	templateLoader.loadRemoteTemplate("experiments/ab-variation", "/templates/experiments/ab-variation.html", function(data){
 		new Views.ABExperimentView();
 	});
 });

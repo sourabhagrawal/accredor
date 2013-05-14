@@ -9,7 +9,6 @@ var CONFIG = require('config');
 var log4js = require('log4js');
 var _ = require('underscore');
 var expressValidator = require('express-validator');
-var redis = require('redis');
 
 require('./lib/constants');
 

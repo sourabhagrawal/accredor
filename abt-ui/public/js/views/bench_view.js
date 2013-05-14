@@ -1,98 +1,4 @@
-var Variation = Backbone.Model.extend({
-	defaults : function(){
-		var order = variations.length;
-		var name = 'Variation #' + order;
-		if(order == 0)
-			name = "Control";
-		
-		return {
-			isControl : order == 0 ? 1 : 0,
-			order : order,
-			name : name,
-			percent : 0
-		};
-	},
-	
-	initialize : function(){
-//		this.bind('error', this.error, this);
-//		this.bind('sync', this.synced, this);
-	},
-	
-	parse : function(response){
-		if(response.status && response.status.code == 1000){
-			return response.data;
-		}
-		return response;
-	},
-	
-	isControl : function(){
-		return this.get('isControl');
-	},
-	
-	validate: function(attrs) {
-		if(!attrs.name || attrs.name.trim() == ''){
-			return 'Variation Name can not be blank';
-		}
-		
-		if(isNaN(attrs.percent)){
-			return 'Enter a valid percent value. e.g. 50.0';
-			return;
-		}
-		if(parseFloat(attrs.percent) + variations.percent(attrs.id) > 100){
-			return 'Variations percent allocation exceeding 100%';
-		}
-	},
-	
-	error : function(model, error){
-		if(error.status == 500){
-			var data = $.parseJSON(error.responseText);
-			this.set('status', {isError : true, message : data.message}, {silent : true});
-		}else if(error.statusText != undefined){
-			this.set('status', {isError : true, message : error.statusText}, {silent : true});
-		}else{
-			this.set('status', {isError : true, message : error}, {silent : true});
-		}
-	},
-	
-	synced : function(model, error){
-		this.set('status', {isError : false});
-	}
-});
-
-var VariationList = Backbone.Collection.extend({
-	model : Variation,
-	url : function(){
-		return '/api/variations';
-	},
-	parse : function(response){
-		if(response.status && response.status.code == 1000){
-			return response.data;
-		}
-		return null;
-	},
-	control : function(){
-		return this.filter(function(variation){
-			return variation.get('isControl');
-		});
-	},
-	notControl : function(){
-		return this.filter(function(variation){
-			return !variation.get('isControl');
-		});
-	},
-	percent : function(excludeId){
-		var percent = 0.0;
-		if(this.length > 0){
-			this.each(function(model){
-				if(model.id != excludeId)
-					percent += parseFloat(model.get('percent'));
-			});
-		}
-		return percent;
-	}
-});
-
-var variations = new VariationList();
+var variations = new Lists.VariationList();
 
 var VariationView = Views.BaseView.extend({
 	tagName : "div",
@@ -101,6 +7,7 @@ var VariationView = Views.BaseView.extend({
 		"click #delete" : "destroy",
 		"click #undo" : "undo",
 		"click #redo" : "redo",
+		"click #reset" : "reset",
 		"click #save" : "save",
 		"click #script-btn" : "toggleScript"
 	},
@@ -151,8 +58,10 @@ var VariationView = Views.BaseView.extend({
 		this.frame = this.$("#content-frame")[0];
 		this.$("#content-frame").ready(function(){  
 			ref.$("#content-frame").load(function () {                        
-//				ref.frame.contentWindow.location.href = ref.frame.src; // Some hack for Mozilla. needs to be tested
-				ref.frame.contentWindow.applyCode(json.script);
+				if(ref.frame.contentWindow){
+//					ref.frame.contentWindow.location.href = ref.frame.src; // Some hack for Mozilla. needs to be tested
+					ref.frame.contentWindow.applyCode(json.script);
+				}
             });
 		});
 		return this;
@@ -166,10 +75,15 @@ var VariationView = Views.BaseView.extend({
 		this.frame.contentWindow.stack.redo();
 	},
 	
+	reset : function(){
+		this.frame.contentWindow.stack.reset();
+	},
+	
 	toggleScript : function(){
-		var script = this.frame.contentWindow.stack.toScript();
+		var script = JSON.parse(this.frame.contentWindow.stack.toScript())['fn'].join('\n');
 		this.editor.setValue(script);
 		
+		this.codeContainer.css('display', 'block' );
 		this.codeContainer.css('height', 100 );
 		this.editor.setSize(null, 100);
 	},
@@ -234,6 +148,7 @@ Views.ABExperimentView = Views.BaseView.extend({
 					ref.experiment = data.data;
 					if(ref.experiment['type'] == 'abtest'){
 						ref.$el.html(ref.template(ref.experiment));
+						ref.experimentUrl = ref.experiment.links[0]['url'];
 						
 						variations.fetch({
 							data : {
@@ -273,15 +188,18 @@ Views.ABExperimentView = Views.BaseView.extend({
 	},
 	
 	add : function(variation){
-		console.log(variation);
-		var view = new VariationView({model : variation});
-		var json = variation.toJSON();
-		
-		var id = json.experimentId + "-" + json.id;
-		var klass = json.isControl == 1 ? "first-tab active" : '';
-		this.$("ul").append("<li class='" + klass + "'><a href='#" + id + "' data-toggle='tab'>" + json.name + "</a></li>");
-		
-		this.$('#variations-tabs').append(view.render().el);
+		if(this.experimentUrl){
+			variation.set('experimentUrl', this.experimentUrl);
+
+			var view = new VariationView({model : variation});
+			var json = variation.toJSON();
+			
+			var id = json.experimentId + "-" + json.id;
+			var klass = json.isControl == 1 ? "first-tab active" : '';
+			this.$("ul").append("<li class='" + klass + "'><a href='#" + id + "' data-toggle='tab'>" + json.name + "</a></li>");
+			
+			this.$('#variations-tabs').append(view.render().el);
+		}
 	},
 	
 	addAll : function(){

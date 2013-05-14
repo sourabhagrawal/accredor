@@ -29,6 +29,12 @@ var Stack = function(){
 		eval(obj['nfn']);
 	};
 	
+	this.reset = function(){
+		while(!this.isEmpty()){
+			this.undo();
+		}
+	};
+	
 	this.isEmpty = function(){
 		return iter == -1;
 	};
@@ -37,23 +43,48 @@ var Stack = function(){
 		return iter == array.length - 1;
 	};
 	
-	this.toScript = function(){
-		var instructions = [];
-		if(this.initialCode){
-			instructions.push(this.initialCode);
-		}
+	this.initializeStack = function(){
+		var count = 0;
+		var fn = this.initialCode['fn'];
+		var nfn = this.initialCode['nfn'];
+		var ref = this;
 		
-		for(var i = 0; i <= iter; i++){
-			var obj = array[i];
-			var instruction = obj['fn'];
-			instructions.push(instruction);
-		}
-		
-		return instructions.join("\n");
+		fn.forEach(function(f){
+			ref.add(f, nfn[count]);
+			count++;
+		});
 	};
 	
-	this.setInitialCode = function(fn){
-		this.initialCode = fn;
-		eval(fn);
+	this.toCode = function(reverse){
+		var instructions = [];
+		
+		if(reverse == true){
+			for(var i = iter; i >= 0; i--){
+				var obj = array[i];
+				var instruction = obj['nfn'];
+				instructions.push(instruction);
+			}
+		}else{
+			for(var i = 0; i <= iter; i++){
+				var obj = array[i];
+				var instruction = obj['fn'];
+				instructions.push(instruction);
+			}
+		}
+		return instructions;
+	};
+	
+	this.toScript = function(){
+		return JSON.stringify({fn : this.toCode(), nfn : this.toCode(true)});
+	};
+	
+	this.setInitialCode = function(script){
+		script = JSON.parse(script);
+		this.initialCode = script;
+		this.initializeStack();
+		
+		script['fn'].forEach(function(fn){
+			eval(fn);
+		});
 	};
 };

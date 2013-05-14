@@ -40,7 +40,11 @@ $(function($){
 			display : 'block'
 		});
 		
-		movement.init(target);
+		if(this.mode){
+			if(this.mode == 'movement'){
+				movement.init(target);
+			}
+		}
 	};
 	
 	var encloseBox = function(event){

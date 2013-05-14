@@ -76,6 +76,8 @@ var assetGroups = function(){
 				'/js/common/utils.js',
 				'/js/common/init.js',
 				
+				'/js/models/experiment_model.js',
+				'/js/models/variation_model.js',
 				'/js/models/experiment_report_model.js',
 				'/js/models/experiment_report_chart_model.js',
 				
@@ -86,7 +88,7 @@ var assetGroups = function(){
 				'/js/views/login/forgot_view.js',
 				'/js/views/header_view.js',
 				
-				'/js/views/experiments/variations_bulk_view.js',
+				'/js/views/experiments/split_variation_view.js',
 				'/js/views/experiments/links_view.js',
 				'/js/views/experiments/filters_view.js',
 				'/js/views/experiments/split_experiment_view.js',

@@ -1,20 +1,3 @@
-var SplitExperiment = Backbone.Model.extend({
-	defaults : function(){},
-	
-	urlRoot : function(){ return '/api/experiments/split_experiment';},
-	
-	initialize : function(){},
-	
-	parse : function(response){
-		if(response.status && response.status.code == 1000){
-			return response.data;
-		}else if(response.status && response.status != 1000){
-			return response.message;
-		}
-		return response;
-	}
-});
-
 Views.SplitExperimentView = Views.BaseView.extend({
 	events : {
 		"click #ok-btn" : "createOrUpdateExperiment",
@@ -30,7 +13,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 			this.id = this.options.id;
 		}
 		
-		this.model = new SplitExperiment({id : this.id});
+		this.model = new Models.Experiment({id : this.id});
 		
 		this.model.bind('error', this.showError, this);
 		this.model.bind('fetched', this.onFetch, this);
