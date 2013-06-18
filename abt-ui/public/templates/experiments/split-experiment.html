@@ -31,6 +31,23 @@
 				</div>
 			</div>
 		</div>
+		<div class="row-fluid">
+			<div class="span12">
+				<div class="span3">
+					<span class="pull-right">Experiment Type</span>
+				</div>
+				<div class="span9">
+					<% if(typeof(id) != 'undefined'){ %>
+					<label><% if(type == 'abtest') print('AB Test'); if(type == 'splitter') print('Splitter');%></label>
+					<% }else{ %>
+					<select id="type">
+						<option value='abtest'>AB Test</option>
+						<option value='splitter'>Splitter</option>
+					</select>
+					<% } %>
+				</div>
+			</div>
+		</div>
 		<% if(typeof(id) != 'undefined'){ %>
 			<div class="row-fluid">
 				<div class="span12">

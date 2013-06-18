@@ -79,6 +79,8 @@ var Stack = function(){
 	};
 	
 	this.setInitialCode = function(script){
+		if(script == '') return;
+		
 		script = JSON.parse(script);
 		this.initialCode = script;
 		this.initializeStack();

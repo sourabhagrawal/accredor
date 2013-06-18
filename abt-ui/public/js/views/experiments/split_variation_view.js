@@ -88,15 +88,7 @@ Views.SplitVariationListView = Views.BaseView.extend({
 		
 		if(this.options.experiment){
 			this.experiment = this.options.experiment;
-			
-			var ref = this;
-			if(this.options.create === true){
-				this.create(function(model){
-					ref.render();
-				});
-			}else{
-				this.render();
-			}
+			this.render();
 		}
 	},
 	

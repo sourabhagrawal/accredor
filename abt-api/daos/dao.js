@@ -69,8 +69,7 @@ var DAO = comb.define(null,{
 						var value = filter.value;
 						if(op == 'lt' || op == 'lte' || 
 							op == 'gt' || op == 'gte' || 
-							op == 'eq' || op == 'neq' || 
-							op == 'like' || op == 'iLike'){
+							op == 'eq' || op == 'neq'){
 							params[field] = params[field] || {};
 							params[field][op] = value;
 						}else if(op == 'in'){
@@ -85,6 +84,9 @@ var DAO = comb.define(null,{
 							params[field] = params[field] || {};
 							if(_.isArray(value))
 								params[field].notBetween = value;
+						}else if(op == 'like' || op == 'iLike'){
+							params[field] = params[field] || {};
+							params[field][op] = value + "%";
 						}
 					}
 				}

@@ -46,7 +46,11 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	
 	onCreate : function(){
 		this.id = this.model.get('id');
-		this.render(true);
+		
+		if(this.model.get('type') == 'abtest'){
+			$(location).attr('href', '/bench?experiment_id=' + this.id);
+		}else
+			this.render(true);
 	},
 	
 	onUpdate : function(){
@@ -60,6 +64,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	
 	onSync : function(){
 		this.id = this.model.get('id');
+		
 		this.render();
 	},
 	
@@ -72,11 +77,13 @@ Views.SplitExperimentView = Views.BaseView.extend({
 		
 		this.name = this.$('#name');
 		this.url = this.$('#url');
+		this.type = this.$('#type');
 		this.alert = this.$('#split-variation-alert');
 		this.okBtn = this.$('#ok-btn');
 		
 		if(this.id){
-			this.variationsView = new Views.SplitVariationListView({experiment : this.model.toJSON(), create : create});
+			if(this.model.get('type') == 'splitter')
+				this.variationsView = new Views.SplitVariationListView({experiment : this.model.toJSON(), create : create});
 			
 			var ref = this;
 			templateLoader.loadRemoteTemplate("experiments/link", "/templates/experiments/link.html", function(data){
@@ -140,7 +147,7 @@ Views.SplitExperimentView = Views.BaseView.extend({
 	createOrUpdateExperiment : function(){
 		var data = {
 			name : this.name.val(),
-			type : 'splitter',
+			type : this.type.val(),
 			links : [{
 				url : this.url.val(),
 				type : 'simple'

@@ -2,7 +2,9 @@ html(lang='en')
 	include common/head
 	body
 		include common/global-header
-		.tabbable(id='ab-experiment-bench', style='position: absolute; top : 70px; right: 0; bottom: 0; left: 0;')
+		div(id='ab-experiment-bench', style='position: absolute; top : 70px; right: 0; bottom: 0; left: 0;')
+			div(id='experiment-header')
+			div.tabbable(id='variations-tabs')
 	link(href='/lib/codemirror/codemirror.css', rel='stylesheet')
 	script(src="/lib/codemirror/codemirror.js")
 	script(src="/lib/codemirror/mode/javascript/javascript.js")

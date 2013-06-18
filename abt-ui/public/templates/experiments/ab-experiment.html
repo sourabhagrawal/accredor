@@ -1,10 +1,7 @@
-<div id='experiment-title'  style = 'padding-left : 20px;'>
-	<h2 id='experiment-name'><%= name %>&nbsp;&nbsp;<a class="" href="#" style="vertical-align: middle; text-decoration:none;"><i class="icon-edit"></i></a></h2>
-	<input id='experiment-name-text' style='margin-bottom:10px; display:none;'></input>
+<div style='margin-bottom:10px; padding-left : 20px;'>
+	<h2 id='experiment-name-label'><%= name %>&nbsp;&nbsp;<a class="" href="#" style="vertical-align: middle; text-decoration:none;"><i id='experiment-name-edit' class="icon-edit"></i></a></h2>
+	<div id='experiment-name-controls' style='display:none; margin-bottom:10px; '>
+		<input id='experiment-name-text'></input>
+		<button href='#' class='btn'>Save</button>
+	</div>
 </div>
-<ul class="nav nav-tabs">
-	<li class='pull-right'>
-		<a href='#' class='add'>Add Variation</a>
-	</li>
-</ul>
-<div class="tab-content" id='variations-tabs'></div>

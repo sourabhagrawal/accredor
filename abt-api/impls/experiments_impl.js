@@ -9,6 +9,7 @@ var codes = require(LIB_DIR + 'codes');
 var response = require(LIB_DIR + 'response');
 var StateMachine = require('./transitions_impl');
 var linksImpl = require('./links_impl');
+var variationsImpl = require('./variations_impl');
 var Bus = require(LIB_DIR + 'bus');
 
 var ExperimentsImpl = comb.define(impl,{
@@ -46,8 +47,9 @@ var ExperimentsImpl = comb.define(impl,{
 			}
 			
 			// Type should not be blank
+			var type = params['type'];
 			try{
-				check(params['type']).notNull().notEmpty();
+				check(type).notNull().notEmpty();
 			}catch(e){
 				callback(response.error(codes.error.EXPERIMENT_TYPE_REQUIRED()));
 				return;
@@ -144,6 +146,37 @@ var ExperimentsImpl = comb.define(impl,{
 					}else{
 						var link = data.data;
 						experiment.links = [link];
+						callback(null,response.success(experiment, 1, codes.success.RECORD_CREATED([ref.displayName])));
+						
+						bus.fire('link_created', experiment);
+						// Mark script old for the user
+						emitter.emit(EVENT_MARK_SCRIPT_OLD, userId);
+					}
+				});
+			});
+			
+			bus.on('link_created', function(experiment){
+				var payload = {
+					experimentId : experiment.id,
+					name : 'Control',
+					isControl : 1,
+					createdBy : experiment.createdBy,
+					userId : experiment.userId
+				};
+				
+				if(experiment.type == EXPERIMENT.types.SPLITTER){
+					payload['type'] = VARIATION.types.URL;
+					payload['script'] = experiment.links[0].url;
+				}else if(experiment.type == EXPERIMENT.types.ABTEST){
+					payload['type'] = VARIATION.types.AB;
+				}
+				
+				variationsImpl.create(payload, function(err, data){
+					if(err){
+						callback(err);
+					}else{
+						var variation = data.data;
+						experiment.variations = [variation];
 						callback(null,response.success(experiment, 1, codes.success.RECORD_CREATED([ref.displayName])));
 						
 						// Mark script old for the user
@@ -244,7 +277,7 @@ var ExperimentsImpl = comb.define(impl,{
 							}else{
 								bus.fire('noDuplicates', model);
 							}
-						}, 'userId:eq:' + model.userId + '___name:eq:' + name);
+						}, 'userId:eq:' + model.userId + '___name:eq:' + name + '___isDisabled:eq:0');
 					}else{
 						bus.fire('noDuplicates', model);
 					}

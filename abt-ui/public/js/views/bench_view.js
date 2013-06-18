@@ -111,18 +111,21 @@ var VariationView = Views.BaseView.extend({
 	}
 });
 
-Views.ABExperimentView = Views.BaseView.extend({
+var VariationsView = Views.BaseView.extend({
 	events : {
-		"click .add" : 'create',
+		"click .add" : 'create'
 	},
 	
 	initialize : function(){
-		this.$el = $("#ab-experiment-bench");
+		this.$el = $("#variations-tabs");
 		this._super('initialize');
 		
-		this.loadTemplate('experiments/ab-experiment');
+		this.loadTemplate('experiments/ab-variations');
 		
-		this.id = $.urlParam("experiment_id");;
+		if(this.options.id){
+			this.id = this.options.id;
+			this.experimentUrl = this.options.experimentUrl;
+		}
 		
 		_.bindAll(this, 'add', 'addAll');
 		variations.bind('add', this.add, this);
@@ -134,53 +137,20 @@ Views.ABExperimentView = Views.BaseView.extend({
 		this._super('init');
 		
 		this.render();
-	},
-	
-	render : function(){
-		var experimentId = this.id;
 		
-		if(experimentId){
-			var ref = this;
-			$.ajax({
-				url : '/api/experiments/' + experimentId,
-				type : 'GET',
-				success : function(data, textStatus, jqXHR){
-					ref.experiment = data.data;
-					if(ref.experiment['type'] == 'abtest'){
-						ref.$el.html(ref.template(ref.experiment));
-						ref.experimentUrl = ref.experiment.links[0]['url'];
-						
-						variations.fetch({
-							data : {
-								q : 'experimentId:eq:' + experimentId + '___isDisabled:eq:0',
-								sortBy : 'id',
-								sortDir : 'ASC'
-							}
-						});
-					}else{
-						ref.$el.html("Invalid Experiment Id");
-					}
-				},
-				error : function(res, textStatus, errorThrown){
-					if(res.status == 500){
-						var data = $.parseJSON(res.responseText);
-						ref.$el.html(data.message);
-					}
+		if(this.id){
+			variations.fetch({
+				data : {
+					q : 'experimentId:eq:' + this.id + '___isDisabled:eq:0',
+					sortBy : 'id',
+					sortDir : 'ASC'
 				}
 			});
-		}else{
-			this.$el.html('No Experiment Id');
 		}
 	},
 	
-	showError : function(msg){
-		this.enable();
-	},
-	
-	disable : function(){
-	},
-	
-	enable : function(){
+	render : function(){
+		this.$el.html(this.template());
 	},
 	
 	create : function(){
@@ -212,5 +182,75 @@ Views.ABExperimentView = Views.BaseView.extend({
 				variation.destroy();
 			});
 		}
+	}
+	
+});
+
+Views.ABExperimentView = Views.BaseView.extend({
+	events : {
+		"click #experiment-name-edit" : 'editName',
+		"click #experiment-name-controls > button" : 'updateName'
+	},
+	
+	initialize : function(){
+		this.$el = $("#experiment-header");
+		this._super('initialize');
+		
+		this.loadTemplate('experiments/ab-experiment');
+		
+		this.id = $.urlParam("experiment_id");
+		
+		this.model = new Models.Experiment({id : this.id});
+		this.model.bind('fetched', this.onFetch, this);
+		this.model.bind('sync', this.onSync, this);
+	},
+	
+	init : function(){
+		this._super('init');
+		
+		this.model.fetch({
+			success: function(model) {
+				model.trigger('fetched');
+			}
+		});
+	},
+	
+	onFetch : function(){
+		this.render();
+		
+		if(this.id){
+			new VariationsView({id : this.id, experimentUrl : this.experimentUrl});
+		}
+	},
+	
+	onSync : function(){
+		this.render();
+	},
+	
+	render : function(){
+		var json = this.model.toJSON();
+		this.$el.html(this.template(json));
+		
+		this.experimentUrl = json['links'][0]['url'];
+		this.experimentNameLabel = this.$('#experiment-name-label');
+		this.experimentNameControls = this.$('#experiment-name-controls');
+		this.experimentNameTextBox = this.$('#experiment-name-text');
+	},
+	
+	disable : function(){
+	},
+	
+	enable : function(){
+	},
+	
+	editName : function(){
+		this.experimentNameLabel.hide();
+		
+		this.experimentNameTextBox.val(this.model.get('name'));
+		this.experimentNameControls.show();
+	},
+	
+	updateName : function(){
+		this.model.save({name : this.experimentNameTextBox.val()});
 	}
 });

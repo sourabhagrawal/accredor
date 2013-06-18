@@ -40,6 +40,7 @@ $(function($){
 			display : 'block'
 		});
 		
+		this.mode = 'movement';
 		if(this.mode){
 			if(this.mode == 'movement'){
 				movement.init(target);
@@ -107,15 +108,4 @@ $(function($){
 	window.applyCode = function(fn){
 		stack.setInitialCode(fn);
 	};
-	
-//	(function (t, left, top) {
-//	    $(t).css("position", "relative");
-//	    $(t).css("left", left);
-//	    $(t).css("top", top);
-//	}.apply(this, ['center:eq(0) > #main > #content > .articles:eq(0) > .article:eq(0) > .article-content:eq(0) > p:eq(0) > img:eq(0)'].concat(267,-26)));
-//	(function (t, left, top) {
-//	    $(t).css("position", "relative");
-//	    $(t).css("left", left);
-//	    $(t).css("top", top);
-//	}.apply(this, ['center:eq(0) > #main > #content > .articles:eq(0) > .article:eq(0) > h2:eq(0) > a:eq(0)'].concat(296,-17)));
 });
