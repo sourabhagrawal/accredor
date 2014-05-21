@@ -6,7 +6,13 @@
     "start": "node app"
   },
   "dependencies": {
-    "express": "3.0.0rc4",
+    "express": "*",
+    "serve-favicon" : "*",
+    "morgan" : "*",
+    "body-parser" : "*",
+    "method-override" : "*",
+    "express-session" :"*",
+    "cookie-parser" : "*",
     "jade": "*",
     "mime" : "*",
     "jsdom" : "*",

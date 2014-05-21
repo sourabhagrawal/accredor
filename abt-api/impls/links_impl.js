@@ -1,6 +1,6 @@
 var comb = require('comb');
 var _ = require('underscore');
-var check = require('validator').check;
+var check = require('validator');
 var logger = require(LIB_DIR + 'log_factory').create("links_impl");
 var impl = require('./impl.js');
 var linksDao = require(DAOS_DIR + 'links_dao');
@@ -22,25 +22,19 @@ var LinksImpl = comb.define(impl,{
 			
 			// User ID should not be valid
 			var userId = params['userId'];
-			try{
-				check(userId).notNull().notEmpty().isInt();
-			}catch(e){
+			if(check.isNull(userId) || !check.isInt(userId)){
 				callback(response.error(codes.error.VALID_USER_REQUIRED()));
 				return;
 			}
 			
 			// URL should not be blank
-			try{
-				check(params['url']).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(params['url'])){
 				callback(response.error(codes.error.LINK_URL_REQUIRED()));
 				return;
 			}
 			
 			// URL should be valid
-			try{
-				check(params['url']).isUrl();
-			}catch(e){
+			if(!check.isURL(params['url'])){
 				callback(response.error(codes.error.INVALID_LINK_URL()));
 				return;
 			}
@@ -56,11 +50,9 @@ var LinksImpl = comb.define(impl,{
 			
 			// User ID should not be valid
 			var userId = params['userId'];
-			try{
-				check(userId).notNull().notEmpty().isInt();
-			}catch(e){
+			if(check.isNull(userId) || !check.isInt(userId)){
 				callback(response.error(codes.error.VALID_USER_REQUIRED()));
-				return;
+				return;	
 			}
 			
 			m.call(this, id, params, callback);

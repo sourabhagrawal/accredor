@@ -1,6 +1,6 @@
 var comb = require('comb');
 var _ = require('underscore');
-var check = require('validator').check;
+var check = require('validator');
 var logger = require(LIB_DIR + 'log_factory').create("variation_visits_impl");
 var impl = require('./impl.js');
 var dao = require(DAOS_DIR + 'variation_visits_dao');
@@ -21,17 +21,13 @@ var VariationVisitsImpl = comb.define(impl, {
 		var m = this._getSuper();
 		
 		// Variation Id should not be blank
-		try{
-			check(params['variationId']).notNull().isInt();
-		}catch(e){
+		if(check.isNull(params['variationId']) || !check.isInt(params['variationId'])){
 			callback(response.error(codes.error.VARIATION_ID_NULL()));
-			return;
+			return;	
 		}
 		
 		// Visits should not be blank
-		try{
-			check(params['visits']).notNull().isInt();
-		}catch(e){
+		if(check.isNull(params['visits']) || !check.isInt(params['visits'])){
 			callback(response.error(codes.error.VISITS_NULL()));
 			return;
 		}

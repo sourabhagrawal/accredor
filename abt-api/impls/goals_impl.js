@@ -1,6 +1,6 @@
 var comb = require('comb');
 var _ = require('underscore');
-var check = require('validator').check;
+var check = require('validator');
 var logger = require(LIB_DIR + 'log_factory').create("goals_impl");
 var impl = require('./impl.js');
 var emitter = require(LIB_DIR + 'emitter');
@@ -26,42 +26,32 @@ var GoalsImpl = comb.define(impl,{
 			
 			// User ID should not be valid
 			var userId = params['userId'];
-			try{
-				check(userId).notNull().notEmpty().isInt();
-			}catch(e){
+			if(check.isNull(userId) || !check.isInt(userId)){
 				callback(response.error(codes.error.VALID_USER_REQUIRED()));
 				return;
 			}
 			
 			// Name should not be blank
 			var name = params['name'];
-			try{
-				check(name).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(name)){
 				callback(response.error(codes.error.GOAL_NAME_REQUIRED()));
 				return;
 			}
 			
 			// Type should not be blank
-			try{
-				check(params['type']).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(params['type'])){
 				callback(response.error(codes.error.GOAL_TYPE_REQUIRED()));
 				return;
 			}
 			
 			// URL should not be blank
-			try{
-				check(params['url']).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(params['url'])){
 				callback(response.error(codes.error.GOAL_URL_REQUIRED()));
 				return;
 			}
 			
 			// URL should not be blank
-			try{
-				check(params['url']).isUrl();
-			}catch(e){
+			if(!check.isURL(params['url'])){
 				callback(response.error(codes.error.INVALID_GOAL_URL()));
 				return;
 			}
@@ -140,17 +130,13 @@ var GoalsImpl = comb.define(impl,{
 					
 					if(params.url && params.url != model.url){ // URL is getting changes
 						// URL should not be blank
-						try{
-							check(params['url']).notNull().notEmpty();
-						}catch(e){
+						if(check.isNull(params['url'])){
 							callback(response.error(codes.error.GOAL_URL_REQUIRED()));
 							return;
 						}
 						
 						// URL should not be blank
-						try{
-							check(params['url']).isUrl();
-						}catch(e){
+						if(!check.isURL(params['url'])){
 							callback(response.error(codes.error.INVALID_GOAL_URL()));
 							return;
 						}

@@ -1,7 +1,7 @@
 var comb = require('comb');
 var _ = require('underscore');
 var crypto = require('crypto');
-var check = require('validator').check;
+var check = require('validator');
 var logger = require(LIB_DIR + 'log_factory').create("users_impl");
 var impl = require('./impl.js');
 var emitter = require(LIB_DIR + 'emitter');
@@ -32,20 +32,16 @@ var UsersImpl = comb.define(impl,{
 			
 			// Email should be a valid email
 			var email = params['email'];
-			try{
-				check(email).notNull().notEmpty().isEmail();
-			}catch(e){
+			if(check.isNull(email)){
 				callback(response.error(codes.error.NOT_VALID_EMAIL()));
-				return;
+				return;	
 			}
 			
 			// Password should be atleast 6 characters long
 			var password = params['password'];
-			try{
-				check(password).notNull().notEmpty().len(6);
-			}catch(e){
+			if(check.isNull(password) || !check.isLength(password, 6)){
 				callback(response.error(codes.error.PASSWORD_TOO_SHORT([6])));
-				return;
+				return;	
 			}
 			
 			bus.on(this, 'start', function(){
@@ -77,7 +73,7 @@ var UsersImpl = comb.define(impl,{
 					params.password = hash;
 					params.isVerified = false;
 					params.isDisabled = false;
-					
+					params.createdBy = 'SYSTEM';
 					m.call(ref, params, function(err, data){
 						if(err == undefined)
 							bus.fire('created', data);
@@ -130,11 +126,9 @@ var UsersImpl = comb.define(impl,{
 							var password = params.password;
 							if(password != undefined){
 								// Password should be atleast 6 characters long
-								try{
-									check(password).notNull().notEmpty().len(6);
-								}catch(e){
+								if(check.isNull(password) || !check.isLength(password, 6)){
 									callback(response.error(codes.error.PASSWORD_TOO_SHORT([6])));
-									return;
+									return;	
 								}
 								
 								var md5sum = crypto.createHash('md5');
@@ -305,11 +299,9 @@ var UsersImpl = comb.define(impl,{
 		
 		updatePassword : function(email, password, callback){
 			// Password should be atleast 6 characters long
-			try{
-				check(password).notNull().notEmpty().len(6);
-			}catch(e){
+			if(check.isNull(password) || !check.isLength(password, 6)){
 				callback(response.error(codes.error.PASSWORD_TOO_SHORT([6])));
-				return;
+				return;	
 			}
 			
 			var ref = this;

@@ -1,6 +1,6 @@
 var comb = require('comb');
 var _ = require('underscore');
-var check = require('validator').check;
+var check = require('validator');
 var logger = require(LIB_DIR + 'log_factory').create("variations_impl");
 var impl = require('./impl.js');
 var emitter = require(LIB_DIR + 'emitter');
@@ -25,25 +25,19 @@ var VariationsImpl = comb.define(impl,{
 			
 			// User ID should not be valid
 			var userId = params['userId'];
-			try{
-				check(userId).notNull().notEmpty().isInt();
-			}catch(e){
+			if(check.isNull(userId) || !check.isInt(userId)){
 				callback(response.error(codes.error.VALID_USER_REQUIRED()));
-				return;
+				return;	
 			}
 			
 			// Name should not be blank
-			try{
-				check(params['name']).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(params['name'])){
 				callback(response.error(codes.error.VARIATION_NAME_REQUIRED()));
 				return;
 			}
 			
 			// Type should not be blank
-			try{
-				check(params['type']).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(params['type'])){
 				callback(response.error(codes.error.VARIATION_TYPE_REQUIRED()));
 				return;
 			}
@@ -105,11 +99,9 @@ var VariationsImpl = comb.define(impl,{
 				
 				// User ID should not be valid
 				var userId = params['userId'];
-				try{
-					check(userId).notNull().notEmpty().isInt();
-				}catch(e){
+				if(check.isNull(userId) || !check.isInt(userId)){
 					callback(response.error(codes.error.VALID_USER_REQUIRED()));
-					return;
+					return;	
 				}
 				
 				bus.on('start', function(){

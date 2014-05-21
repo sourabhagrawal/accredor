@@ -8,6 +8,9 @@ var logger = require(LIB_DIR + 'log_factory').create("app");
 exports.init = function(){
 	passport.use(new LocalStrategy(
 		function(username, password, done) {
+			console.log("in auth");
+			console.log(CONFIG.url.api + 'users/authenticate');
+			
 			request({
 				uri : CONFIG.url.api + 'users/authenticate',
 				method : 'post',
@@ -39,6 +42,8 @@ exports.init = function(){
 	passport.deserializeUser(function(obj, done) {
 		done(null, obj);
 	});
+
+	console.log("Initialized auth");
 };
 
 exports.filter = function(req, res, next){

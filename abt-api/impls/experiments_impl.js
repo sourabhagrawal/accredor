@@ -1,6 +1,6 @@
 var comb = require('comb');
 var _ = require('underscore');
-var check = require('validator').check;
+var check = require('validator');
 var logger = require(LIB_DIR + 'log_factory').create("experiments_impl");
 var impl = require('./impl.js');
 var emitter = require(LIB_DIR + 'emitter');
@@ -27,26 +27,20 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			// User ID should not be valid
 			var userId = params['userId'];
-			try{
-				check(userId).notNull().notEmpty().isInt();
-			}catch(e){
+			if(check.isNull(userId) || !check.isInt(userId)){
 				callback(response.error(codes.error.VALID_USER_REQUIRED()));
 				return;
 			}
 			
 			// Name should not be blank
 			var name = params['name'];
-			try{
-				check(name).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(name)){
 				callback(response.error(codes.error.EXPERIMENT_NAME_REQUIRED()));
 				return;
 			}
 			
 			// Type should not be blank
-			try{
-				check(params['type']).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(params['type'])){
 				callback(response.error(codes.error.EXPERIMENT_TYPE_REQUIRED()));
 				return;
 			}
@@ -183,17 +177,13 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			// URL should not be blank
 			var url = params['url'];
-			try{
-				check(url).notNull().notEmpty();
-			}catch(e){
+			if(check.isNull(url)){
 				callback(response.error(codes.error.EXPERIMENT_URL_EMPTY()));
 				return;
 			}
 			
 			// URL should be valid
-			try{
-				check(params['url']).isUrl();
-			}catch(e){
+			if(check.isNull(params['url'])){
 				callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
 				return;
 			}
@@ -238,14 +228,10 @@ var ExperimentsImpl = comb.define(impl,{
 			
 			var ref = this;
 			
-			if(params['url']){
+			if(params['url'] && !check.isURL(params['url'])){
 				// URL should be valid
-				try{
-					check(params['url']).isUrl();
-				}catch(e){
-					callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
-					return;
-				}
+				callback(response.error(codes.error.INVALID_EXPERIMENT_URL()));
+				return;
 			}
 			
 			bus.on('start', function(){

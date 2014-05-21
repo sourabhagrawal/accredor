@@ -6,7 +6,9 @@ exports.index = function(req, res){
 };
 
 exports.authenticate = function(req, res, next) {
+	console.log(req.body);
 	passport.authenticate('local', function(err, data, info) {
+		console.log(info);
 		if (err) { return next(err); }
 		if(data && data.status && data.status.code == 1000) {
 			req.logIn(data.data, function(err) {

@@ -1,6 +1,6 @@
 var comb = require('comb');
 var _ = require('underscore');
-var check = require('validator').check;
+var check = require('validator');
 var logger = require(LIB_DIR + 'log_factory').create("contact_leads_impl");
 var impl = require('./impl.js');
 var contactLeadsDao = require(DAOS_DIR + 'contact_leads_dao');
@@ -21,11 +21,9 @@ var ContactLeadsImpl = comb.define(impl,{
 			var m = this._getSuper();
 			
 			// Type should not be blank
-			try{
-				check(params['email']).notNull().isEmail();
-			}catch(e){
+			if(check.isNull(params['email']) && !check.isEmail(params['email'])){
 				callback(response.error(codes.error.NOT_VALID_EMAIL()));
-				return;
+				return;	
 			}
 			
 			m.call(ref, params, function(err, data){

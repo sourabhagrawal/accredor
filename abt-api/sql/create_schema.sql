@@ -38,7 +38,7 @@ CREATE TABLE `variations` (
   `experiment_id` BIGINT NOT NULL,
   `name` varchar(255) NOT NULL,
   `percent` FLOAT NOT NULL,
-  `script` TEXT NOT NULL DEFAULT '',
+  `script` TEXT NOT NULL,
   `type` VARCHAR(32) NOT NULL, -- URL
   `is_control` TINYINT NOT NULL DEFAULT 0,
   `is_disabled` TINYINT NOT NULL DEFAULT 0,

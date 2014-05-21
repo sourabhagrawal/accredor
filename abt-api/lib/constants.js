@@ -17,9 +17,9 @@ EMAILS_DIR = __dirname + '/../views/emails/';
 /**
  * Domain related
  */
-DOMAIN_HOST = CONFIG.domain.host;
-DOMAIN_NAME = CONFIG.domain.name;
-DOMAIN_SUPPORT_ID = CONFIG.domain.support_id;
+DOMAIN_HOST = "accredor.com";
+DOMAIN_NAME = "Accredor";
+DOMAIN_SUPPORT_ID = "support@accredor.com";
 
 /**
  * Global events

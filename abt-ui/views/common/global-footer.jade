@@ -46,25 +46,3 @@ footer
 					a(href='http://#{domain}') #{domain} | 
 					a(href='/terms') Terms of Service | 
 					a(href='/privacy-policy') Privacy Policy
-
-script(type='text/javascript')
-	/* Flex Slider */
-	$(window).load(function() {
-		$('.flexslider').flexslider({
-			animation: "slide",
-			controlNav: true,
-			pauseOnHover: true,
-			slideshowSpeed: 15000
-		});
-	});
-
--if(locals.app.settings.env == 'production')
-	script(type='text/javascript')
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-37090636-1']);
-		_gaq.push(['_trackPageview']);
-		(function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();

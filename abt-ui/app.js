@@ -13,6 +13,13 @@ var passport = require('passport');
 var assetManager = require('connect-assetmanager');
 var urlParser = require('url');
 var _ = require('underscore');
+var morgan  = require('morgan');
+var favicon = require('serve-favicon');
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+var methodOverride = require('method-override');
+var url = require('url')
 
 require('./lib/constants');
 var logger = require(LIB_DIR + 'log_factory').create("app");
@@ -34,15 +41,18 @@ auth.init();
 
 var port = CONFIG.nodes.ui.port || 8080;
 
-var apiProxy = httpProxy.createServer(function (req, res, proxy) {
-	var user = req.user || {};
-	var userId = user.id || 'dummy_login';
-	req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
-	proxy.proxyRequest(req, res, {
-		host: CONFIG.nodes.api.host,
-		port: CONFIG.nodes.api.port
-	});
-});
+var apiProxy = httpProxy.createProxyServer();
+
+// var apiProxy = httpProxy.createServer(function (req, res, proxy) {
+	// console.log("in proxy");
+	// var user = req.user || {};
+	// var userId = user.id || 'dummy_login';
+	// req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
+// 	proxy.proxyRequest(req, res, {
+// 		host: CONFIG.nodes.api.host,
+// 		port: CONFIG.nodes.api.port
+// 	});
+// });
 
 var receiverProxy = httpProxy.createServer(function (req, res, proxy) {
 	proxy.proxyRequest(req, res, {
@@ -69,16 +79,15 @@ if(IS_PROD){
 	};
 }
 
-app.configure(function(){
-  app.set('port', port);
+app.set('port', port);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('view options', {layout : false});
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.methodOverride());
-  app.use(express.cookieParser());
-  app.use(express.session(sessionParams));
+  // app.use(favicon());
+  app.use(morgan());
+  app.use(methodOverride());
+  app.use(cookieParser());
+  app.use(session(sessionParams));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(auth.filter());
@@ -91,9 +100,10 @@ app.configure(function(){
 	  }
 	  next();
   });
-  app.use('/api/', apiProxy);
-  app.use('/scripts/', receiverProxy);
-  app.use(express.bodyParser());
+  // app.use('/api/*', apiProxy);
+  // app.use('/scripts/', receiverProxy);
+  //app.use('/api', proxy(url.parse('http://localhost:8081/')));
+  // app.use(bodyParser());
   
   app.use(function(req, res, next){
 	  var referer = req.headers.referer;
@@ -141,23 +151,30 @@ app.configure(function(){
 	  
 	  next();
   });
-  app.use(app.router);
-  app.use(function(err, req, res, next) {
-	  // only handle `next(err)` calls
-	  logger.error(err);
-	  next();
-  });
-});
 
 /**
  * Routes
  */
+app.all("/api/*", function(req, res){
+	var user = req.user || {};
+	var userId = user.id || 'dummy_login';
+	req.headers['Authorization'] = "Basic " + new Buffer(userId + ':dummypass').toString('base64');
+	req.url = req.url.replace("/api", "");
+  	apiProxy.web(req, res, { target: 'http://localhost:8081' });
+});
+
+app.use(bodyParser());
+
 var baseRoute = require('./routes/w3/index');
 var benchRoute = require('./routes/w3/bench');
 var loginRoute = require('./routes/w3/login');
 
 app.get('/login', loginRoute.index);
 app.post('/login', loginRoute.authenticate);
+// app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }),
+//   function(req, res) {
+//     res.redirect('/');
+//   });
 app.get('/logout', loginRoute.logout);
 app.get('/verify', loginRoute.verify);
 app.get('/recover', loginRoute.recover);
@@ -182,6 +199,16 @@ app.post('/subscribe', function(req, res){
 	res.send();
 });
 
+// app.use(bodyParser());
+
+// app.use(express.urlencoded());
+// app.use(express.json());
+
+app.use(function(err, req, res, next) {
+  // only handle `next(err)` calls
+  logger.error(err);
+  next();
+});
 /**
  * Initialize the Server
  */

@@ -1,6 +1,6 @@
 var comb = require('comb');
 var _ = require('underscore');
-var check = require('validator').check;
+var check = require('validator');
 var logger = require(LIB_DIR + 'log_factory').create("goal_visits_impl");
 var impl = require('./impl.js');
 var dao = require(DAOS_DIR + 'goal_visits_dao');
@@ -21,25 +21,19 @@ var GoalVisitsImpl = comb.define(impl, {
 		var m = this._getSuper();
 		
 		// Goal Id should not be blank
-		try{
-			check(params['goalId']).notNull().isInt();
-		}catch(e){
+		if(check.isNull(params['goalId']) || !check.isInt(params['goalId'])){
 			callback(response.error(codes.error.GOAL_ID_NULL()));
 			return;
 		}
 		
 		// Visits should not be blank
-		try{
-			check(params['visits']).notNull().isInt();
-		}catch(e){
+		if(check.isNull(params['visits']) || !check.isInt(params['visits'])){
 			callback(response.error(codes.error.VISITS_NULL()));
 			return;
 		}
 		
 		// Visits should not be blank
-		try{
-			check(params['hits']).notNull().isInt();
-		}catch(e){
+		if(check.isNull(params['hits']) || !check.isInt(params['hits'])){
 			callback(response.error(codes.error.HITS_NULL()));
 			return;
 		}

@@ -26,12 +26,12 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('view options', {layout : false});
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
+  // app.use(express.favicon());
+  // app.use(express.logger('dev'));
   app.use(express.bodyParser());
-  app.use(expressValidator);
-  app.use(express.methodOverride());
-  app.use(express.static(path.join(__dirname, 'public')));
+  // app.use(expressValidator);
+  // app.use(express.methodOverride());
+  // app.use(express.static(path.join(__dirname, 'public')));
   app.use(function(req, res, next) {
 	  logger.info(req.method + " request on " + req.url);
 	  if(req.headers.authorization && req.headers.authorization.search('Basic ') === 0) {
